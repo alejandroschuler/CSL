@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Anatomy of a Jupyter Book</title>
+  <meta name="description" content="        Anatomy of a Jupyter Book    Jupyter-Book comes with a demo book so that you can see how the content filesare used in the book. We'll begin with a qu...">
+
+  <link rel="canonical" href="/guide/01-5_tour.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="/feed.xml">
+
+  <meta property="og:url"         content="/guide/01-5_tour.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Anatomy of a Jupyter Book" />
+<meta property="og:description" content="        Anatomy of a Jupyter Book    Jupyter-Book comes with a demo book so that you can see how the content filesare used in the book. We'll begin with a qu..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "/guide/01-5_tour.html",
+  "headline": "Anatomy of a Jupyter Book",
+  "datePublished": "2020-02-17T13:28:51-08:00",
+  "dateModified": "2020-02-17T13:28:51-08:00",
+  "description": "        Anatomy of a Jupyter Book    Jupyter-Book comes with a demo book so that you can see how the content filesare used in the book. We'll begin with a qu...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: ""
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linear_reg_torch">
+        <a class="c-sidebar__entry"
+          href="/linear_reg_torch.html"
+        >
+          
+            1.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/search.html" class="topbar-right-button" id="search-button">
+    <img src="/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Anatomy of a Jupyter Book</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Jupyter-Book comes with a demo book so that you can see how the content files
+are used in the book. We'll begin with a quick tour of these files, as they are
+the pieces that you'll modify for your own book.</p>
+<p>To create a <strong>demo Jupyter Book</strong> to use as a template, run the following command:</p>
+<div class="highlight"><pre><span></span>jupyter-book create mybookname --demo
+</pre></div>
+<p>A new book will be created at the path that you've given (in this case, <code>mybookname/</code>).</p>
+<p>Let's take a quick look at some important files in the demo book you created:</p>
+<div class="highlight"><pre><span></span>mybookname/
+├── assets
+│   └── custom
+│       ├── custom.css
+│       └── custom.js
+├── _config.yml
+├── content
+│   ├── features
+│   │  ├── features.md
+│   │  └── notebooks.ipynb
+│   └── LICENSE.md
+├── _data
+│   └── toc.yml
+└── requirements.txt
+</pre></div>
+<p>Here's a quick rundown of the files you can modify for yourself, and that
+ultimately make up your book.</p>
+<h2 id="Book-configuration">Book configuration<a class="anchor-link" href="#Book-configuration"> </a></h2><p>All of the configuration for your book is in the following file:</p>
+<div class="highlight"><pre><span></span>mybookname/
+├── _config.yml
+</pre></div>
+<p>You can define metadata for your book (such as its title), add
+a book logo, turn on different "interactive" buttons (such as a
+Binder button for pages built from a Jupyter Notebook), and more.</p>
+<h2 id="Book-content">Book content<a class="anchor-link" href="#Book-content"> </a></h2><p>Your book's content can be found in the <code>content/</code> folder. Some content
+files for the demo book are shown below:</p>
+<div class="highlight"><pre><span></span>mybookname/
+├── content
+    └── features
+       ├── features.md
+       └── notebooks.ipynb
+</pre></div>
+<p>Note that the content files are either <strong>Jupyter Notebooks</strong> or <strong>Markdown</strong>
+files. These are the files that define "pages" in your book.</p>
+<p>You can store these files in whatever collection of folders you'd like, note that
+the <em>structure</em> of your book when it is built will depend solely on the order of
+items in your <code>_data/toc.yml</code> file (see below section)</p>
+<h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents"> </a></h2><p>Jupyter Book uses your Table of Contents to define the structure of your book.
+For example, your chapters, sub-chapters, etc.</p>
+<p>The Table of Contents lives at this location:</p>
+<div class="highlight"><pre><span></span>mybookname/
+├── _data
+    └── toc.yml
+</pre></div>
+<p>This is a YAML file with a collection of pages, each one linking to a
+file in your <code>content/</code> folder. Here's an example of a few pages defined in <code>toc.yml</code>.</p>
+<div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/features/features</span>
+  <span class="nt">not_numbered</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">expand_sections</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">sections</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/features/markdown</span>
+    <span class="nt">not_numbered</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="p p-Indicator">-</span> <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/features/notebooks</span>
+    <span class="nt">not_numbered</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+<p>The top-most level of your TOC file are <strong>book chapters</strong>. Above, this is the
+"Features" page.
+Note that in this case the title of the page is not explicitly specified but 
+is inferred from the source files.
+This behavior is controlled by the <code>page_titles</code> setting in <code>_config.yml</code> 
+(see <a href="../features/titles">the titles feature page</a> for more details).
+Each chapter can have
+several sections (defined in <code>sections:</code>) and each section can have several sub-sections
+(which would be define with a deeper level of <code>sections:</code>). In addition, you can
+use a few extra YAML values to control the behavior of Jupyter-Book (for example,
+<code>not_numbered: true</code> will prevent Jupyter Book from numbering the pages in that chapter).</p>
+<p>Each item in the YAML file points to a single content file. The links
+should be <strong>relative to the <code>/content/</code> folder and with no extension.</strong></p>
+<p>For example, in the example above there is a file in
+<code>mybookname/content/features/notebooks.ipynb</code>. The TOC entry that points to
+this file is here:</p>
+<div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/features/notebooks</span>
+</pre></div>
+<h2 id="A-license-for-your-content">A license for your content<a class="anchor-link" href="#A-license-for-your-content"> </a></h2><p>When you share content online, it's a good idea to add a license so that others know
+what rights you retain to the work. This can make your book more sharable and (re)usable.</p>
+<p>The license for a Jupyter Book lives in this location:</p>
+<div class="highlight"><pre><span></span>mybookname/
+├── content
+    └── LICENSE.md
+</pre></div>
+<p>When you create a new book, if you don't specify a license, then <code>jupyter-book</code> will by default
+add a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a>
+(CC BY-SA 4.0) license to your book. CC BY-SA requires attribution of
+your work, and also requires that any derivations someone creates are released
+under a license <em>at least as permissive</em> as CC BY-SA.</p>
+<p>If you'd like to choose a different license, you can add whatever text you like to the file
+in <code>/content/LICENSE.md</code>. We commend checking out the <a href="https://creativecommons.org/licenses">Creative Commons licenses page</a>
+for several options for licenses that may suit your needs.</p>
+<h2 id="Book-code-requirements-files">Book code requirements files<a class="anchor-link" href="#Book-code-requirements-files"> </a></h2><p>Since your Jupyter Book likely has computational material specified in Jupyter
+Notebooks, you should specify the packages needed to run your Jupyter Book.
+In this case, we use a <code>requirements.txt</code> file:</p>
+<div class="highlight"><pre><span></span>mybookname/
+└── requirements.txt
+</pre></div>
+<p>The demo book uses <code>requirements.txt</code> because it has Python code, but you can
+include any other files that you'd like to.</p>
+<h2 id="Book-bibliography-for-citations">Book bibliography for citations<a class="anchor-link" href="#Book-bibliography-for-citations"> </a></h2><p>If you'd like to build a bibliography for your book, you can do so by including
+the following file:</p>
+<div class="highlight"><pre><span></span>mybookname/
+├── _bibliography
+    └── references.bib
+</pre></div>
+<p>This BiBTex file can be used along with the <code>jekyll-scholar</code> extension. For more information
+on how to use citations in Jupyter Book, see <a href="../features/citations">Citations with Jupyter Book</a></p>
+<h2 id="Custom-Javascript-and-CSS">Custom Javascript and CSS<a class="anchor-link" href="#Custom-Javascript-and-CSS"> </a></h2><p>These are the files in this location:</p>
+<div class="highlight"><pre><span></span>├── assets
+    └── custom
+        ├── custom.css
+        └── custom.js
+</pre></div>
+<p>Jupyter Book lets you supply your own CSS and Javascript that will be
+built into your book. Feel free to edit these files with whatever you like.</p>
+<h1 id="Next-section">Next section<a class="anchor-link" href="#Next-section"> </a></h1><p>Now that you're familiar with the Jupyter Book structure, head to the next section
+to learn how to create your own!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/guide/01_overview.html">
+      〈 <span class="u-margin-right-tiny"></span> The Jupyter Book Guide
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/guide/02_create.html">
+      Create your Jupyter Book template <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
