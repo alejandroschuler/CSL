@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Connecting content with JupyterHub and Binder</title>
+  <meta name="description" content="        Connecting content with JupyterHub and Binder    Because Jupyter Books are built with Jupyter Notebooks, you can connect your onlinebook with a Jupyt...">
+
+  <link rel="canonical" href="/features/interact.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="/feed.xml">
+
+  <meta property="og:url"         content="/features/interact.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Connecting content with JupyterHub and Binder" />
+<meta property="og:description" content="        Connecting content with JupyterHub and Binder    Because Jupyter Books are built with Jupyter Notebooks, you can connect your onlinebook with a Jupyt..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "/features/interact.html",
+  "headline": "Connecting content with JupyterHub and Binder",
+  "datePublished": "2020-02-17T13:28:51-08:00",
+  "dateModified": "2020-02-17T13:28:51-08:00",
+  "description": "        Connecting content with JupyterHub and Binder    Because Jupyter Books are built with Jupyter Notebooks, you can connect your onlinebook with a Jupyt...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: "content/features"
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linear_reg_torch">
+        <a class="c-sidebar__entry"
+          href="/linear_reg_torch.html"
+        >
+          
+            1.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        <a href="/content/features/interact.ipynb" download>
+        <button id="interact-button-download" class="interact-button">.ipynb</button>
+        </a>
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+  
+  
+  
+  
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/search.html" class="topbar-right-button" id="search-button">
+    <img src="/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Connecting content with JupyterHub and Binder</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Because Jupyter Books are built with Jupyter Notebooks, you can connect your online
+book with a Jupyter kernel running in the cloud. This lets readers quickly interact
+with your content in a traditional coding interface using either JupyterHub or BinderHub.
+This page describes a few ways to accomplish this.</p>
+<h2 id="Creating-interact-buttons-for-BinderHub">Creating interact buttons for BinderHub<a class="anchor-link" href="#Creating-interact-buttons-for-BinderHub"> </a></h2><p>BinderHub can be used to build the environment needed to run a repository, and provides
+a link that lets others interact with that repository. If your Jupyter Book is hosted online
+on GitHub, you can automatically insert buttons that link to the Jupyter Notebook running in a BinderHub.
+When a user clicks the button, they'll be taken to a live version of the page. If your code
+doesn't require a significant amount of CPU or RAM, you can use the free, public BinderHub running
+at <a href="https://mybinder.org">https://mybinder.org</a>.</p>
+<p>To automatically include Binder link buttons in each page of your Jupyter Book, use the following
+configuration:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Binder link settings</span>
+<span class="nt">use_binder_button                </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>  <span class="c1"># If &#39;true&#39;, add a binder button for interactive links</span>
+</pre></div>
+<p>In addition, you can configure the components of your Binder links, which control things like
+where your BinderHub exists, which repository is used to define the environment, etc. Here's
+an example configuration with some explanation of each field.</p>
+<div class="highlight"><pre><span></span><span class="nt">binderhub_url                    </span><span class="p">:</span> <span class="s">&quot;https://mybinder.org&quot;</span>  <span class="c1"># The URL for your BinderHub.</span>
+<span class="nt">binder_repo_base                 </span><span class="p">:</span> <span class="s">&quot;https://github.com/&quot;</span>  <span class="c1"># The site on which the textbook repository is hosted</span>
+<span class="nt">binder_repo_org                  </span><span class="p">:</span> <span class="s">&quot;jupyter&quot;</span>  <span class="c1"># The username or organization that owns this repository</span>
+<span class="nt">binder_repo_name                 </span><span class="p">:</span> <span class="s">&quot;jupyter-book&quot;</span>  <span class="c1"># The name of the repository on the web</span>
+<span class="nt">binder_repo_branch               </span><span class="p">:</span> <span class="s">&quot;master&quot;</span>  <span class="c1"># The branch on which your textbook is hosted.</span>
+<span class="nt">binderhub_interact_text          </span><span class="p">:</span> <span class="s">&quot;Interact&quot;</span>  <span class="c1"># The text that interact buttons will contain.</span>
+</pre></div>
+<h2 id="Creating-interact-buttons-for-JupyterHub">Creating interact buttons for JupyterHub<a class="anchor-link" href="#Creating-interact-buttons-for-JupyterHub"> </a></h2><p>JupyterHub lets you host an online service that gives users their own Jupyter servers
+with an environment that you specify for them. It allows you to give users access to
+resources and hardware that you provision in the cloud, and allows you to authenticate users
+in order to control who has access to your hardware.</p>
+<p>Similar to Binder link buttons, you can also automatically include interact links that send
+your readers to a JupyterHub that is running a live, interactive version of your page. This
+is accomplished using the <a href="https://github.com/jupyterhub/nbgitpuller">nbgitpuller</a> server
+extension.</p>
+<div class="highlight"><pre><span></span><span class="nt">use_jupyterhub_button            </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>  <span class="c1"># If &#39;true&#39;, display a button that will direct users to a JupyterHub (that you provide)</span>
+</pre></div>
+<p>You can configure the location of the JupyterHub (which you may set up on your own using a guide
+such as <a href="https://z2jh.jupyter.org">zero to jupyterhub for kubernetes</a> or <a href="https://tljh.jupyter.org">the littlest jupyterhub</a>) with the following configuration.</p>
+<div class="highlight"><pre><span></span><span class="nt">jupyterhub_url                   </span><span class="p">:</span> <span class="s">&quot;&quot;</span>  <span class="c1"># The URL for your JupyterHub.</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Letting-users-define-their-own-JupyterHub-location">Letting users define their own JupyterHub location<a class="anchor-link" href="#Letting-users-define-their-own-JupyterHub-location"> </a></h2><p>✨<strong>Experimental</strong>✨</p>
+<p>If you use interact links with your Jupyter Book, you can also allow users to update
+these links to their own JupyterHub location by using parameters specified in the URL.
+If an interact button is present on a page, append the following to a page's URL in order
+to update where the link points:</p>
+
+<pre><code>mybook.com/mypage?jupyterhub=myhuburl.com</code></pre>
+<p>You should see a message displayed next to the interact link that lets the user know
+where the link now points. This can be useful if you'd like to share content but allow
+users to run this content wherever they like.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {}, "version_major": 2, "version_minor": 0}
+</script>
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/features/hiding.html">
+      〈 <span class="u-margin-right-tiny"></span> Hiding or removing code blocks or ...
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/features/executing.html">
+      Executing pages of your book <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
