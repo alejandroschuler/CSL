@@ -1,0 +1,1455 @@
+---
+interact_link: content/linreg-dl-torch/abstracting-layers.ipynb
+kernel_name: python3
+kernel_path: content/linreg-dl-torch
+has_widgets: false
+title: |-
+  Abstracting-layers
+pagenum: 4
+prev_page:
+  url: /linreg-dl-torch/linear-reg-complex.html
+next_page:
+  url: 
+suffix: .ipynb
+search: model data gradient descent training optimizer layers pytorch well parameters also using layer loss into need predictions step weve calculate set test malignant our size class sizes its through code dont change dataset fit module output gradients mymodel algorithm batch any predictors since define easy get lets between y implementing linear nn figure e changes adam doing neural dataloader once epoch models outcome probabilities predicted arbitrary h want new because different x own subclass methods method input things relu sigmoid worry just understand really run problem far automate optim available after primer github com alejandroschuler articles blob master graddescent gradientdescent
+
+comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
+---
+
+    <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Abstracting-layers</div>
+</div>
+    
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+<span class="kn">from</span> <span class="nn">torchviz</span> <span class="k">import</span> <span class="n">make_dot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Abstracting-our-Code">Abstracting our Code<a class="anchor-link" href="#Abstracting-our-Code"> </a></h1>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we'll be stacking layers of arbitrary size arbitrarily deep, we might as well abstract away some of the code we need so we don't have to keep track of all the parameters in the model.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll first define a <code>LinearLayer</code> class that transforms a representation of size <code>h1</code> to one of size <code>h2</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LinearLayer</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span><span class="n">h2</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">h2</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+    
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ϵ</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">-=</span> <span class="n">ϵ</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">grad</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">-=</span> <span class="n">ϵ</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">grad</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>        
+            <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And now we can stack up as many of these as we want, of whatever sizes we want</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torch.nn.functional</span> <span class="k">import</span> <span class="n">relu</span>
+
+<span class="k">class</span> <span class="nc">Model</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sizes</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">LinearLayer</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span><span class="n">h2</span><span class="p">)</span> <span class="k">for</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sizes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">relu</span>
+    
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ϵ</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>check it out:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span><span class="o">=</span> <span class="mi">100</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (n observations, p features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># outcomes (n observations)</span>
+
+<span class="n">my_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_popout tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Ws</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="s1">&#39;W</span><span class="si">{k}</span><span class="s1">&#39;</span><span class="p">:</span><span class="n">layer</span><span class="o">.</span><span class="n">W</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">my_model</span><span class="o">.</span><span class="n">layers</span><span class="p">)}</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="s1">&#39;b</span><span class="si">{k}</span><span class="s1">&#39;</span><span class="p">:</span><span class="n">layer</span><span class="o">.</span><span class="n">b</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">my_model</span><span class="o">.</span><span class="n">layers</span><span class="p">)}</span>
+<span class="n">make_dot</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="p">{</span><span class="o">**</span><span class="n">Ws</span><span class="p">,</span> <span class="o">**</span><span class="n">bs</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="342pt" height="772pt"
+ viewBox="0.00 0.00 342.32 772.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 768)">
+<title>%3</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-768 338.32,-768 338.32,4 -4,4"/>
+<!-- 4887231760 -->
+<g id="node1" class="node">
+<title>4887231760</title>
+<polygon fill="#caff70" stroke="black" points="307.47,-20 219.18,-20 219.18,0 307.47,0 307.47,-20"/>
+<text text-anchor="middle" x="263.32" y="-6.4" font-family="Times,serif" font-size="12.00">DivBackward0</text>
+</g>
+<!-- 4887231824 -->
+<g id="node2" class="node">
+<title>4887231824</title>
+<polygon fill="lightgrey" stroke="black" points="309.48,-76 217.17,-76 217.17,-56 309.48,-56 309.48,-76"/>
+<text text-anchor="middle" x="263.32" y="-62.4" font-family="Times,serif" font-size="12.00">SumBackward0</text>
+</g>
+<!-- 4887231824&#45;&gt;4887231760 -->
+<g id="edge1" class="edge">
+<title>4887231824&#45;&gt;4887231760</title>
+<path fill="none" stroke="black" d="M263.32,-55.59C263.32,-48.7 263.32,-39.1 263.32,-30.57"/>
+<polygon fill="black" stroke="black" points="266.82,-30.3 263.32,-20.3 259.82,-30.3 266.82,-30.3"/>
+</g>
+<!-- 4887231952 -->
+<g id="node3" class="node">
+<title>4887231952</title>
+<polygon fill="lightgrey" stroke="black" points="309.31,-132 217.34,-132 217.34,-112 309.31,-112 309.31,-132"/>
+<text text-anchor="middle" x="263.32" y="-118.4" font-family="Times,serif" font-size="12.00">PowBackward0</text>
+</g>
+<!-- 4887231952&#45;&gt;4887231824 -->
+<g id="edge2" class="edge">
+<title>4887231952&#45;&gt;4887231824</title>
+<path fill="none" stroke="black" d="M263.32,-111.59C263.32,-104.7 263.32,-95.1 263.32,-86.57"/>
+<polygon fill="black" stroke="black" points="266.82,-86.3 263.32,-76.3 259.82,-86.3 266.82,-86.3"/>
+</g>
+<!-- 4887232080 -->
+<g id="node4" class="node">
+<title>4887232080</title>
+<polygon fill="lightgrey" stroke="black" points="308.14,-188 218.51,-188 218.51,-168 308.14,-168 308.14,-188"/>
+<text text-anchor="middle" x="263.32" y="-174.4" font-family="Times,serif" font-size="12.00">SubBackward0</text>
+</g>
+<!-- 4887232080&#45;&gt;4887231952 -->
+<g id="edge3" class="edge">
+<title>4887232080&#45;&gt;4887231952</title>
+<path fill="none" stroke="black" d="M263.32,-167.59C263.32,-160.7 263.32,-151.1 263.32,-142.57"/>
+<polygon fill="black" stroke="black" points="266.82,-142.3 263.32,-132.3 259.82,-142.3 266.82,-142.3"/>
+</g>
+<!-- 4887232272 -->
+<g id="node5" class="node">
+<title>4887232272</title>
+<polygon fill="lightgrey" stroke="black" points="309.14,-244 217.51,-244 217.51,-224 309.14,-224 309.14,-244"/>
+<text text-anchor="middle" x="263.32" y="-230.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4887232272&#45;&gt;4887232080 -->
+<g id="edge4" class="edge">
+<title>4887232272&#45;&gt;4887232080</title>
+<path fill="none" stroke="black" d="M263.32,-223.59C263.32,-216.7 263.32,-207.1 263.32,-198.57"/>
+<polygon fill="black" stroke="black" points="266.82,-198.3 263.32,-188.3 259.82,-198.3 266.82,-198.3"/>
+</g>
+<!-- 4887232400 -->
+<g id="node6" class="node">
+<title>4887232400</title>
+<polygon fill="lightgrey" stroke="black" points="262.47,-306 178.18,-306 178.18,-286 262.47,-286 262.47,-306"/>
+<text text-anchor="middle" x="220.32" y="-292.4" font-family="Times,serif" font-size="12.00">MmBackward</text>
+</g>
+<!-- 4887232400&#45;&gt;4887232272 -->
+<g id="edge5" class="edge">
+<title>4887232400&#45;&gt;4887232272</title>
+<path fill="none" stroke="black" d="M226.85,-285.89C233.17,-277.08 242.9,-263.5 250.73,-252.58"/>
+<polygon fill="black" stroke="black" points="253.75,-254.37 256.73,-244.2 248.06,-250.29 253.75,-254.37"/>
+</g>
+<!-- 4887277648 -->
+<g id="node7" class="node">
+<title>4887277648</title>
+<polygon fill="lightgrey" stroke="black" points="221.13,-374 127.52,-374 127.52,-354 221.13,-354 221.13,-374"/>
+<text text-anchor="middle" x="174.32" y="-360.4" font-family="Times,serif" font-size="12.00">ReluBackward0</text>
+</g>
+<!-- 4887277648&#45;&gt;4887232400 -->
+<g id="edge6" class="edge">
+<title>4887277648&#45;&gt;4887232400</title>
+<path fill="none" stroke="black" d="M180.72,-353.82C187.79,-343.68 199.35,-327.1 208.16,-314.46"/>
+<polygon fill="black" stroke="black" points="211.14,-316.3 213.98,-306.1 205.39,-312.3 211.14,-316.3"/>
+</g>
+<!-- 4887277840 -->
+<g id="node8" class="node">
+<title>4887277840</title>
+<polygon fill="lightgrey" stroke="black" points="220.14,-436 128.51,-436 128.51,-416 220.14,-416 220.14,-436"/>
+<text text-anchor="middle" x="174.32" y="-422.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4887277840&#45;&gt;4887277648 -->
+<g id="edge7" class="edge">
+<title>4887277840&#45;&gt;4887277648</title>
+<path fill="none" stroke="black" d="M174.32,-415.89C174.32,-407.52 174.32,-394.84 174.32,-384.23"/>
+<polygon fill="black" stroke="black" points="177.82,-384.2 174.32,-374.2 170.82,-384.2 177.82,-384.2"/>
+</g>
+<!-- 4887277968 -->
+<g id="node9" class="node">
+<title>4887277968</title>
+<polygon fill="lightgrey" stroke="black" points="173.47,-498 89.18,-498 89.18,-478 173.47,-478 173.47,-498"/>
+<text text-anchor="middle" x="131.32" y="-484.4" font-family="Times,serif" font-size="12.00">MmBackward</text>
+</g>
+<!-- 4887277968&#45;&gt;4887277840 -->
+<g id="edge8" class="edge">
+<title>4887277968&#45;&gt;4887277840</title>
+<path fill="none" stroke="black" d="M137.85,-477.89C144.17,-469.08 153.9,-455.5 161.73,-444.58"/>
+<polygon fill="black" stroke="black" points="164.75,-446.37 167.73,-436.2 159.06,-442.29 164.75,-446.37"/>
+</g>
+<!-- 4887278160 -->
+<g id="node10" class="node">
+<title>4887278160</title>
+<polygon fill="lightgrey" stroke="black" points="132.13,-566 38.52,-566 38.52,-546 132.13,-546 132.13,-566"/>
+<text text-anchor="middle" x="85.32" y="-552.4" font-family="Times,serif" font-size="12.00">ReluBackward0</text>
+</g>
+<!-- 4887278160&#45;&gt;4887277968 -->
+<g id="edge9" class="edge">
+<title>4887278160&#45;&gt;4887277968</title>
+<path fill="none" stroke="black" d="M91.72,-545.82C98.79,-535.68 110.35,-519.1 119.16,-506.46"/>
+<polygon fill="black" stroke="black" points="122.14,-508.3 124.98,-498.1 116.39,-504.3 122.14,-508.3"/>
+</g>
+<!-- 4887278352 -->
+<g id="node11" class="node">
+<title>4887278352</title>
+<polygon fill="lightgrey" stroke="black" points="131.14,-628 39.51,-628 39.51,-608 131.14,-608 131.14,-628"/>
+<text text-anchor="middle" x="85.32" y="-614.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4887278352&#45;&gt;4887278160 -->
+<g id="edge10" class="edge">
+<title>4887278352&#45;&gt;4887278160</title>
+<path fill="none" stroke="black" d="M85.32,-607.89C85.32,-599.52 85.32,-586.84 85.32,-576.23"/>
+<polygon fill="black" stroke="black" points="88.82,-576.2 85.32,-566.2 81.82,-576.2 88.82,-576.2"/>
+</g>
+<!-- 4887278480 -->
+<g id="node12" class="node">
+<title>4887278480</title>
+<polygon fill="lightgrey" stroke="black" points="84.47,-690 0.18,-690 0.18,-670 84.47,-670 84.47,-690"/>
+<text text-anchor="middle" x="42.32" y="-676.4" font-family="Times,serif" font-size="12.00">MmBackward</text>
+</g>
+<!-- 4887278480&#45;&gt;4887278352 -->
+<g id="edge11" class="edge">
+<title>4887278480&#45;&gt;4887278352</title>
+<path fill="none" stroke="black" d="M48.85,-669.89C55.17,-661.08 64.9,-647.5 72.73,-636.58"/>
+<polygon fill="black" stroke="black" points="75.75,-638.37 78.73,-628.2 70.06,-634.29 75.75,-638.37"/>
+</g>
+<!-- 4887278672 -->
+<g id="node13" class="node">
+<title>4887278672</title>
+<polygon fill="lightblue" stroke="black" points="69.32,-764 15.32,-764 15.32,-732 69.32,-732 69.32,-764"/>
+<text text-anchor="middle" x="42.32" y="-750.4" font-family="Times,serif" font-size="12.00">W0</text>
+<text text-anchor="middle" x="42.32" y="-738.4" font-family="Times,serif" font-size="12.00"> (1, 10)</text>
+</g>
+<!-- 4887278672&#45;&gt;4887278480 -->
+<g id="edge12" class="edge">
+<title>4887278672&#45;&gt;4887278480</title>
+<path fill="none" stroke="black" d="M42.32,-731.69C42.32,-722.4 42.32,-710.44 42.32,-700.47"/>
+<polygon fill="black" stroke="black" points="45.82,-700.32 42.32,-690.32 38.82,-700.32 45.82,-700.32"/>
+</g>
+<!-- 4887278544 -->
+<g id="node14" class="node">
+<title>4887278544</title>
+<polygon fill="lightblue" stroke="black" points="156.32,-696 102.32,-696 102.32,-664 156.32,-664 156.32,-696"/>
+<text text-anchor="middle" x="129.32" y="-682.4" font-family="Times,serif" font-size="12.00">b0</text>
+<text text-anchor="middle" x="129.32" y="-670.4" font-family="Times,serif" font-size="12.00"> (1, 10)</text>
+</g>
+<!-- 4887278544&#45;&gt;4887278352 -->
+<g id="edge13" class="edge">
+<title>4887278544&#45;&gt;4887278352</title>
+<path fill="none" stroke="black" d="M118.22,-663.86C112.1,-655.51 104.47,-645.11 98.1,-636.42"/>
+<polygon fill="black" stroke="black" points="100.77,-634.15 92.04,-628.15 95.13,-638.29 100.77,-634.15"/>
+</g>
+<!-- 4887278224 -->
+<g id="node15" class="node">
+<title>4887278224</title>
+<polygon fill="lightblue" stroke="black" points="206.82,-572 149.83,-572 149.83,-540 206.82,-540 206.82,-572"/>
+<text text-anchor="middle" x="178.32" y="-558.4" font-family="Times,serif" font-size="12.00">W1</text>
+<text text-anchor="middle" x="178.32" y="-546.4" font-family="Times,serif" font-size="12.00"> (10, 10)</text>
+</g>
+<!-- 4887278224&#45;&gt;4887277968 -->
+<g id="edge14" class="edge">
+<title>4887278224&#45;&gt;4887277968</title>
+<path fill="none" stroke="black" d="M167.42,-539.69C160.38,-529.8 151.18,-516.89 143.84,-506.57"/>
+<polygon fill="black" stroke="black" points="146.61,-504.43 137.96,-498.32 140.91,-508.49 146.61,-504.43"/>
+</g>
+<!-- 4887278032 -->
+<g id="node16" class="node">
+<title>4887278032</title>
+<polygon fill="lightblue" stroke="black" points="245.32,-504 191.32,-504 191.32,-472 245.32,-472 245.32,-504"/>
+<text text-anchor="middle" x="218.32" y="-490.4" font-family="Times,serif" font-size="12.00">b1</text>
+<text text-anchor="middle" x="218.32" y="-478.4" font-family="Times,serif" font-size="12.00"> (1, 10)</text>
+</g>
+<!-- 4887278032&#45;&gt;4887277840 -->
+<g id="edge15" class="edge">
+<title>4887278032&#45;&gt;4887277840</title>
+<path fill="none" stroke="black" d="M207.22,-471.86C201.1,-463.51 193.47,-453.11 187.1,-444.42"/>
+<polygon fill="black" stroke="black" points="189.77,-442.15 181.04,-436.15 184.13,-446.29 189.77,-442.15"/>
+</g>
+<!-- 4887277712 -->
+<g id="node17" class="node">
+<title>4887277712</title>
+<polygon fill="lightblue" stroke="black" points="293.32,-380 239.32,-380 239.32,-348 293.32,-348 293.32,-380"/>
+<text text-anchor="middle" x="266.32" y="-366.4" font-family="Times,serif" font-size="12.00">W2</text>
+<text text-anchor="middle" x="266.32" y="-354.4" font-family="Times,serif" font-size="12.00"> (10, 1)</text>
+</g>
+<!-- 4887277712&#45;&gt;4887232400 -->
+<g id="edge16" class="edge">
+<title>4887277712&#45;&gt;4887232400</title>
+<path fill="none" stroke="black" d="M255.66,-347.69C248.76,-337.8 239.76,-324.89 232.57,-314.57"/>
+<polygon fill="black" stroke="black" points="235.41,-312.52 226.82,-306.32 229.66,-316.52 235.41,-312.52"/>
+</g>
+<!-- 4887232464 -->
+<g id="node18" class="node">
+<title>4887232464</title>
+<polygon fill="lightblue" stroke="black" points="334.32,-312 280.32,-312 280.32,-280 334.32,-280 334.32,-312"/>
+<text text-anchor="middle" x="307.32" y="-298.4" font-family="Times,serif" font-size="12.00">b2</text>
+<text text-anchor="middle" x="307.32" y="-286.4" font-family="Times,serif" font-size="12.00"> (1, 1)</text>
+</g>
+<!-- 4887232464&#45;&gt;4887232272 -->
+<g id="edge17" class="edge">
+<title>4887232464&#45;&gt;4887232272</title>
+<path fill="none" stroke="black" d="M296.22,-279.86C290.1,-271.51 282.47,-261.11 276.1,-252.42"/>
+<polygon fill="black" stroke="black" points="278.77,-250.15 270.04,-244.15 273.13,-254.29 278.77,-250.15"/>
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_steps</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">ϵ</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="mf">10e-4</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
+    <span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">ŷ</span><span class="p">)</span>
+    
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="n">my_model</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">),</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">loss_record</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">loss_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_11_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_12_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's easy to get predictions on new data:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_new</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">my_model</span><span class="p">(</span><span class="n">x_new</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[ 0.5051],
+        [-0.1022],
+        [ 0.2435],
+        [ 0.0152],
+        [ 0.3999],
+        [ 0.6851],
+        [ 2.2710],
+        [ 0.8629],
+        [ 0.2932],
+        [ 0.0317]], grad_fn=&lt;AddBackward0&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Because our code is modular, it's trivial to add more layers or change their sizes. Let's also a new dataset with a different relationship between $x$ and $y$ to see we can fit pretty arbitrary nonlinearities.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (n observations, p features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># outcomes (n observations)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">n_steps</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">ϵ</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="mf">10e-4</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
+    <span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">ŷ</span><span class="p">)</span>
+    
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="n">my_model</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">),</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">loss_record</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">loss_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_18_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_19_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Using-pytorch's-modules">Using pytorch's modules<a class="anchor-link" href="#Using-pytorch's-modules"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Instead of implementing our own linear layer class, we can use the one that pytorch provides. We can also subclass <code>nn.Module</code> to make a model without having to define our own <code>step()</code> methods. All we need to do is define a <code>forward()</code> method that, given the input to the model, produces the output:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+
+<span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span> <span class="c1"># subclass nn.Module</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sizes</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span> <span class="c1"># we need to initialize the nn.Module superclass for things to work</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span><span class="n">h2</span><span class="p">)</span> <span class="k">for</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sizes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">1</span><span class="p">:])])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># creates a model object with input size 1, two hidden layers of size 10, and an output of size 1</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span> <span class="c1"># the loss function in torch is often named &quot;criterion&quot;</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">my_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="mf">10e-4</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_steps</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
+    <span class="n">L</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+    
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_25_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_new</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">my_model</span><span class="p">(</span><span class="n">x_new</span><span class="p">)</span> <span class="c1"># predictions</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-4.7522],
+        [ 0.4179],
+        [ 0.0410],
+        [-0.3007],
+        [ 0.9673],
+        [-7.1947],
+        [ 0.9359],
+        [ 0.3695],
+        [ 0.6474],
+        [ 9.3845]], grad_fn=&lt;AddmmBackward&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Pytorch has already implementing things like the ReLU and sigmoid functions, MSE, cross-entropy loss, linear layers, etc. So you don't have to worry about making errors implementing them yourself. Just figure out how to use their implementations and you're good to go. Don't worry too much about why you need to do specific things like <code>super().__init__()</code> when initializing a subclass of <code>nn.Module()</code>. As long as you understand <em>what</em> is happening under the hood, it doesn't really matter if you don't know exactly <em>how</em>. If you run into a problem where you need to figure it out, you will easily be able to if you need to do so.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've been using pytorch so far to automate gradients, but now we've also seen that the <code>optim</code> module can be used to even automate the process of taking the gradient descent step. Basically, when you create an optimizer object like <code>optimizer = optim.SGD(my_model.parameters(), lr=1*10e-4)</code>, it associates with itself all of the model parameters that are accessible through <code>my_model.parameters()</code>. <code>parameters()</code> is a method that is available to <code>my_model</code> because you subclassed <code>nn.Module</code>, which ran through the internals of <code>my_model</code> to find all of the parameters associated with all of the layers. Now when you call <code>optimizer.step()</code> after populating all of the <code>param.grad</code> (which happens when you do <code>L.backward()</code>), the optimizer applies some algorithm to take all the gradients and change the values of the parameters accordingly. The simplest algorithm is the standard gradient descent we've been using, but many other enhancements are also available (see the <a href="https://github.com/alejandroschuler/articles/blob/master/grad_descent/Gradient%20Descent.ipynb">gradient descent primer</a> to understand the details). For instance, adding momentum is easy:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> 
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span> <span class="c1"># the loss function in torch is often named &quot;criterion&quot;</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">my_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="mf">10e-5</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_steps</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
+    <span class="n">L</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+    
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_31_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice we didn't have to change the training loop at all- we just passed an extra parameter to the optimizer. We can also make more radical changes to the optimizer (in this case we'll use the <a href="https://ruder.io/optimizing-gradient-descent/index.html#adam">ADAM algorithm</a>, another form of gradient descent):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> 
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span> <span class="c1"># the loss function in torch is often named &quot;criterion&quot;</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">my_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="mf">10e-5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_steps</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
+    <span class="n">L</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+    
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_35_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Minibatching-and-Dataloaders">Minibatching and Dataloaders<a class="anchor-link" href="#Minibatching-and-Dataloaders"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So far we've been using all of the data to calculate the gradients in each gradient descent step. However, doing that requires us to have all of the data in-memory at each step to look at $y_i$ and calculate $\hat y_i$ for every single $i$. Mini-batch stochastic gradient descent avoids this problem: in each iteration, we only use a subset of the data (a <em>batch</em> or <em>minibatch</em>) to calculate the loss, and consequently the gradients. It turns out that doing this also helps the optimization algorithm get out of local minima, so it's a win-win (more details in the <a href="https://github.com/alejandroschuler/articles/blob/master/grad_descent/Gradient%20Descent.ipynb">gradient descent primer</a> and <a href="https://ruder.io/optimizing-gradient-descent/index.html#minibatchgradientdescent">overview of gradient descent methods</a>).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In practice, people <em>always</em> use batching when training neural networks, so pytorch makes it easy to do so:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
+<span class="n">trainloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)),</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> 
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span> <span class="c1"># the loss function in torch is often named &quot;criterion&quot;</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">my_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="mf">10e-5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>DataLoader</code> splits the provided data into batches. We iterate through each batch, updating the paramters with a gradient descent step each time. Once we've looked at each batch once (i.e. we've gone through the full datasets once), we call that an <em>epoch</em> and start again.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span> <span class="ow">in</span> <span class="n">trainloader</span><span class="p">:</span>
+        <span class="n">ŷ_batch</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x_batch</span><span class="p">)</span> 
+        
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y_batch</span><span class="p">,</span> <span class="n">ŷ_batch</span><span class="p">)</span>
+        <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">full_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">my_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/abstracting-layers_43_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Final-Exercises">Final Exercises<a class="anchor-link" href="#Final-Exercises"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Regression">Regression<a class="anchor-link" href="#Regression"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's use everything we know to build some models. The first dataset we'll use is data on different wines.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To start with, we'll download and read in the data into a pandas dataframe.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Feel free to do any exploratory data analysis or investigate what's in the dataset using any tools you like. You'll see there are 11 predictors, all of which are numeric. There is one target (the "quality" of the wine), which we'll also treat as numeric.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Before building a model, I've turned the data into tensors and put it into a pytorch <code>DataLoader</code> for you</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;quality&#39;</span><span class="p">]]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;quality&#39;</span><span class="p">]</span>
+
+<span class="c1"># split into training and test sets, converting data frames to torch tensors along the way</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">data_frame</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span> <span class="k">for</span> <span class="n">data_frame</span> <span class="ow">in</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">)]</span>
+
+<span class="c1"># make a dataloader so we can iterate over batches</span>
+<span class="n">trainloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">)),</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Feel free to play around with the code above to figure out what it's doing. I didn't normalize the features or outcome, but if you wanted to, this would be the place to do it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>EXERCISE</strong></p>
+<p>Use pytorch to write a 3-layer neural network class (call it <code>WineNet</code>), with ReLU activations in between layers 1 and 2 and between 2 and 3. The output of the 3rd layer will be your prediction. Expect an input to the first layer of size 11 (the number of predictors we have). The output sizes of the 1st and 2nd layers should be variables that the user can set when they instantiate the class, like <code>model = WineNet(100, 50)</code>. The 3rd layer should have an ouput of size 1, since it's $\hat y$.</p>
+<p>To test your model, initialize it with some sizes of hidden layers (say, 100, 50), and run the training predictors through it and see what output you get. The predictions will be garbage since the model is untrained, but you can see if it all goes smoothly and your model is ready for training.</p>
+<p>Use the pytorch <code>Adam</code> optimizer with 1e-5 learning rate to fit your model to the wine data (using the provided <code>trainloader</code>) by minimizing the mean-squared-error loss with your model, using 100 and 50 as the hidden layer sizes. Write a training loop to fit your model for 100 epochs. Record the value of the training loss at the end of each epoch.</p>
+<p>Make a plot of the epoch (x-axis) vs. training loss (y-axis). Calculate the model's predictions on the test set and use the predictions to calculate the mean-squared error on the test set.</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Classification">Classification<a class="anchor-link" href="#Classification"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's build a model for a binary outcome. The predictors in this dataset are characteristics of various patients along with information extracted from potential tumors. For each patient, the outcome is whether the tumor was benign or malignant.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="k">import</span> <span class="n">load_breast_cancer</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">load_breast_cancer</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>EXERCISE</strong></p>
+<p>Split these data into a training (70%) and test set (30%), convert all the data to torch tensors, and make a training dataloader.</p>
+<p>Use pytorch to write a neural network class (call it <code>BCNet</code>) with any architechture (configuration of layers and activations) you like. As we did in our logistic regression example, we need to make sure there is a sigmoid function after the last linear layer to ensure that the predictions that come out of the model are probabilities. Use any loss function or optimizer that you think are reasonable. Fit your model.</p>
+<p>Calculate the model's predictions (probabilities) on the test set. Use 0.5 as a threshold to binarize the probabilities into 'predicted malignant' and 'predicted benign' categories. For what proportion of the patients in the test set is your prediction correct (this is the <em>accuracy</em> metric)? Among those who were really malignant, how many did your model actually predict were malignant (this is the <em>recall</em> or <em>sensitivity</em>)? Among those who your model predicted were malignant, how many actually were malignant (this is the <em>precision</em>)?</p>
+<p>Make changes to your architechture, training loss, and/or optimizer. How do your results change? See if there are changes you can make that consistently improve your performance in one or all of these metrics.</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    

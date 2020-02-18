@@ -16,8 +16,19 @@
 # - divider: true  # Will insert a divider in the sidebar
 # - header: My Header  # Will insert a header with no link in the sidebar
 
-- url: /linear_reg_torch
-
+- url: /linreg-dl-torch/intro
+  sections:
+  - url: /linreg-dl-torch/linear-reg
+  - url: /linreg-dl-torch/logistic-reg
+  - url: /linreg-dl-torch/linear-reg-complex
+  - url: /linreg-dl-torch/abstracting-layers
+#   not_numbered: true
+#   expand_sections: true
+#   sections:
+#   - url: /guide/01-5_tour
+#   - url: /guide/02_create
+#   - url: /guide/03_build
+#   - url: /guide/04_publish
 # - url: /intro
 #   not_numbered: true
 

@@ -1,0 +1,1599 @@
+---
+interact_link: content/linreg-dl-torch/linear-reg-complex.ipynb
+kernel_name: python3
+kernel_path: content/linreg-dl-torch
+has_widgets: false
+title: |-
+  Linear-reg-complex
+pagenum: 3
+prev_page:
+  url: /linreg-dl-torch/logistic-reg.html
+next_page:
+  url: /linreg-dl-torch/abstracting-layers.html
+suffix: .ipynb
+search: x model alpha linear z beta h our g w y array p b new parameters fit lets predictors age hat times just left end right layer loss hidden text using into features begin zj weight regression transformation well being relu function vdots img src images png width vector xwb between exercise size does relationship complexity say matrix c regressions predictions nonlinear both together gradient instead add predicting n cdots sigma output its representation different information because while descent learning algorithm neural where activation functions categories aj adding back example want build better xw purpose original step logistic also not
+
+comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
+---
+
+    <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Linear-reg-complex</div>
+</div>
+    
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+<span class="kn">from</span> <span class="nn">torchviz</span> <span class="k">import</span> <span class="n">make_dot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Adding-complexity-to-our-linear-model">Adding complexity to our linear model<a class="anchor-link" href="#Adding-complexity-to-our-linear-model"> </a></h1>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's go back to our regression example.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="mi">5</span> 
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (n observations, p features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># outcomes (n observations)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="n">β</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> 
+<span class="n">β</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span> 
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">β</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">β</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span> 
+    
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute gradients </span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span> <span class="c1"># take the gradient descent step </span>
+        <span class="n">β</span> <span class="o">-=</span> <span class="mf">10e-5</span> <span class="o">*</span> <span class="n">β</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">β</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Remember that the linear model is $\hat y =x\beta_{1:p} + \beta_0$. Let's say we want to add some complexity to this model by figuring out if there are some other predictors we can build (call them $z$) that are a transformation of the predictors $x$ that are better for predicting $y$ in a linear model than $x$ is. To do that, we'll first let $z = g(xW + b)$ with $W$ being a $p \times h$ matrix and $b$ a $1 \times h$ matrix so each row of $z$ ends up with $h$ columns and $g$ is an element-wise ReLU function. The purpose of $W$ and $b$ is to make $h$ predictors out of our original $p$ using a linear transformation. The purpose of $g$ is to add complexity to the model.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's dig into this, one step at a time. First we'll investigate the transformation $xW$. As we said, we're trying to build new features from our old features, so let's look at just one of these new features, $z_1$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ 
+z_1 
+=
+\left[
+\begin{array}{c}
+z_{11} \\ z_{12} \\ \vdots \\ z_{1n}
+\end{array}
+\right]
+=
+g\left(
+\left[
+\begin{array}{c}
+x_{11} &amp; x_{21} &amp; \cdots &amp; x_{p1} \\
+x_{12} &amp; x_{22} &amp; \cdots &amp; x_{p2} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+x_{1n} &amp; x_{2n} &amp; \cdots &amp; x_{pn}
+\end{array}
+\right]
+\left[
+\begin{array}{c}
+w_{11} \\ w_{12} \\ \vdots \\ w_{1p}
+\end{array}
+\right]
++
+b_1
+\right)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Graphically, this looks exactly like logistic regression, but with the $\sigma()$ replaced by $g()$. We also renamed the parameters and output, but that's just cosmetic, not consequential.</p>
+<p><img src="images/greg.png" width="250"></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we'll be using this structure again and again we'll just abbreviate it as follows:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="images/greg-abbrev.png" width="130"></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice that it's implicit here that $w_1$ is a vector of parameters that is being dot-multiplied by the vector $x$, $b_1$ is being added, and then the result is being transformed by some function $g$ (omitted in the drawing).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's zoom back out to our full matrix equation $z = g(xW+b)$. One way to look at this is that we're doing $h$ "$g$-linear" regressions (assuming we have $W$ and $b$) and getting their predictions. The matrix equation $z = g(xW+b)$ expresses all of these "regressions" simultaneously.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torch.nn.functional</span> <span class="k">import</span> <span class="n">relu</span> <span class="k">as</span> <span class="n">g</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">z</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([100, 10])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you see, we're getting 100 observations of 10 "features". Let's look at one of them:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([0.3226, 1.4233, 2.8091, 2.2245, 1.0566, 4.0743, 3.2438, 3.3498, 2.9763,
+        3.0156], grad_fn=&lt;SelectBackward&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We could also have done them one-at-a-time:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="n">W</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">b</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">z1</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">w1</span><span class="p">)</span> <span class="o">+</span> <span class="n">b1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([0.3226, 1.4233, 2.8091, 2.2245, 1.0566, 4.0743, 3.2438, 3.3498, 2.9763,
+        3.0156], grad_fn=&lt;SliceBackward&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Same thing.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The graphical representation of this is:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="images/2layer.png" width="150"></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One way to think about $z$ is as a different "representation" of what's in $x$. If we're predicting whether an image is a cat or a dog based on the pixel values $x$, then $z$ will perhaps learn to encode something like the number of red pixels, whether or not there are triangles in the image, etc. Ultimately the two representations contain the same information since $z$ is just a transformation of $x$, but somehow we're looking at that information in a different way, or highlighting different aspects of it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now our final model is a linear model done on the new predictors $z$. That model is $\hat y =z\alpha_{1:h} + \alpha_0$. I'm calling the coefficient vector $\alpha$ because now this needs $h$ coefficients (plus 1 intercept) for each of the $h$ new features, whereas $\beta$ was a $p$-length vector. So, in full, our model is now $\hat y = g(xW+b)\alpha_{1:h} + \alpha_0$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">α</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">ŷ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">α</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">α</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="images/net.png" width="300"></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that without the ReLU (or some nonlinear function) between $x$ and $z$, there is always a vector $\beta$ such that $x\beta_{1:p} + \beta_0 = (xW+b)\alpha_{1:h} + \alpha_0$ for every $W$, $b$, and $\alpha$. In effect, adding the transformation $W$ doesn't actually add anything to the model- we're expanding the number of parameters to fit without actually expanding the expressivity of the model because there is always a model  with fewer parameters that perfectly captures the predictions of the over-parametrized model. That is why the nonlinearity $g$ is necessary.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>EXERCISE:</strong></p>
+<p>Let's say we have</p>
+$$
+W = 
+\left[
+\begin{array}{ccc}
+1 &amp; 1 &amp; 1 \\
+1 &amp; 2 &amp; 3
+\end{array}
+\right]    
+\quad
+b = 
+\left[
+\begin{array}{ccc}
+0 &amp; 0 &amp; 0
+\end{array}
+\right]
+\\
+\alpha_{1:3} = 
+\left[
+\begin{array}{c}
+1 \\ -1 \\ 0
+\end{array}
+\right]
+\quad
+\alpha_0 = 0
+\notag
+$$<p>Find $\beta$ so that $x\beta_{1:2} + \beta_0 = (xW+b)\alpha_{1:3} + \alpha_0$ no matter what $x$ is.</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, we can compute our MSE loss:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span>
+<span class="n">L</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(48.5825, grad_fn=&lt;DivBackward0&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input tag_popout">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">make_dot</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;W&#39;</span><span class="p">:</span><span class="n">W</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="n">b</span><span class="p">,</span> <span class="s1">&#39;α&#39;</span><span class="p">:</span><span class="n">α</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="321pt" height="568pt"
+ viewBox="0.00 0.00 321.31 568.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 564)">
+<title>%3</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-564 317.31,-564 317.31,4 -4,4"/>
+<!-- 4774992144 -->
+<g id="node1" class="node">
+<title>4774992144</title>
+<polygon fill="#caff70" stroke="black" points="256.47,-20 168.18,-20 168.18,0 256.47,0 256.47,-20"/>
+<text text-anchor="middle" x="212.32" y="-6.4" font-family="Times,serif" font-size="12.00">DivBackward0</text>
+</g>
+<!-- 4750840528 -->
+<g id="node2" class="node">
+<title>4750840528</title>
+<polygon fill="lightgrey" stroke="black" points="258.48,-76 166.17,-76 166.17,-56 258.48,-56 258.48,-76"/>
+<text text-anchor="middle" x="212.32" y="-62.4" font-family="Times,serif" font-size="12.00">SumBackward0</text>
+</g>
+<!-- 4750840528&#45;&gt;4774992144 -->
+<g id="edge1" class="edge">
+<title>4750840528&#45;&gt;4774992144</title>
+<path fill="none" stroke="black" d="M212.32,-55.59C212.32,-48.7 212.32,-39.1 212.32,-30.57"/>
+<polygon fill="black" stroke="black" points="215.82,-30.3 212.32,-20.3 208.82,-30.3 215.82,-30.3"/>
+</g>
+<!-- 4774992272 -->
+<g id="node3" class="node">
+<title>4774992272</title>
+<polygon fill="lightgrey" stroke="black" points="258.31,-132 166.34,-132 166.34,-112 258.31,-112 258.31,-132"/>
+<text text-anchor="middle" x="212.32" y="-118.4" font-family="Times,serif" font-size="12.00">PowBackward0</text>
+</g>
+<!-- 4774992272&#45;&gt;4750840528 -->
+<g id="edge2" class="edge">
+<title>4774992272&#45;&gt;4750840528</title>
+<path fill="none" stroke="black" d="M212.32,-111.59C212.32,-104.7 212.32,-95.1 212.32,-86.57"/>
+<polygon fill="black" stroke="black" points="215.82,-86.3 212.32,-76.3 208.82,-86.3 215.82,-86.3"/>
+</g>
+<!-- 4774992400 -->
+<g id="node4" class="node">
+<title>4774992400</title>
+<polygon fill="lightgrey" stroke="black" points="257.14,-188 167.51,-188 167.51,-168 257.14,-168 257.14,-188"/>
+<text text-anchor="middle" x="212.32" y="-174.4" font-family="Times,serif" font-size="12.00">SubBackward0</text>
+</g>
+<!-- 4774992400&#45;&gt;4774992272 -->
+<g id="edge3" class="edge">
+<title>4774992400&#45;&gt;4774992272</title>
+<path fill="none" stroke="black" d="M212.32,-167.59C212.32,-160.7 212.32,-151.1 212.32,-142.57"/>
+<polygon fill="black" stroke="black" points="215.82,-142.3 212.32,-132.3 208.82,-142.3 215.82,-142.3"/>
+</g>
+<!-- 4774992592 -->
+<g id="node5" class="node">
+<title>4774992592</title>
+<polygon fill="lightgrey" stroke="black" points="258.14,-244 166.51,-244 166.51,-224 258.14,-224 258.14,-244"/>
+<text text-anchor="middle" x="212.32" y="-230.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4774992592&#45;&gt;4774992400 -->
+<g id="edge4" class="edge">
+<title>4774992592&#45;&gt;4774992400</title>
+<path fill="none" stroke="black" d="M212.32,-223.59C212.32,-216.7 212.32,-207.1 212.32,-198.57"/>
+<polygon fill="black" stroke="black" points="215.82,-198.3 212.32,-188.3 208.82,-198.3 215.82,-198.3"/>
+</g>
+<!-- 4774992720 -->
+<g id="node6" class="node">
+<title>4774992720</title>
+<polygon fill="lightgrey" stroke="black" points="201.47,-300 117.18,-300 117.18,-280 201.47,-280 201.47,-300"/>
+<text text-anchor="middle" x="159.32" y="-286.4" font-family="Times,serif" font-size="12.00">MmBackward</text>
+</g>
+<!-- 4774992720&#45;&gt;4774992592 -->
+<g id="edge5" class="edge">
+<title>4774992720&#45;&gt;4774992592</title>
+<path fill="none" stroke="black" d="M168.56,-279.59C176.16,-271.85 187.11,-260.69 196.16,-251.47"/>
+<polygon fill="black" stroke="black" points="198.69,-253.89 203.2,-244.3 193.7,-248.98 198.69,-253.89"/>
+</g>
+<!-- 4774992848 -->
+<g id="node7" class="node">
+<title>4774992848</title>
+<polygon fill="lightgrey" stroke="black" points="132.13,-356 38.52,-356 38.52,-336 132.13,-336 132.13,-356"/>
+<text text-anchor="middle" x="85.32" y="-342.4" font-family="Times,serif" font-size="12.00">ReluBackward0</text>
+</g>
+<!-- 4774992848&#45;&gt;4774992720 -->
+<g id="edge6" class="edge">
+<title>4774992848&#45;&gt;4774992720</title>
+<path fill="none" stroke="black" d="M97.88,-335.84C109,-327.72 125.46,-315.71 138.54,-306.16"/>
+<polygon fill="black" stroke="black" points="140.94,-308.75 146.96,-300.03 136.82,-303.09 140.94,-308.75"/>
+</g>
+<!-- 4774993040 -->
+<g id="node8" class="node">
+<title>4774993040</title>
+<polygon fill="lightgrey" stroke="black" points="131.14,-418 39.51,-418 39.51,-398 131.14,-398 131.14,-418"/>
+<text text-anchor="middle" x="85.32" y="-404.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4774993040&#45;&gt;4774992848 -->
+<g id="edge7" class="edge">
+<title>4774993040&#45;&gt;4774992848</title>
+<path fill="none" stroke="black" d="M85.32,-397.89C85.32,-389.52 85.32,-376.84 85.32,-366.23"/>
+<polygon fill="black" stroke="black" points="88.82,-366.2 85.32,-356.2 81.82,-366.2 88.82,-366.2"/>
+</g>
+<!-- 4774993168 -->
+<g id="node9" class="node">
+<title>4774993168</title>
+<polygon fill="lightgrey" stroke="black" points="84.47,-486 0.18,-486 0.18,-466 84.47,-466 84.47,-486"/>
+<text text-anchor="middle" x="42.32" y="-472.4" font-family="Times,serif" font-size="12.00">MmBackward</text>
+</g>
+<!-- 4774993168&#45;&gt;4774993040 -->
+<g id="edge8" class="edge">
+<title>4774993168&#45;&gt;4774993040</title>
+<path fill="none" stroke="black" d="M48.3,-465.82C54.85,-455.77 65.51,-439.42 73.71,-426.83"/>
+<polygon fill="black" stroke="black" points="76.87,-428.39 79.4,-418.1 71,-424.57 76.87,-428.39"/>
+</g>
+<!-- 4774993360 -->
+<g id="node10" class="node">
+<title>4774993360</title>
+<polygon fill="lightblue" stroke="black" points="69.32,-560 15.32,-560 15.32,-528 69.32,-528 69.32,-560"/>
+<text text-anchor="middle" x="42.32" y="-546.4" font-family="Times,serif" font-size="12.00">W</text>
+<text text-anchor="middle" x="42.32" y="-534.4" font-family="Times,serif" font-size="12.00"> (5, 10)</text>
+</g>
+<!-- 4774993360&#45;&gt;4774993168 -->
+<g id="edge9" class="edge">
+<title>4774993360&#45;&gt;4774993168</title>
+<path fill="none" stroke="black" d="M42.32,-527.69C42.32,-518.4 42.32,-506.44 42.32,-496.47"/>
+<polygon fill="black" stroke="black" points="45.82,-496.32 42.32,-486.32 38.82,-496.32 45.82,-496.32"/>
+</g>
+<!-- 4774993232 -->
+<g id="node11" class="node">
+<title>4774993232</title>
+<polygon fill="lightblue" stroke="black" points="156.32,-492 102.32,-492 102.32,-460 156.32,-460 156.32,-492"/>
+<text text-anchor="middle" x="129.32" y="-478.4" font-family="Times,serif" font-size="12.00">b</text>
+<text text-anchor="middle" x="129.32" y="-466.4" font-family="Times,serif" font-size="12.00"> (1, 10)</text>
+</g>
+<!-- 4774993232&#45;&gt;4774993040 -->
+<g id="edge10" class="edge">
+<title>4774993232&#45;&gt;4774993040</title>
+<path fill="none" stroke="black" d="M119.12,-459.69C112.59,-449.9 104.09,-437.15 97.25,-426.89"/>
+<polygon fill="black" stroke="black" points="99.99,-424.7 91.54,-418.32 94.17,-428.58 99.99,-424.7"/>
+</g>
+<!-- 4774992912 -->
+<g id="node12" class="node">
+<title>4774992912</title>
+<polygon fill="lightgrey" stroke="black" points="238.46,-356 150.18,-356 150.18,-336 238.46,-336 238.46,-356"/>
+<text text-anchor="middle" x="194.32" y="-342.4" font-family="Times,serif" font-size="12.00">SliceBackward</text>
+</g>
+<!-- 4774992912&#45;&gt;4774992720 -->
+<g id="edge11" class="edge">
+<title>4774992912&#45;&gt;4774992720</title>
+<path fill="none" stroke="black" d="M188.23,-335.59C183.46,-328.24 176.69,-317.8 170.9,-308.87"/>
+<polygon fill="black" stroke="black" points="173.73,-306.79 165.35,-300.3 167.85,-310.59 173.73,-306.79"/>
+</g>
+<!-- 4774993104 -->
+<g id="node13" class="node">
+<title>4774993104</title>
+<polygon fill="lightblue" stroke="black" points="257.32,-424 203.32,-424 203.32,-392 257.32,-392 257.32,-424"/>
+<text text-anchor="middle" x="230.32" y="-410.4" font-family="Times,serif" font-size="12.00">α</text>
+<text text-anchor="middle" x="230.32" y="-398.4" font-family="Times,serif" font-size="12.00"> (11, 1)</text>
+</g>
+<!-- 4774993104&#45;&gt;4774992912 -->
+<g id="edge12" class="edge">
+<title>4774993104&#45;&gt;4774992912</title>
+<path fill="none" stroke="black" d="M221.24,-391.86C216.34,-383.69 210.25,-373.55 205.11,-364.98"/>
+<polygon fill="black" stroke="black" points="207.96,-362.93 199.82,-356.15 201.96,-366.53 207.96,-362.93"/>
+</g>
+<!-- 4774992784 -->
+<g id="node14" class="node">
+<title>4774992784</title>
+<polygon fill="lightgrey" stroke="black" points="313.29,-300 219.36,-300 219.36,-280 313.29,-280 313.29,-300"/>
+<text text-anchor="middle" x="266.32" y="-286.4" font-family="Times,serif" font-size="12.00">SelectBackward</text>
+</g>
+<!-- 4774993104&#45;&gt;4774992784 -->
+<g id="edge14" class="edge">
+<title>4774993104&#45;&gt;4774992784</title>
+<path fill="none" stroke="black" d="M235.53,-391.87C238.97,-381.75 243.54,-368.11 247.32,-356 252.15,-340.57 257.27,-322.96 260.98,-309.97"/>
+<polygon fill="black" stroke="black" points="264.37,-310.87 263.73,-300.29 257.63,-308.96 264.37,-310.87"/>
+</g>
+<!-- 4774992784&#45;&gt;4774992592 -->
+<g id="edge13" class="edge">
+<title>4774992784&#45;&gt;4774992592</title>
+<path fill="none" stroke="black" d="M256.92,-279.59C249.17,-271.85 238.01,-260.69 228.79,-251.47"/>
+<polygon fill="black" stroke="black" points="231.17,-248.89 221.62,-244.3 226.22,-253.84 231.17,-248.89"/>
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now $L$ depends both on what $W$ and $b$ are and on what $\alpha$ is. In other words, both of these sets of coefficients are parameters of the model that we can tweak and optimize. $W$ and $b$ determine what kinds of "new predictors" we get out $x$, while $\alpha$ puts those new features together into the final prediction. What's amazing is that we can fit all of these parameters simultaneously using gradient descent: just update both sets of parameters using the negative gradient at each step. Note that this model has $h\times (p+1) + h+1$ total parameters (the values of $W_{ij}$, $b_j$, and $\alpha_j$) to be fit, whereas our original linear model only had $p+1$ parameters.</p>
+<p>Furthermore, this poses no problem for pytorch:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">α</span><span class="o">.</span><span class="n">grad</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[ -6.4595],
+        [-16.7796],
+        [-15.1167],
+        [ -7.9075],
+        [  2.7765],
+        [-15.6188],
+        [-20.2843],
+        [  4.3777],
+        [-11.5368],
+        [  4.3241],
+        [-14.3780]])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">W</span><span class="o">.</span><span class="n">grad</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[ 5.1586,  3.4025, -4.2722, -0.2403,  0.3381,  4.2296, -0.4710,  4.3947,
+         -0.2808,  1.8277],
+        [-0.4474, -1.0875, -0.0434, -0.0232, -0.0903, -1.4003, -0.1300, -0.8659,
+          0.5523, -0.5326],
+        [ 9.8471,  9.7235, -7.9455, -0.3419,  0.7284, 10.8695, -1.0256, 10.4540,
+         -4.5601,  5.0058],
+        [-9.0001, -6.7283,  9.8864,  0.1835, -0.5037, -7.8525,  0.4590, -7.5906,
+          1.9053, -4.3163],
+        [-3.4535, -4.5699,  4.6391,  0.2171, -0.3337, -3.6184,  0.5009, -4.5248,
+          1.9277, -1.9886]])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">b</span><span class="o">.</span><span class="n">grad</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[10.0408,  6.4187, -6.2048,  0.2272,  0.5346,  9.7377, -0.2559, 10.1649,
+          0.6104,  3.4241]])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Looping">Looping<a class="anchor-link" href="#Looping"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As before, now that we have gone through this once, we can put it all together into a loop:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="mi">5</span> 
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (n observations, p features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># outcomes (n observations)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">α</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">α</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">α</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span>
+    
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute gradients (in this case δL/δα, δL/δW)</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span> <span class="c1"># take the gradient descent step </span>
+        <span class="n">α</span> <span class="o">-=</span> <span class="mf">10e-3</span> <span class="o">*</span> <span class="n">α</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">α</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        <span class="n">W</span> <span class="o">-=</span> <span class="mf">10e-3</span> <span class="o">*</span> <span class="n">W</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">W</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        <span class="n">b</span> <span class="o">-=</span> <span class="mf">10e-3</span> <span class="o">*</span> <span class="n">b</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">loss_record</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">loss_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/linear-reg-complex_41_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here are our predictions for a new $x$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c1"># 10 new observations</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">new_x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">α</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">+</span><span class="n">α</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-0.3466],
+        [-0.5659],
+        [-0.2962],
+        [-0.6167],
+        [-0.0182],
+        [ 0.3881],
+        [ 0.1251],
+        [ 0.1841],
+        [-0.0748],
+        [ 0.2099]], grad_fn=&lt;AddBackward0&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>EXERCISE</strong></p>
+<p>Apply this strategy to our logistic regression to make a more complex <strong>classification</strong> model. In other words, implement the machine learning algorithm with these characteristics:</p>
+<ul>
+<li>Model: $\hat p_i = \sigma(g(x_i W+b))\alpha_{1:h} + \alpha_0)$, with $\sigma$, $g$, $W$, $b$, and $\alpha$ as previously described</li>
+<li>Loss: log-loss</li>
+<li>Search Algorithm: gradient descent</li>
+</ul>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We just developed a machine learning method out of these three components:</p>
+<ul>
+<li>"linear-relu" $\times$ 10 + linear model (model)</li>
+<li>MSE loss (loss)</li>
+<li>gradient descent (search algorithm)</li>
+</ul>
+<p>This is a neural network. The 10 "new predictors" are together a <em>hidden layer</em> (hidden because we don't see them at the end of the day, just the output $\hat y$) and each of them individually is called a <em>hidden unit</em>. The "layer" terminology comes from the graphical representation, where the successive hidden representations look like successive layers that the information passes through while being transformed from predictors to prediction:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="images/net-layers.png" width="300"></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So, in the language of neural networks or deep learning, what we've built is a network with input of size 5, one linear hidden layer of size 10, ReLU <em>activation function</em>, and a linear output layer of size 1.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="How-does-this-help?">How does this help?<a class="anchor-link" href="#How-does-this-help?"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>While we could define ever-more complex interactions of parameters and data, it turns out that simply stacking linear regressions with nonlinear activation functions on top of each other (e.g. "linear-relu" regressions) gets us enough complexity to model practically any relationship we want. Let's have a look at an example where $y = x^2$ in reality:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (n observations, p features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># outcomes (n observations)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/linear-reg-complex_52_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we fit a linear model, we don't do very well:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="n">β</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">β</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">β</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># ŷ = xβ + b(calculate predictions)</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span> <span class="c1"># L = Σ(yᵢ-ŷᵢ)² (use predictions to calculate loss)</span>
+    
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute gradients (in this case δL/δβ, δL/δW)</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span> <span class="c1"># take the gradient descent step </span>
+        <span class="n">β</span> <span class="o">-=</span> <span class="mf">10e-2</span> <span class="o">*</span> <span class="n">β</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">β</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The loss does go down, but overall it's still really high:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">loss_record</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">loss_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/linear-reg-complex_56_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And when we plot the model predictions against reality we see how bad it is:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">ŷ</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/linear-reg-complex_58_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>However, we can introduce a hidden layer (of size 10):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">α</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">h</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ϵ</span> <span class="o">=</span> <span class="mf">10e-3</span>
+
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">α</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">α</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span> <span class="c1"># L = Σ(yᵢ-ŷᵢ)² (use predictions to calculate loss)</span>
+    
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute gradients (in this case δL/δα, δL/δW)</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span> <span class="c1"># take the gradient descent step </span>
+        <span class="n">α</span> <span class="o">-=</span> <span class="n">ϵ</span> <span class="o">*</span> <span class="n">α</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">α</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        <span class="n">W</span> <span class="o">-=</span> <span class="n">ϵ</span> <span class="o">*</span> <span class="n">W</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">W</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        <span class="n">b</span> <span class="o">-=</span> <span class="n">ϵ</span> <span class="o">*</span> <span class="n">b</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">loss_record</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">loss_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/linear-reg-complex_61_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">ŷ</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;x1&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span> <span class="o">+</span> 
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/linear-reg-complex_62_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And now the loss is lower and the fit is clearly much improved.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>EXERCISE</strong></p>
+<p>Plot $z_1$ vs $x$. Repeat for each $z_j$. What do you see?</p>
+<p>Now make plots of each $z_j$ vs. $y$. Is the relationship between each $z_j$ and $y$ closer to linear than the relationship between $x$ and $y$? Does this explain why the linear regression $\hat y = \alpha_{1:h} z + \alpha_0$ produces a better fit than the linear regression $\hat y = \beta_{1:p} x + \beta_0$?</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>EXERCISE</strong></p>
+<p>Change the value of $h$ in the code above so that hidden layer has size 3 instead of 10. How does that change the fit? What if you set $h=100$?</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>EXERCISE</strong></p>
+<p>When fitting linear models, it's a common practice to break continuous variables up into categories. For instance, let's say we're predicting someone's weight based on their age. Instead of modeling $\text{weight} = \beta_0 + \beta_1 \times \text{age}$, we could break age up into 10 categories (say: age &lt; 10 years, 10 &lt; age &lt; 20,... 90 &lt; age) and fit our model using those categories as predictors instead. Basically, we have a set of regions $A = \{(0,10],(10,20],\dots (90,\infty]\}$ and our new variables are $z_j = I_{A_j}(x)$ where $I_{A_j}$ is the indicator function that returns 1 if $x \in A_j$ and 0 otherwise. Now we're modeling $\text{weight} = \alpha_0 + \alpha_1 z_1 + \dots \alpha_{10} z_{10}$ instead of $\text{weight} = \beta_0 + \beta_1 \times \text{age}$.</p>
+<p>Considering a population including both adults and children, do you think the relationship between age and weight will be linear? What will that mean if we try to fit the model $\text{weight} = \beta_0 + \beta_1 \times \text{age}$?</p>
+<p>How is this problem addressed by transforming $x$ into 10 new predictors $z_j$ using the indicator functions? What is the relationship between any $z_j$ and $y$?</p>
+<p>How does this relate to our neural networks?</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We saw how we can get a nonlinear fit out of stacking linear models and nonlinear activation functions together.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    

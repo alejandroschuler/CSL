@@ -1,0 +1,1094 @@
+---
+interact_link: content/linreg-dl-torch/linear-reg.ipynb
+kernel_name: python3
+kernel_path: content/linreg-dl-torch
+has_widgets: false
+title: |-
+  Linear Regression
+pagenum: 1
+prev_page:
+  url: /linreg-dl-torch/intro.html
+next_page:
+  url: /linreg-dl-torch/logsitic-reg.html
+suffix: .ipynb
+search: beta gradient frac yi loss hat array model l y n partial torch descent our pytorch linear x value lets well tensors sumi algorithm update calculate using random data begin rcl end us functions delta regression xi not also get mean called values try search here should thats current betaj instead answer nograd new different iterations implement simple start store think tensor numpy looking coefficients p whatever squared error guess grade gives best optimization need kind better numbers autograd parameter code iteration derivatives element t grad into why respect gradients weights learning context without single just add going right components
+
+comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
+---
+
+    <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Linear Regression</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's implement a simple linear regression using torch</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To start with, we'll create some random data and store it as torch tensors. For now you can think of a torch tensor as equivalent to a numpy array, but we will soon see that tensors have some additional functionality that we can exploit.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (100 observations, 5 features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># outcomes (100 observations)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Model">The Model<a class="anchor-link" href="#The-Model"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We're looking for parameters (coefficients) $\beta$ so that</p>
+$$
+\begin{array}{rcl}
+y_i &amp; \approx &amp; \beta_0 + x_i\beta_{1:p}  \\
+&amp;= &amp;\beta_0 + x_{i1}\beta_1 +x_{i2}\beta_2 \dots x_{ip}\beta_p
+\end{array}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Although you may not have seen it represented this way before, we can also write this model as a picture:</p>
+<p><img src="images/linreg.png" width="250"></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This will come in handy later when we get to more complex models, but for now you can think of the linear model in whatever way seems natural to you.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Loss">The Loss<a class="anchor-link" href="#The-Loss"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To quantify what we mean by a "good" approximation, we'll use the mean-squared-error loss. So for a given guess $\beta$ we'll give it the "grade"</p>
+$$L(y,\hat y) = \frac{1}{n}\sum_i (y_i - \hat y_i)^2$$<p>where $\hat y_i  = x_i\beta_{1:p} + \beta_0$ and $n$ is the number of observations (rows) in the data. We're looking for the $\beta$ that gives us the best (lowest) grade. This combination of model (linear) and loss (mean-squared-error) is called linear regression.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Optimization-Algorithm">The Optimization Algorithm<a class="anchor-link" href="#The-Optimization-Algorithm"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are an infinite number of possible values for $\beta$ that we could try, so it would take us forever to try them all and see which gives the best loss. To get around this problem, we need some kind of optimization algorithm that is better than brute-force search. The algorithm we will use here is an extremely useful approach called gradient descent, which you should already be familiar with from our <a href="">previous exploration</a>.</p>
+<p>To start, we'll initialize the coefficients $\beta$ with random numbers. That's our first guess. We'll update these random numbers using gradient descent to iteratively find better values that make the loss smaller.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">β</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># 5 coefficients (one per feature) plus one intercept</span>
+<span class="n">β</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span> <span class="c1"># tell torch that β is going to have to save the gradient of something with respect to itself at some point</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-0.2731],
+        [-0.1205],
+        [-0.1281],
+        [ 1.1380],
+        [ 1.7139],
+        [ 1.7325]], requires_grad=True)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Autograd">Autograd<a class="anchor-link" href="#Autograd"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Previously when using gradient descent we would have to analytically derive expressions for the gradient of the loss relative to each model parameter, implement these as functions in code, and call upon them at each gradient descent iteration. With pytorch, however, we can simply compute the current value of the loss and pytorch will automatically calculate all the necessary derivatives for us. Let's have a look.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ŷ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">β</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">β</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># ŷ = xβ + β0</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span> <span class="c1"># L = Σ(yᵢ-ŷᵢ)²/n</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">L</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(8.5604, grad_fn=&lt;DivBackward0&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute the gradients of the loss with respect to any tensors that went into the loss with requires_grad=true</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">β</span><span class="o">.</span><span class="n">grad</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-0.4644],
+        [-0.3877],
+        [ 0.4751],
+        [ 1.6801],
+        [ 3.0645],
+        [ 5.0251]])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>what we see here is a vector containing all of the derivatives we want. The first element is $\frac{\delta L}{\delta \beta_0}$, the second element is $\frac{\delta L}{\delta \beta_1}$, and so on. Note that this object is part of $\beta$ and not $L$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's calculate the gradient manually and make sure it matches up. We have:</p>
+$$
+\begin{array}{rcl}
+\hat y_i &amp;=&amp; x_i\beta + \beta_0 \\
+L(y,\hat y) &amp;=&amp; \frac{1}{n}\sum_i (y_i - \hat y_i)^2
+\end{array}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So the derivative for $\beta_j$ with $j\ne 0$ is</p>
+$$
+\begin{array}{rcl}
+\frac{\partial L}{\partial \beta_j} &amp;=&amp; 
+\frac{1}{n}
+\sum_i 
+\frac{\partial L}{\partial y_i} 
+\frac{\partial y_i}{\partial \beta_j}
+\\
+&amp;=&amp;
+\frac{1}{n}
+\sum_i
+-2(y_i-\hat y_i)
+x_{ij}
+\\
+&amp;=&amp;
+-\frac{2}{n}
+x_j^T(y-\hat y)
+\end{array}
+$$<p>and for $\beta_0$ is 
+$$
+\begin{array}{rcl}
+\frac{\partial L}{\partial \beta_0}
+&amp;=&amp;
+\frac{1}{n}
+\sum_i
+-2(y_i-\hat y_i) \\
+&amp;=&amp;
+-\frac{2}{n}
+1^T(y-\hat y)
+\end{array}
+$$</p>
+<p>which means we can calculate the whole gradient as $-\frac{2}{n}[1,x]^T(y-[1,x]\beta)$</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="k">def</span> <span class="nf">beta_grad</span><span class="p">(</span><span class="n">β</span><span class="p">):</span>
+    <span class="n">x_with_1s</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span> <span class="n">x</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_with_1s</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">y</span><span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_with_1s</span><span class="p">,</span><span class="n">β</span><span class="p">))</span><span class="o">/</span><span class="n">n</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">beta_grad</span><span class="p">(</span><span class="n">β</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-0.4644],
+        [-0.3877],
+        [ 0.4751],
+        [ 1.6801],
+        [ 3.0645],
+        [ 5.0251]], grad_fn=&lt;DivBackward0&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>which is exactly the same as the result in <code>β.grad</code>!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>How does pytorch do this? It turns out that every pytorch tensor records not only its own value, but also what functions were called to produce it and which tensors went into those functions. That's why we use torch tensors instead of numpy arrays. The <code>torchvis</code> package lets us see this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torchviz</span> <span class="k">import</span> <span class="n">make_dot</span>
+<span class="n">make_dot</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;β&#39;</span><span class="p">:</span><span class="n">β</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="204pt" height="432pt"
+ viewBox="0.00 0.00 204.31 432.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 428)">
+<title>%3</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-428 200.31,-428 200.31,4 -4,4"/>
+<!-- 4928321744 -->
+<g id="node1" class="node">
+<title>4928321744</title>
+<polygon fill="#caff70" stroke="black" points="139.47,-20 51.18,-20 51.18,0 139.47,0 139.47,-20"/>
+<text text-anchor="middle" x="95.32" y="-6.4" font-family="Times,serif" font-size="12.00">DivBackward0</text>
+</g>
+<!-- 4928321424 -->
+<g id="node2" class="node">
+<title>4928321424</title>
+<polygon fill="lightgrey" stroke="black" points="141.48,-76 49.17,-76 49.17,-56 141.48,-56 141.48,-76"/>
+<text text-anchor="middle" x="95.32" y="-62.4" font-family="Times,serif" font-size="12.00">SumBackward0</text>
+</g>
+<!-- 4928321424&#45;&gt;4928321744 -->
+<g id="edge1" class="edge">
+<title>4928321424&#45;&gt;4928321744</title>
+<path fill="none" stroke="black" d="M95.32,-55.59C95.32,-48.7 95.32,-39.1 95.32,-30.57"/>
+<polygon fill="black" stroke="black" points="98.82,-30.3 95.32,-20.3 91.82,-30.3 98.82,-30.3"/>
+</g>
+<!-- 4928321168 -->
+<g id="node3" class="node">
+<title>4928321168</title>
+<polygon fill="lightgrey" stroke="black" points="141.31,-132 49.34,-132 49.34,-112 141.31,-112 141.31,-132"/>
+<text text-anchor="middle" x="95.32" y="-118.4" font-family="Times,serif" font-size="12.00">PowBackward0</text>
+</g>
+<!-- 4928321168&#45;&gt;4928321424 -->
+<g id="edge2" class="edge">
+<title>4928321168&#45;&gt;4928321424</title>
+<path fill="none" stroke="black" d="M95.32,-111.59C95.32,-104.7 95.32,-95.1 95.32,-86.57"/>
+<polygon fill="black" stroke="black" points="98.82,-86.3 95.32,-76.3 91.82,-86.3 98.82,-86.3"/>
+</g>
+<!-- 4928320272 -->
+<g id="node4" class="node">
+<title>4928320272</title>
+<polygon fill="lightgrey" stroke="black" points="140.14,-188 50.51,-188 50.51,-168 140.14,-168 140.14,-188"/>
+<text text-anchor="middle" x="95.32" y="-174.4" font-family="Times,serif" font-size="12.00">SubBackward0</text>
+</g>
+<!-- 4928320272&#45;&gt;4928321168 -->
+<g id="edge3" class="edge">
+<title>4928320272&#45;&gt;4928321168</title>
+<path fill="none" stroke="black" d="M95.32,-167.59C95.32,-160.7 95.32,-151.1 95.32,-142.57"/>
+<polygon fill="black" stroke="black" points="98.82,-142.3 95.32,-132.3 91.82,-142.3 98.82,-142.3"/>
+</g>
+<!-- 4928321296 -->
+<g id="node5" class="node">
+<title>4928321296</title>
+<polygon fill="lightgrey" stroke="black" points="141.14,-244 49.51,-244 49.51,-224 141.14,-224 141.14,-244"/>
+<text text-anchor="middle" x="95.32" y="-230.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4928321296&#45;&gt;4928320272 -->
+<g id="edge4" class="edge">
+<title>4928321296&#45;&gt;4928320272</title>
+<path fill="none" stroke="black" d="M95.32,-223.59C95.32,-216.7 95.32,-207.1 95.32,-198.57"/>
+<polygon fill="black" stroke="black" points="98.82,-198.3 95.32,-188.3 91.82,-198.3 98.82,-198.3"/>
+</g>
+<!-- 4928319888 -->
+<g id="node6" class="node">
+<title>4928319888</title>
+<polygon fill="lightgrey" stroke="black" points="84.47,-300 0.18,-300 0.18,-280 84.47,-280 84.47,-300"/>
+<text text-anchor="middle" x="42.32" y="-286.4" font-family="Times,serif" font-size="12.00">MmBackward</text>
+</g>
+<!-- 4928319888&#45;&gt;4928321296 -->
+<g id="edge5" class="edge">
+<title>4928319888&#45;&gt;4928321296</title>
+<path fill="none" stroke="black" d="M51.56,-279.59C59.16,-271.85 70.11,-260.69 79.16,-251.47"/>
+<polygon fill="black" stroke="black" points="81.69,-253.89 86.2,-244.3 76.7,-248.98 81.69,-253.89"/>
+</g>
+<!-- 4928323472 -->
+<g id="node7" class="node">
+<title>4928323472</title>
+<polygon fill="lightgrey" stroke="black" points="103.46,-356 15.18,-356 15.18,-336 103.46,-336 103.46,-356"/>
+<text text-anchor="middle" x="59.32" y="-342.4" font-family="Times,serif" font-size="12.00">SliceBackward</text>
+</g>
+<!-- 4928323472&#45;&gt;4928319888 -->
+<g id="edge6" class="edge">
+<title>4928323472&#45;&gt;4928319888</title>
+<path fill="none" stroke="black" d="M56.36,-335.59C54.14,-328.55 51.04,-318.67 48.31,-310"/>
+<polygon fill="black" stroke="black" points="51.59,-308.79 45.25,-300.3 44.92,-310.89 51.59,-308.79"/>
+</g>
+<!-- 4928322064 -->
+<g id="node8" class="node">
+<title>4928322064</title>
+<polygon fill="lightblue" stroke="black" points="122.32,-424 68.32,-424 68.32,-392 122.32,-392 122.32,-424"/>
+<text text-anchor="middle" x="95.32" y="-410.4" font-family="Times,serif" font-size="12.00">β</text>
+<text text-anchor="middle" x="95.32" y="-398.4" font-family="Times,serif" font-size="12.00"> (6, 1)</text>
+</g>
+<!-- 4928322064&#45;&gt;4928323472 -->
+<g id="edge7" class="edge">
+<title>4928322064&#45;&gt;4928323472</title>
+<path fill="none" stroke="black" d="M86.24,-391.86C81.34,-383.69 75.25,-373.55 70.11,-364.98"/>
+<polygon fill="black" stroke="black" points="72.96,-362.93 64.82,-356.15 66.96,-366.53 72.96,-362.93"/>
+</g>
+<!-- 4928320720 -->
+<g id="node9" class="node">
+<title>4928320720</title>
+<polygon fill="lightgrey" stroke="black" points="196.29,-300 102.36,-300 102.36,-280 196.29,-280 196.29,-300"/>
+<text text-anchor="middle" x="149.32" y="-286.4" font-family="Times,serif" font-size="12.00">SelectBackward</text>
+</g>
+<!-- 4928322064&#45;&gt;4928320720 -->
+<g id="edge9" class="edge">
+<title>4928322064&#45;&gt;4928320720</title>
+<path fill="none" stroke="black" d="M102.38,-391.84C112.25,-370.64 130.15,-332.2 140.76,-309.39"/>
+<polygon fill="black" stroke="black" points="144.02,-310.68 145.07,-300.14 137.68,-307.72 144.02,-310.68"/>
+</g>
+<!-- 4928320720&#45;&gt;4928321296 -->
+<g id="edge8" class="edge">
+<title>4928320720&#45;&gt;4928321296</title>
+<path fill="none" stroke="black" d="M139.92,-279.59C132.17,-271.85 121.01,-260.69 111.79,-251.47"/>
+<polygon fill="black" stroke="black" points="114.17,-248.89 104.62,-244.3 109.22,-253.84 114.17,-248.89"/>
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To calculate the gradient of $L$ with respect to $\beta$, pytorch takes the gradients of each of these functions in turn (which are simple and hardcoded into pytorch), evaluates them at their current value using the input tensors, and multiplies them together to arrive at the answer you would get via the chain rule. You can learn more about this process <a href="https://towardsdatascience.com/pytorch-autograd-understanding-the-heart-of-pytorchs-magic-2686cd94ec95">here</a> and elsewhere.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Doing-Gradient-Descent">Doing Gradient Descent<a class="anchor-link" href="#Doing-Gradient-Descent"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To update the weights, we need to subtract the gradient (times a small learning rate) from the current value of the weights.</p>
+<p>We do this from inside a <code>no_grad():</code> "context" so that $\beta$ doesn't store the history of the update (try the update without the <code>with torch.no_grad():</code> and see what happens). We also clear out <code>β.grad</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">β</span> <span class="o">-=</span> <span class="mf">10e-5</span> <span class="o">*</span> <span class="n">β</span><span class="o">.</span><span class="n">grad</span> <span class="c1"># β = β - 10e-5 * β.grad</span>
+    <span class="n">β</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">β</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-0.2731],
+        [-0.1204],
+        [-0.1282],
+        [ 1.1378],
+        [ 1.7136],
+        [ 1.7320]], requires_grad=True)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see, our new value of $\beta$ is slightly different than what we started with because we've taken a single gradient step.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>ZEROING GRADIENTS</strong></p>
+<p>If we don't zero the gradient, the next time we calculate the gradient of something with respect to $\beta$, the new gradient will be added to whatever was stored there instead of overwriting it. That's just the way torch was made to work.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>EXERCISE</strong></p>
+<p>Investigate for yourself (either by testing code or googling) why the parameter update and gradient zerioing should be performed within a <code>torch.no_grad()</code> context.</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Looping">Looping<a class="anchor-link" href="#Looping"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's repeat what we have so far but now add a little loop to train our model for 500 gradient descent iterations instead of going slowly though a single iteration:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (10 observations, 5 features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># outcomes (10 observations)</span>
+
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># to kep track of the loss over the iterations</span>
+<span class="n">β</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 5 coefficients (one per feature) plus one intercept</span>
+<span class="n">β</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span> <span class="c1"># tell torch that β is going to have to save the gradient of something with respect to itself at some point</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-0.1092],
+        [-1.3379],
+        [ 0.2449],
+        [-0.8324],
+        [-0.3387],
+        [ 0.4786]], requires_grad=True)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">β</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">β</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># ŷ = xβ + β0 (calculate predictions)</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span> <span class="c1"># L = Σ(yᵢ-ŷᵢ)²/n (use predictions to calculate loss)</span>
+    
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute gradients (in this case δL/δβ, δL/δW)</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span> <span class="c1"># take the gradient descent step </span>
+        <span class="n">β</span> <span class="o">-=</span> <span class="mf">10e-3</span> <span class="o">*</span> <span class="n">β</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">β</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And we can see how the loss changes over the iterations:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">loss_record</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">loss_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/linear-reg_41_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We see training loss goes down.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here's the value of $\beta$ after 500 iterations:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">β</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[ 0.0952],
+        [-0.1218],
+        [-0.1502],
+        [-0.1120],
+        [-0.0219],
+        [ 0.1727]], requires_grad=True)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Remember our original data is totally random and there is no relationship between the predictors and outcomes. So the "right" answer for what $\beta$ should be in this case is $\beta=0$. As we see above, all the values are near 0, so our algorithm appears to be converging to the right answer.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To predict for a new observation, all we have to do is multiply by $\beta$ and add the intercept:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c1"># 10 new observations</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">new_x</span><span class="p">,</span> <span class="n">β</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">β</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># predictions</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-0.1722],
+        [ 0.3556],
+        [-0.0930],
+        [-0.0107],
+        [-0.1134],
+        [ 0.1378],
+        [ 0.4761],
+        [-0.3901],
+        [ 0.2622],
+        [-0.6157]], grad_fn=&lt;AddBackward0&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We just developed a machine learning method out of these three components:</p>
+<ul>
+<li>linear model (model)</li>
+<li>MSE loss (loss)</li>
+<li>gradient descent (search algorithm)</li>
+</ul>
+<p>These components are like interchangable parts. We're going to see how we can use a different model and loss to fit data of a different kind without fundamentally changing our search strategy.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
