@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Logistic Regression</title>
+  <meta name="description" content="        Logistic Regression        import torchimport pandas as pdimport altair as altfrom torchviz import make_dot    Now that we've seen how this works for...">
+
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/linreg-dl-torch/logistic-reg.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
+
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/linreg-dl-torch/logistic-reg.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Logistic Regression" />
+<meta property="og:description" content="        Logistic Regression        import torchimport pandas as pdimport altair as altfrom torchviz import make_dot    Now that we've seen how this works for..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/linreg-dl-torch/logistic-reg.html",
+  "headline": "Logistic Regression",
+  "datePublished": "2020-02-18T13:20:33-08:00",
+  "dateModified": "2020-02-18T13:20:33-08:00",
+  "description": "        Logistic Regression        import torchimport pandas as pdimport altair as altfrom torchviz import make_dot    Now that we've seen how this works for...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://alejandroschuler.github.io/CSL",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://alejandroschuler.github.io/CSL",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/CSL/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/CSL/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/CSL/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/CSL/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/CSL';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/CSL/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/CSL/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/CSL/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/CSL/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/CSL/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/CSL/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/CSL/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/CSL/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: "content/linreg-dl-torch"
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linreg-dl-torch/intro">
+        <a class="c-sidebar__entry"
+          href="/CSL/linreg-dl-torch/intro.html"
+        >
+          
+            1.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg.html"
+              >
+                
+                  1.1
+                
+                Linear Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/logistic-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/logistic-reg.html"
+              >
+                
+                  1.2
+                
+                Logistic Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg-complex">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg-complex.html"
+              >
+                
+                  1.3
+                
+                Linear-reg-complex
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/abstracting-layers">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/abstracting-layers.html"
+              >
+                
+                  1.4
+                
+                Abstracting-layers
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        <a href="/CSL/content/linreg-dl-torch/logistic-reg.ipynb" download>
+        <button id="interact-button-download" class="interact-button">.ipynb</button>
+        </a>
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+  
+  
+  
+  
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/CSL/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/CSL/search.html" class="topbar-right-button" id="search-button">
+    <img src="/CSL/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Logistic Regression</div>
+</div>
+    
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+<span class="kn">from</span> <span class="nn">torchviz</span> <span class="k">import</span> <span class="n">make_dot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we've seen how this works for linear regression, we can try and implement a model that predicts probabilities for a two-class outcome instead of a prediction for a continuous outcome. Now our data look like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span><span class="mi">5</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># predictors (10 observations, 5 features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="n">n</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span> <span class="c1"># outcomes (10 observations)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([1., 1., 1., 0., 0.])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Changing-the-model">Changing the model<a class="anchor-link" href="#Changing-the-model"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To do this, we have to change two things: firstly, our model can't be $\hat y_i  = x_i\beta_{1:p} + \beta_0$ anymore because $\hat y_i$ will come out as a number between plus and minus infinity, wheras we now want it to be a number between 0 and 1 (a probability). To fix this, we'll apply a function that takes $x_i\beta_{1:p} + \beta_0$ and squishes it down to a number between 0 and 1. The function we'll use is $\sigma(z) = \frac{1}{1+e^{-z}}$, which is called the <em>sigmoid</em> or <em>logistic</em> function.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Logistic-curve.svg/600px-Logistic-curve.svg.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So our model will be $\hat p_i  = \sigma(x_i\beta_{1:p} + \beta_0)$. The parameters are still $\beta$, but now there is an additional (fixed) squishing function that makes sure the output is a probability. In accordance, I've called the output $\hat p_i$ instead of $\hat y_i$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As before, we can represent this model graphically:</p>
+<p><img src="images/logreg.png" width="250"></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that the only difference between this picture and the one before is that we've inserted $\sigma()$ right before the final output.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Changing-the-loss">Changing the loss<a class="anchor-link" href="#Changing-the-loss"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our loss function from before was MSE: $\sum (\hat y_i - y_i)^2$, which compares a predicted outcome to the true outcome. One option is to replace the predicted outcome with a predicted probability to get $\sum (\hat p_i - y_i)^2$ (the <em>Brier Score</em>). Here's what that looks like (for a single observation $i$):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="http://journal.sjdm.org/16/16218/jdm16218001.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is ok, but many people don't like that there is a maximum penalty under this loss: if the true outcome was $y_i =0$ but the model predicts $p_j = P(Y_i=1) = 1$ (i.e. $y_i =1$ with absolute certainty), then the penalty should be infinitely high to strongly discrourage this kind of overconfident (wrong) prediction. Under the Brier score, however, you can see that this kind of prediction only incurrs a loss of 1, not infinity. Furthermore, when the outcome is 1 and the prediction gets closer and closer to 1, we see that the loss "flattens out", which means that we're not encouraged to be more and more confident when we're right.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What we want is a loss function that looks like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://conorsdatablog.files.wordpress.com/2018/03/log_loss.png?w=615&amp;h=597" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is called the <em>log-loss</em> (or <em>cross-entropy loss</em> or <em>binomial deviance</em>). It is expressed as</p>
+$$
+L(\hat p, y) = 
+\frac{1}{n}
+\sum_i 
+\begin{cases}
+-\log(P(Y_i = 1)) &amp; \text{if}\ y_i=1 \\
+-\log(P(Y_i = 0)) &amp; \text{if}\ y_i=0
+\end{cases}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>which is the same as</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+=
+\frac{1}{n}
+\sum_i 
+\begin{cases}
+-\log(\hat p_i) &amp; \text{if}\ y_i=1 \\
+-\log(1-\hat p_i) &amp; \text{if}\ y_i=0
+\end{cases}
+\\
+= 
+-\frac{1}{n}
+\sum_i 
+y_i \log(\hat p_i) + (1-y_i) \log (1-\hat p_i)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Search-strategy-is-still-gradient-descent">Search strategy is still gradient descent<a class="anchor-link" href="#Search-strategy-is-still-gradient-descent"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This combination of logistic-linear model and log-loss is called <em>logistic regression</em> (although this is a misnomer because we're actually doing classification, not regression). The amazing thing about gradient descent is that, as long as you can differentiate through the loss and to the model parameters, it just works. Compare this code to what we did to fit our linear regression model.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="c1"># predictors (10 observations, 5 features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="n">n</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span> <span class="c1"># outcomes (10 observations)</span>
+
+<span class="n">loss_record</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># to kep track of the loss over the iterations</span>
+<span class="n">β</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 5 coefficients (one per feature)</span>
+<span class="n">β</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span> <span class="c1"># tell torch that β is going to have to save the gradient of something with respect to itself at some point</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[-1.1276],
+        [ 1.1077],
+        [ 0.5628],
+        [-0.7865],
+        [ 0.9281],
+        [ 0.9921]], requires_grad=True)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">β</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">β</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  
+    <span class="n">p̂</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p̂</span><span class="p">)</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p̂</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">))</span><span class="o">/</span><span class="n">n</span> <span class="c1"># log loss</span>
+    
+    <span class="n">L</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute gradients (in this case δL/δβ, δL/δW)</span>
+    <span class="n">loss_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span> <span class="c1"># take the gradient descent step </span>
+        <span class="n">β</span> <span class="o">-=</span> <span class="mf">10e-4</span> <span class="o">*</span> <span class="n">β</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">β</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">loss_record</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">loss_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/linreg-dl-torch/logistic-reg_23_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Although the code looks pretty much the same, save the changes to the model and loss, the computation that pytorch needs to do to compute the gradient of $L$ with respect to each $\beta$ is now much more involved, which you too will see if you try to compute it by hand.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">make_dot</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;β&#39;</span><span class="p">:</span><span class="n">β</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="209pt" height="824pt"
+ viewBox="0.00 0.00 208.98 824.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 820)">
+<title>%3</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-820 204.98,-820 204.98,4 -4,4"/>
+<!-- 4873221776 -->
+<g id="node1" class="node">
+<title>4873221776</title>
+<polygon fill="#caff70" stroke="black" points="143.47,-20 55.18,-20 55.18,0 143.47,0 143.47,-20"/>
+<text text-anchor="middle" x="99.32" y="-6.4" font-family="Times,serif" font-size="12.00">DivBackward0</text>
+</g>
+<!-- 4873221840 -->
+<g id="node2" class="node">
+<title>4873221840</title>
+<polygon fill="lightgrey" stroke="black" points="141.46,-76 57.19,-76 57.19,-56 141.46,-56 141.46,-76"/>
+<text text-anchor="middle" x="99.32" y="-62.4" font-family="Times,serif" font-size="12.00">NegBackward</text>
+</g>
+<!-- 4873221840&#45;&gt;4873221776 -->
+<g id="edge1" class="edge">
+<title>4873221840&#45;&gt;4873221776</title>
+<path fill="none" stroke="black" d="M99.32,-55.59C99.32,-48.7 99.32,-39.1 99.32,-30.57"/>
+<polygon fill="black" stroke="black" points="102.82,-30.3 99.32,-20.3 95.82,-30.3 102.82,-30.3"/>
+</g>
+<!-- 4873221968 -->
+<g id="node3" class="node">
+<title>4873221968</title>
+<polygon fill="lightgrey" stroke="black" points="145.48,-132 53.17,-132 53.17,-112 145.48,-112 145.48,-132"/>
+<text text-anchor="middle" x="99.32" y="-118.4" font-family="Times,serif" font-size="12.00">SumBackward0</text>
+</g>
+<!-- 4873221968&#45;&gt;4873221840 -->
+<g id="edge2" class="edge">
+<title>4873221968&#45;&gt;4873221840</title>
+<path fill="none" stroke="black" d="M99.32,-111.59C99.32,-104.7 99.32,-95.1 99.32,-86.57"/>
+<polygon fill="black" stroke="black" points="102.82,-86.3 99.32,-76.3 95.82,-86.3 102.82,-86.3"/>
+</g>
+<!-- 4873222096 -->
+<g id="node4" class="node">
+<title>4873222096</title>
+<polygon fill="lightgrey" stroke="black" points="145.14,-188 53.51,-188 53.51,-168 145.14,-168 145.14,-188"/>
+<text text-anchor="middle" x="99.32" y="-174.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4873222096&#45;&gt;4873221968 -->
+<g id="edge3" class="edge">
+<title>4873222096&#45;&gt;4873221968</title>
+<path fill="none" stroke="black" d="M99.32,-167.59C99.32,-160.7 99.32,-151.1 99.32,-142.57"/>
+<polygon fill="black" stroke="black" points="102.82,-142.3 99.32,-132.3 95.82,-142.3 102.82,-142.3"/>
+</g>
+<!-- 4873222288 -->
+<g id="node5" class="node">
+<title>4873222288</title>
+<polygon fill="lightgrey" stroke="black" points="90.47,-244 0.18,-244 0.18,-224 90.47,-224 90.47,-244"/>
+<text text-anchor="middle" x="45.32" y="-230.4" font-family="Times,serif" font-size="12.00">MulBackward0</text>
+</g>
+<!-- 4873222288&#45;&gt;4873222096 -->
+<g id="edge4" class="edge">
+<title>4873222288&#45;&gt;4873222096</title>
+<path fill="none" stroke="black" d="M54.73,-223.59C62.47,-215.85 73.64,-204.69 82.86,-195.47"/>
+<polygon fill="black" stroke="black" points="85.43,-197.84 90.03,-188.3 80.48,-192.89 85.43,-197.84"/>
+</g>
+<!-- 4873222480 -->
+<g id="node6" class="node">
+<title>4873222480</title>
+<polygon fill="lightgrey" stroke="black" points="87.3,-356 3.35,-356 3.35,-336 87.3,-336 87.3,-356"/>
+<text text-anchor="middle" x="45.32" y="-342.4" font-family="Times,serif" font-size="12.00">LogBackward</text>
+</g>
+<!-- 4873222480&#45;&gt;4873222288 -->
+<g id="edge5" class="edge">
+<title>4873222480&#45;&gt;4873222288</title>
+<path fill="none" stroke="black" d="M45.32,-336C45.32,-318.19 45.32,-278.12 45.32,-254.15"/>
+<polygon fill="black" stroke="black" points="48.82,-254.13 45.32,-244.13 41.82,-254.13 48.82,-254.13"/>
+</g>
+<!-- 4873222224 -->
+<g id="node7" class="node">
+<title>4873222224</title>
+<polygon fill="lightgrey" stroke="black" points="143.47,-412 55.18,-412 55.18,-392 143.47,-392 143.47,-412"/>
+<text text-anchor="middle" x="99.32" y="-398.4" font-family="Times,serif" font-size="12.00">DivBackward0</text>
+</g>
+<!-- 4873222224&#45;&gt;4873222480 -->
+<g id="edge6" class="edge">
+<title>4873222224&#45;&gt;4873222480</title>
+<path fill="none" stroke="black" d="M89.92,-391.59C82.17,-383.85 71.01,-372.69 61.79,-363.47"/>
+<polygon fill="black" stroke="black" points="64.17,-360.89 54.62,-356.3 59.22,-365.84 64.17,-360.89"/>
+</g>
+<!-- 4873222800 -->
+<g id="node20" class="node">
+<title>4873222800</title>
+<polygon fill="lightgrey" stroke="black" points="201.14,-356 105.51,-356 105.51,-336 201.14,-336 201.14,-356"/>
+<text text-anchor="middle" x="153.32" y="-342.4" font-family="Times,serif" font-size="12.00">RsubBackward1</text>
+</g>
+<!-- 4873222224&#45;&gt;4873222800 -->
+<g id="edge22" class="edge">
+<title>4873222224&#45;&gt;4873222800</title>
+<path fill="none" stroke="black" d="M108.73,-391.59C116.47,-383.85 127.64,-372.69 136.86,-363.47"/>
+<polygon fill="black" stroke="black" points="139.43,-365.84 144.03,-356.3 134.48,-360.89 139.43,-365.84"/>
+</g>
+<!-- 4873222672 -->
+<g id="node8" class="node">
+<title>4873222672</title>
+<polygon fill="lightgrey" stroke="black" points="88.3,-468 4.35,-468 4.35,-448 88.3,-448 88.3,-468"/>
+<text text-anchor="middle" x="46.32" y="-454.4" font-family="Times,serif" font-size="12.00">ExpBackward</text>
+</g>
+<!-- 4873222672&#45;&gt;4873222224 -->
+<g id="edge7" class="edge">
+<title>4873222672&#45;&gt;4873222224</title>
+<path fill="none" stroke="black" d="M55.56,-447.59C63.16,-439.85 74.11,-428.69 83.16,-419.47"/>
+<polygon fill="black" stroke="black" points="85.69,-421.89 90.2,-412.3 80.7,-416.98 85.69,-421.89"/>
+</g>
+<!-- 4873222864 -->
+<g id="node9" class="node">
+<title>4873222864</title>
+<polygon fill="lightgrey" stroke="black" points="90.46,-580 6.19,-580 6.19,-560 90.46,-560 90.46,-580"/>
+<text text-anchor="middle" x="48.32" y="-566.4" font-family="Times,serif" font-size="12.00">NegBackward</text>
+</g>
+<!-- 4873222864&#45;&gt;4873222672 -->
+<g id="edge8" class="edge">
+<title>4873222864&#45;&gt;4873222672</title>
+<path fill="none" stroke="black" d="M48.16,-560C47.84,-542.19 47.11,-502.12 46.67,-478.15"/>
+<polygon fill="black" stroke="black" points="50.17,-478.06 46.49,-468.13 43.17,-478.19 50.17,-478.06"/>
+</g>
+<!-- 4873222992 -->
+<g id="node10" class="node">
+<title>4873222992</title>
+<polygon fill="lightgrey" stroke="black" points="145.14,-636 53.51,-636 53.51,-616 145.14,-616 145.14,-636"/>
+<text text-anchor="middle" x="99.32" y="-622.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4873222992&#45;&gt;4873222864 -->
+<g id="edge9" class="edge">
+<title>4873222992&#45;&gt;4873222864</title>
+<path fill="none" stroke="black" d="M90.44,-615.59C83.2,-607.93 72.8,-596.91 64.14,-587.75"/>
+<polygon fill="black" stroke="black" points="66.52,-585.17 57.11,-580.3 61.43,-589.97 66.52,-585.17"/>
+</g>
+<!-- 4873223248 -->
+<g id="node17" class="node">
+<title>4873223248</title>
+<polygon fill="lightgrey" stroke="black" points="193.46,-580 109.19,-580 109.19,-560 193.46,-560 193.46,-580"/>
+<text text-anchor="middle" x="151.32" y="-566.4" font-family="Times,serif" font-size="12.00">NegBackward</text>
+</g>
+<!-- 4873222992&#45;&gt;4873223248 -->
+<g id="edge18" class="edge">
+<title>4873222992&#45;&gt;4873223248</title>
+<path fill="none" stroke="black" d="M108.38,-615.59C115.76,-607.93 126.37,-596.91 135.2,-587.75"/>
+<polygon fill="black" stroke="black" points="137.95,-589.93 142.37,-580.3 132.91,-585.07 137.95,-589.93"/>
+</g>
+<!-- 4873223120 -->
+<g id="node11" class="node">
+<title>4873223120</title>
+<polygon fill="lightgrey" stroke="black" points="88.47,-692 4.18,-692 4.18,-672 88.47,-672 88.47,-692"/>
+<text text-anchor="middle" x="46.32" y="-678.4" font-family="Times,serif" font-size="12.00">MmBackward</text>
+</g>
+<!-- 4873223120&#45;&gt;4873222992 -->
+<g id="edge10" class="edge">
+<title>4873223120&#45;&gt;4873222992</title>
+<path fill="none" stroke="black" d="M55.56,-671.59C63.16,-663.85 74.11,-652.69 83.16,-643.47"/>
+<polygon fill="black" stroke="black" points="85.69,-645.89 90.2,-636.3 80.7,-640.98 85.69,-645.89"/>
+</g>
+<!-- 4873223312 -->
+<g id="node12" class="node">
+<title>4873223312</title>
+<polygon fill="lightgrey" stroke="black" points="107.46,-748 19.18,-748 19.18,-728 107.46,-728 107.46,-748"/>
+<text text-anchor="middle" x="63.32" y="-734.4" font-family="Times,serif" font-size="12.00">SliceBackward</text>
+</g>
+<!-- 4873223312&#45;&gt;4873223120 -->
+<g id="edge11" class="edge">
+<title>4873223312&#45;&gt;4873223120</title>
+<path fill="none" stroke="black" d="M60.36,-727.59C58.14,-720.55 55.04,-710.67 52.31,-702"/>
+<polygon fill="black" stroke="black" points="55.59,-700.79 49.25,-692.3 48.92,-702.89 55.59,-700.79"/>
+</g>
+<!-- 4873223440 -->
+<g id="node13" class="node">
+<title>4873223440</title>
+<polygon fill="lightblue" stroke="black" points="126.32,-816 72.32,-816 72.32,-784 126.32,-784 126.32,-816"/>
+<text text-anchor="middle" x="99.32" y="-802.4" font-family="Times,serif" font-size="12.00">β</text>
+<text text-anchor="middle" x="99.32" y="-790.4" font-family="Times,serif" font-size="12.00"> (6, 1)</text>
+</g>
+<!-- 4873223440&#45;&gt;4873223312 -->
+<g id="edge12" class="edge">
+<title>4873223440&#45;&gt;4873223312</title>
+<path fill="none" stroke="black" d="M90.24,-783.86C85.34,-775.69 79.25,-765.55 74.11,-756.98"/>
+<polygon fill="black" stroke="black" points="76.96,-754.93 68.82,-748.15 70.96,-758.53 76.96,-754.93"/>
+</g>
+<!-- 4873223184 -->
+<g id="node14" class="node">
+<title>4873223184</title>
+<polygon fill="lightgrey" stroke="black" points="200.29,-692 106.36,-692 106.36,-672 200.29,-672 200.29,-692"/>
+<text text-anchor="middle" x="153.32" y="-678.4" font-family="Times,serif" font-size="12.00">SelectBackward</text>
+</g>
+<!-- 4873223440&#45;&gt;4873223184 -->
+<g id="edge14" class="edge">
+<title>4873223440&#45;&gt;4873223184</title>
+<path fill="none" stroke="black" d="M106.38,-783.84C116.25,-762.64 134.15,-724.2 144.76,-701.39"/>
+<polygon fill="black" stroke="black" points="148.02,-702.68 149.07,-692.14 141.68,-699.72 148.02,-702.68"/>
+</g>
+<!-- 4873223184&#45;&gt;4873222992 -->
+<g id="edge13" class="edge">
+<title>4873223184&#45;&gt;4873222992</title>
+<path fill="none" stroke="black" d="M143.92,-671.59C136.17,-663.85 125.01,-652.69 115.79,-643.47"/>
+<polygon fill="black" stroke="black" points="118.17,-640.89 108.62,-636.3 113.22,-645.84 118.17,-640.89"/>
+</g>
+<!-- 4873222736 -->
+<g id="node15" class="node">
+<title>4873222736</title>
+<polygon fill="lightgrey" stroke="black" points="198.14,-468 106.51,-468 106.51,-448 198.14,-448 198.14,-468"/>
+<text text-anchor="middle" x="152.32" y="-454.4" font-family="Times,serif" font-size="12.00">AddBackward0</text>
+</g>
+<!-- 4873222736&#45;&gt;4873222224 -->
+<g id="edge15" class="edge">
+<title>4873222736&#45;&gt;4873222224</title>
+<path fill="none" stroke="black" d="M143.09,-447.59C135.49,-439.85 124.54,-428.69 115.49,-419.47"/>
+<polygon fill="black" stroke="black" points="117.95,-416.98 108.45,-412.3 112.96,-421.89 117.95,-416.98"/>
+</g>
+<!-- 4873222928 -->
+<g id="node16" class="node">
+<title>4873222928</title>
+<polygon fill="lightgrey" stroke="black" points="193.3,-524 109.35,-524 109.35,-504 193.3,-504 193.3,-524"/>
+<text text-anchor="middle" x="151.32" y="-510.4" font-family="Times,serif" font-size="12.00">ExpBackward</text>
+</g>
+<!-- 4873222928&#45;&gt;4873222736 -->
+<g id="edge16" class="edge">
+<title>4873222928&#45;&gt;4873222736</title>
+<path fill="none" stroke="black" d="M151.5,-503.59C151.63,-496.7 151.8,-487.1 151.96,-478.57"/>
+<polygon fill="black" stroke="black" points="155.47,-478.36 152.15,-468.3 148.47,-478.23 155.47,-478.36"/>
+</g>
+<!-- 4873223248&#45;&gt;4873222928 -->
+<g id="edge17" class="edge">
+<title>4873223248&#45;&gt;4873222928</title>
+<path fill="none" stroke="black" d="M151.32,-559.59C151.32,-552.7 151.32,-543.1 151.32,-534.57"/>
+<polygon fill="black" stroke="black" points="154.82,-534.3 151.32,-524.3 147.82,-534.3 154.82,-534.3"/>
+</g>
+<!-- 4873222352 -->
+<g id="node18" class="node">
+<title>4873222352</title>
+<polygon fill="lightgrey" stroke="black" points="199.47,-244 109.18,-244 109.18,-224 199.47,-224 199.47,-244"/>
+<text text-anchor="middle" x="154.32" y="-230.4" font-family="Times,serif" font-size="12.00">MulBackward0</text>
+</g>
+<!-- 4873222352&#45;&gt;4873222096 -->
+<g id="edge19" class="edge">
+<title>4873222352&#45;&gt;4873222096</title>
+<path fill="none" stroke="black" d="M144.74,-223.59C136.86,-215.85 125.49,-204.69 116.1,-195.47"/>
+<polygon fill="black" stroke="black" points="118.38,-192.81 108.79,-188.3 113.48,-197.8 118.38,-192.81"/>
+</g>
+<!-- 4873222544 -->
+<g id="node19" class="node">
+<title>4873222544</title>
+<polygon fill="lightgrey" stroke="black" points="195.3,-300 111.35,-300 111.35,-280 195.3,-280 195.3,-300"/>
+<text text-anchor="middle" x="153.32" y="-286.4" font-family="Times,serif" font-size="12.00">LogBackward</text>
+</g>
+<!-- 4873222544&#45;&gt;4873222352 -->
+<g id="edge20" class="edge">
+<title>4873222544&#45;&gt;4873222352</title>
+<path fill="none" stroke="black" d="M153.5,-279.59C153.63,-272.7 153.8,-263.1 153.96,-254.57"/>
+<polygon fill="black" stroke="black" points="157.47,-254.36 154.15,-244.3 150.47,-254.23 157.47,-254.36"/>
+</g>
+<!-- 4873222800&#45;&gt;4873222544 -->
+<g id="edge21" class="edge">
+<title>4873222800&#45;&gt;4873222544</title>
+<path fill="none" stroke="black" d="M153.32,-335.59C153.32,-328.7 153.32,-319.1 153.32,-310.57"/>
+<polygon fill="black" stroke="black" points="156.82,-310.3 153.32,-300.3 149.82,-310.3 156.82,-310.3"/>
+</g>
+</g>
+</svg>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The amazing thing is that pytorch just handles it and you don't have to.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To predict for a new observation, all we have to do is multiply by $\beta_{1:p}$, add the intercept $\beta_0$, and pass through $\sigma$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c1"># 10 new observations</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">new_x</span><span class="p">,</span> <span class="n">β</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">β</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span> <span class="c1"># probability predictions</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[0.4200],
+        [0.4201],
+        [0.4201],
+        [0.4200],
+        [0.4201],
+        [0.4201],
+        [0.4200],
+        [0.4201],
+        [0.4201],
+        [0.4202]], grad_fn=&lt;DivBackward0&gt;)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>EXERCISE</strong></p>
+<p>Why don't we use <em>accuracy</em> as a loss? In other words,</p>
+$$
+L(y, \hat p) = \sum_i
+\begin{cases}
+1 &amp; \text{if}\ y_i = 1 \ \text{and} \ \hat p_i &gt; 0.5 \\
+1 &amp; \text{if}\ y_i = 0 \ \text{and} \ \hat p_i \le 0.5 \\
+0 &amp; \text{else}
+\end{cases}
+\notag
+$$<p><em>Hint</em>: what is the derivative of this loss with respect to any prediction $\hat p_i$?</p>
+<hr>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We just developed a machine learning method out of these three components:</p>
+<ul>
+<li>linear-logistic model (model)</li>
+<li>log loss (loss)</li>
+<li>gradient descent (optimization algorithm)</li>
+</ul>
+<p>This should make it clear to you that gradient descent is a widely-applicable strategy that will work with any loss or model, as long as you can define derivatives of the loss with respect to the model parameters. We will now go back to our linear regression example, but augment the model with more parameters and a more complex structure in order to capture nonlinear relationships.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/linreg-dl-torch/linear-reg.html">
+      〈 <span class="u-margin-right-tiny"></span> Linear Regression
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/CSL/linreg-dl-torch/linear-reg-compled.html">
+       <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
