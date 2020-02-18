@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Distribution Properties</title>
+  <meta name="description" content="        Distribution Properties        import randomimport numpy as npimport altair as alt import pandas as pdfrom itertools import product        def densit...">
+
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/probability/3_distribution_properties.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
+
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/probability/3_distribution_properties.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Distribution Properties" />
+<meta property="og:description" content="        Distribution Properties        import randomimport numpy as npimport altair as alt import pandas as pdfrom itertools import product        def densit..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/probability/3_distribution_properties.html",
+  "headline": "Distribution Properties",
+  "datePublished": "2020-02-18T15:15:36-08:00",
+  "dateModified": "2020-02-18T15:15:36-08:00",
+  "description": "        Distribution Properties        import randomimport numpy as npimport altair as alt import pandas as pdfrom itertools import product        def densit...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://alejandroschuler.github.io/CSL",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://alejandroschuler.github.io/CSL",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/CSL/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/CSL/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/CSL/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/CSL/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/CSL';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/CSL/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/CSL/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/CSL/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/CSL/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/CSL/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/CSL/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/CSL/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/CSL/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: "content/probability"
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/introduction">
+        <a class="c-sidebar__entry"
+          href="/CSL/introduction.html"
+        >
+          
+            1.
+          
+          Introduction
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/probability/0_motivation">
+        <a class="c-sidebar__entry"
+          href="/CSL/probability/0_motivation.html"
+        >
+          
+            2.
+          
+          Motivation
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/1_univariate_prob">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/1_univariate_prob.html"
+              >
+                
+                  2.1
+                
+                Univariate Prob
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/2_multivariate_prob">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/2_multivariate_prob.html"
+              >
+                
+                  2.2
+                
+                Multivariate Prob
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/3_distribution_properties">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/3_distribution_properties.html"
+              >
+                
+                  2.3
+                
+                Distribution Properties
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/grad-descent/grad-descent">
+        <a class="c-sidebar__entry"
+          href="/CSL/grad-descent/grad-descent.html"
+        >
+          
+            3.
+          
+          Fitting Models with Gradient Descent
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linreg-dl-torch/intro">
+        <a class="c-sidebar__entry"
+          href="/CSL/linreg-dl-torch/intro.html"
+        >
+          
+            4.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg.html"
+              >
+                
+                  4.1
+                
+                Linear Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/logistic-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/logistic-reg.html"
+              >
+                
+                  4.2
+                
+                Logistic Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg-complex">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg-complex.html"
+              >
+                
+                  4.3
+                
+                Adding Complexity
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/abstracting-layers">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/abstracting-layers.html"
+              >
+                
+                  4.4
+                
+                Abstracting our Code
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        <a href="/CSL/content/probability/3_distribution_properties.ipynb" download>
+        <button id="interact-button-download" class="interact-button">.ipynb</button>
+        </a>
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+  
+  
+  
+  
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/CSL/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/CSL/search.html" class="topbar-right-button" id="search-button">
+    <img src="/CSL/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Distribution Properties</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span> 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">x_name</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y_name</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">joint_name</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">joint</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x_name</span><span class="p">,</span> <span class="n">y_name</span><span class="p">,</span> <span class="n">joint_name</span><span class="p">)]</span>
+    <span class="n">xl</span><span class="p">,</span> <span class="n">yl</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">-</span><span class="n">δ</span><span class="o">/</span><span class="mi">2</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)]</span>
+    <span class="n">xh</span><span class="p">,</span> <span class="n">yh</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">+</span><span class="n">δ</span><span class="o">/</span><span class="mi">2</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)]</span>
+    <span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;xl&#39;</span><span class="p">:</span><span class="n">xl</span><span class="p">,</span><span class="s1">&#39;xh&#39;</span><span class="p">:</span><span class="n">xh</span><span class="p">,</span><span class="s1">&#39;yl&#39;</span><span class="p">:</span><span class="n">yl</span><span class="p">,</span><span class="s1">&#39;yh&#39;</span><span class="p">:</span><span class="n">yh</span><span class="p">,</span><span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">joint</span><span class="p">})</span>
+    <span class="n">plot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;xl&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">x_name</span><span class="p">),</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;yl&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">y_name</span><span class="p">),</span>
+        <span class="n">x2</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X2</span><span class="p">(</span><span class="s1">&#39;xh&#39;</span><span class="p">),</span>
+        <span class="n">y2</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y2</span><span class="p">(</span><span class="s1">&#39;yh&#39;</span><span class="p">),</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;ϕ&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">joint_name</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">plot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Describing-random-variables">Describing random variables<a class="anchor-link" href="#Describing-random-variables"> </a></h1>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>No matter how we get to it, all the information we need about a random variable is contained within its mass or density function. But sometimes we don't need to know every detail. Sometimes we just want a summary. Maybe we just want to know how tall the factory is, so we know about what the average size of its products is. Or how wide the factory is, so we can get an idea of how varied the products are.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Expectation">Expectation<a class="anchor-link" href="#Expectation"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <strong>expectation</strong> (or <strong>expected value</strong> or <strong>mean</strong>) of a random variable is often said to describe its "average" product. But, as we'll see, that puts the cart before the horse: it's really averages that approximate expectations and not the other way around.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The expectation of a random variable is given by</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+E[\mathbf Z]
+=
+\int z\phi_{\mathbf Z}(z) dz
+\quad\quad
+E[\mathbf Z]
+=
+\sum z\phi_{\mathbf Z}(z)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>where the integral or sum are taken over the entire support of the random variable $\mathbf Z$, whatever it may be. The notation $E[\mathbf Z]$ is read as "expectation of $\mathbf Z$. Using brackets isn't strictly necessary but it helps remind us that $E$ is not a normal function that takes a number and gives us back a number- it's a function that takes a <em>random variable</em> and crunches it into a single number that somehow describes that random variable. And, remember the random variable $\mathbf Z$ is a function that takes an element $\omega$ (whatever it is) and gives us back a number. So the expectation is basically a function that maps functions to numbers (sometimes these are called <strong>functionals</strong>). If that seems weird to you, think of it this way: functionals (like expectation) just measure some quality of the factory itself, like its height.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you look at the formulas for expectation and don't see the connection to an "average" value, you're not alone. But let's look a little more closely. The average (or <strong>sample mean</strong>) of $n$ numbers $[z_1, z_2, \dots z_n]$ that we know from primary school is $\frac{1}{n} \sum z_i$: add all the numbers up and divide by how many of them there are. There's another way to compute the same thing, though. First, we find all of the unique values of $[z_1, z_2, \dots z_n]$. Say those are $[x_1, x_2, \dots x_m]$ where $m$ is the total number of unique values in $z$ (for instance, maybe $x_1 = z_{2} = z_{3} = z_{5}$, $x_2 = z_{1} = z_{4}$, and so on). Now we count how many elements of $z$ take on each of those unique values and save those numbers in a vector $[n_1, n_2, \dots n_m]$. That means there are $n_1$ $z$s with the value $x_1$, $n_2$ with the value $x_2$, etc. Now we can group up the elements in the sum:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\frac{1}{n} \sum z_i 
+= 
+\frac{1}{n} \left( \underset{\text{all }=x_1}{\underbrace{(z_{2} + z_3 + z_5)}} + \underset{\text{all }=x_2}{\underbrace{(z_{1} + z_4)}} + \dots \right)
+= 
+\frac{1}{n} (n_1x_1 + n_2x_2 + \dots n_mx_m)
+= 
+\sum x_j \frac{n_j}{n} 
+=
+\sum x_j p_j
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>where $p_j = n_j/n$ is the proportion of $z$s that take the value $x_j$. Check it out:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="c1"># np.mean() calculates the sample mean</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>4.0</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0 1 2 3 4 5 6 7 8 9] [3 2 2 2 3 2 1 1 3 1]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">n</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>4.0</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compare $\sum x_j p_j$ to $\sum z \phi(z)$. Instead of $\phi$ we have a $p$, but these are both proportions of some kind since $\phi(z) = P(Z=z)$ is the proportion of outcomes that lead to the realization $z$. The other difference is that the sum in $\sum x_j p_j$ is taken over all $x_j$, which are all the unique values of $z$, whereas $\sum z\phi_{\mathbf Z}(z)$ is taken over the support of $\mathbf Z$. But again, that's basically the same idea: the support of $\mathbf Z$ is precisely the set of all unique values that $\mathbf Z$ can take. The extension to the continuous case just replaces the sum with an integral.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's important not to confuse analogy or intuition with reality, though: the expectation and sample mean are not the same thing. If $z$ is a set of realizations from $\mathbf Z$, there is no guarantee that we will collect enough $z$s to span the entire support of $\mathbf Z$ (in the continuous case, we are guarenteed not to), and there is no guarantee that the $z$s will appear in proportions that are exact to $\phi$. The expectation is the sample mean of the data we <em>would</em> observe <em>if</em> we pushed every single outcome $\omega$ from $\Omega$ through $\mathbf Z$ exactly once, weighting each realization by how much volume its antecedent outcome takes up in the sample space. In fact, an alternative but equivalent definition of the expectation (when $\Omega$ is not continuous) makes this very clear:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+E[\mathbf Z]
+=
+\sum_\Omega \mathbf Z(\omega) \mathbb P(\omega)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When the sample space is discrete and finite, and if each of the $n$ possible outcomes $\omega$ takes up the same amount of space in the silo $\Omega$, we have $ \mathbb P(\omega) = 1/n$. That means</p>
+$$E[\mathbf Z] = \frac{1}{n} \sum_\Omega \mathbf Z(\omega)$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The connection between this and the sample mean should now be apparent to you.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Example">Example<a class="anchor-link" href="#Example"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll demonstrate using our old friend:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> <span class="c1"># factory (random variable)</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]):</span> <span class="c1"># these are the outcomes (nuggets) that map to the value 1 </span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]):</span> <span class="c1"># these are the outcomes (nuggets) that map to the value 0 </span>
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span> <span class="c1"># sample space (silo) of outcomes (ore nuggets) attached to Z</span>
+    
+<span class="k">def</span> <span class="nf">realize</span><span class="p">(</span><span class="n">rand_var</span><span class="p">):</span> <span class="c1"># run the assembly line!</span>
+    <span class="n">ω</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># grab a single nugget out of the silo at random</span>
+    <span class="k">return</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="c1"># push it through the factory</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We know the support of this random variable is $\{0,1\}$ (these are the only values it can take) and its mass function is $\phi(0) = 0.5$ and $\phi(1) = 0.5$. So $E[\mathbf Z] = \sum z\phi_{\mathbf Z}(z) = 0\phi(0) + 1\phi(1) = 0.5$. That's also what we get when we take the sample mean of the data we would see by pushing each element of $\Omega$ through $\mathbf Z$ exactly once:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="k">for</span> <span class="n">ω</span> <span class="ow">in</span> <span class="n">Z</span><span class="o">.</span><span class="n">Ω</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.5</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>But for a generic sample of realizations, we are not guaranteed to get the same answer:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">realize</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.55</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Succinctly: the sample mean is a property of a <em>particular dataset</em>. Expectation is a property of the <em>random variable</em>. The sample mean is like taking a bunch of iphones from a factory and asking what the average iphone is like. The expectation is like looking at the iphone blueprint. But, of course, we never do see the real factory, blueprint, or code, so expectation is ultimately just a (very important) tool to help us imagine what that real thing is like.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+In my example above, I took the mean of 20 realizations from $\mathbf Z$, but I could have just as easily taken the mean of 5 realizations, or of 1000. Repeat what I did for every number between 2 and 100. Make a scatterplot of the mean you calculate vs. how many realizations you took. What do you observe? Why does it make sense?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Expectation is sometimes also called the <strong>first moment</strong>, in analogy to the "first moment" of mass (center of mass) from physics. The word "moment" apparently used to mean "importance", so a "moment" is a way to describe an important feature of something. In physics, the first moment is the point at which an object can be balanced. So you can think of the expected value as the point along the x-axis at which you could hold up the distribution plot up with a finger and it wouldn't fall to either side.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For instance, have a look at the plot for this density I made up:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">ϕ</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="c1"># centers of the two triangles below</span>
+    <span class="n">ha</span><span class="p">,</span><span class="n">hb</span> <span class="o">=</span> <span class="mi">9</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="c1"># heights of the two triangles below</span>
+    <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">a</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="n">ha</span><span class="o">/</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">ha</span>
+    <span class="k">elif</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">ha</span><span class="o">/</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="n">hb</span><span class="o">/</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">z</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">hb</span><span class="o">/</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">hb</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">ϕ</span><span class="p">(</span><span class="n">zi</span><span class="p">)</span> <span class="k">for</span> <span class="n">zi</span> <span class="ow">in</span> <span class="n">z</span><span class="p">]</span>
+
+<span class="n">distribution</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="n">p</span><span class="p">})</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="n">rule</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="o">.</span><span class="n">mark_rule</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;mean:Q&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">transform_calculate</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="n">density</span> <span class="o">+</span> <span class="n">rule</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/3_distribution_properties_32_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The mean of this distribution is $z=0$, which is illustrated with the red line. As you can see, there is actually a lot more mass to the left of the mean than there is to the right, but 0 is the point at which the distribution would be "balanced" on your finger (the "halfway point" of the mass is called the <strong>median</strong>). This picture also illustrates that the expected value is not value with the highest $\phi(z)$ (that's called the <strong>mode</strong>). In this case, the probability of getting the expected value relative to any other value is actually 0 because $\phi(0) = 0$! There is nothing "expected" about the expected value here since it's not even a value $\mathbf Z$ could produce! But the same thing holds for the more-familiar sample average: the average number of children in a US family may be 2.3, but no family actually has 2.3 children. Averages need not be average.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Verify that the mean of the above density is indeed 0. Use WolframAlpha to calculate any annoying integrals.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Multivariable-Expectation">Multivariable Expectation<a class="anchor-link" href="#Multivariable-Expectation"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Expectation also works in the multivariate setting. If $\mathbf Z = [\mathbf Z_1, \mathbf Z_2]$, then the expected value is</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+E[\mathbf Z]
+=
+\int z\phi_{\mathbf Z}(z) dz
+= 
+\int \int 
+\left[ 
+\begin{array}{c}
+z_1 \\ z_2
+\end{array}
+\right]
+\phi_{\mathbf Z_1, \mathbf Z_2}(z_1, z_2) 
+dz_1 dz_2
+=
+\left[
+\begin{array}{c}
+\int \int z_1 \phi_{\mathbf Z_1, \mathbf Z_2}(z_1, z_2) dz_1 dz_2 \\
+\int \int z_2 \phi_{\mathbf Z_1, \mathbf Z_2}(z_1, z_2) dz_1 dz_2
+\end{array}
+\right]
+=
+\left[
+\begin{array}{c}
+\int z_1 \int \phi_{\mathbf Z_1, \mathbf Z_2}(z_1, z_2) dz_2 dz_1 \\
+\int z_2 \int  \phi_{\mathbf Z_1, \mathbf Z_2}(z_1, z_2) dz_1 dz_2
+\end{array}
+\right] 
+=
+\left[
+\begin{array}{c}
+\int z_1 \phi_{\mathbf Z_1}(z_1) dz_1 \\
+\int z_2 \phi_{\mathbf Z_2}(z_2) dz_2
+\end{array}
+\right] 
+= 
+\left[
+\begin{array}{c}
+E[\mathbf Z_1] \\
+E[\mathbf Z_2]
+\end{array}
+\right]
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>where the integrals are replaced by the appropriate sums in the discrete case. The derivation is a bit of a mess with all of the notation, but there's nothing too complicated going on. All we did was define integration over vectors, switch the order of integration, and use the definnition of the marginal density. The end result is that the expectation of a vector-valued random variable is the vector of expectations of each component (marginal) random variable.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Example">Example<a class="anchor-link" href="#Example"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll find the mean of the discrete joint variables $\mathbf V_1$ and $\mathbf V_2$ that we were working with previously. Here is the joint again:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span> <span class="c1"># v1, v2 in {0,1,2,..9}</span>
+    <span class="n">P_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+      <span class="p">[[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">28.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">35.</span><span class="p">,</span> <span class="mf">27.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">38.</span><span class="p">,</span> <span class="mf">39.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">37.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">43.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span> <span class="mf">35.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">47.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">36.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="mf">44.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">P_raw</span><span class="p">[</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P_raw</span><span class="p">)</span> <span class="c1"># need to make it so that Σ p_ij = 1 so that this is a valid mass function</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here's the calculation of the mean:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vj</span><span class="p">)</span> <span class="k">for</span> <span class="n">vj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))]</span> <span class="c1"># all the possible combinations of (v1, v2)</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)])</span>
+
+<span class="n">EV</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1</span><span class="o">*</span><span class="n">prob</span><span class="p">,</span> <span class="n">v2</span><span class="o">*</span><span class="n">prob</span><span class="p">])</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">prob</span><span class="p">))</span>
+<span class="n">EV</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([4.604, 4.561])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here's the joint density with the mean plotted on it:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">v1</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span><span class="n">v2</span><span class="p">,</span> <span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">prob</span><span class="p">})</span>
+<span class="n">density_plot</span> <span class="o">=</span> <span class="n">density_2d</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_name</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">y_name</span><span class="o">=</span><span class="s1">&#39;v2&#39;</span><span class="p">,</span> <span class="n">joint_name</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">EV_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;EV1&#39;</span><span class="p">:[</span><span class="n">EV</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="s1">&#39;EV2&#39;</span><span class="p">:[</span><span class="n">EV</span><span class="p">[</span><span class="mi">1</span><span class="p">]]})</span>
+<span class="n">mean_plot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">EV_df</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;EV1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;EV2&#39;</span><span class="p">)</span>
+<span class="n">density_plot</span> <span class="o">+</span> <span class="n">mean_plot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/3_distribution_properties_46_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Conditional-Expectation">Conditional Expectation<a class="anchor-link" href="#Conditional-Expectation"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can take the expected value of any random variable, including conditioned random variables. For instance, if we have $\mathbf Z_1$ and $\mathbf Z_2$, then $E[\mathbf Z_1 | \mathbf Z_2=z_2]$ is the expected value of $\mathbf Z_1$ when $\mathbf Z_2$ is $z_2$. That's a single number.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Using $\mathbf V_1$ and $\mathbf V_2$ as in the example above, write code to compute $E[\mathbf V_2 | \mathbf V_1 = 7]$. It may help to first compute the necessary marginal and conditional mass functions as I did in the previous section. The value I get is about 3.304.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What's more interesting is when we look at how $E[\mathbf Z_1 | \mathbf Z_2=z_2]$ changes as we change $z_2$. We can think of the conditional mean as a function of $z_2$:</p>
+$$\mu_{\mathbf Z_1}(z_2) = E[\mathbf Z_1 | \mathbf Z_2=z_2]$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's look at an example using the discrete density we've been working with:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">marginal_V1</span><span class="p">(</span><span class="n">v1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+    
+<span class="k">def</span> <span class="nf">V2_given_V1_is_v1</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="n">marginal_V1</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">μ_V2</span><span class="p">(</span><span class="n">v1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v2</span><span class="o">*</span><span class="n">V2_given_V1_is_v1</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">E_V2_given_V1</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu_V2</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">E_V2_given_V1_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="s1">&#39;μ&#39;</span><span class="p">:</span><span class="n">E_V2_given_V1</span><span class="p">})</span>
+<span class="n">mean_plot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">E_V2_given_V1_df</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;μ&#39;</span><span class="p">)</span>
+<span class="n">density_plot</span> <span class="o">+</span> <span class="n">mean_plot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/3_distribution_properties_53_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What we've done is take the expected value within each "column", plotted it as a red dot, and then connected the dots. That's all the conditional mean is. The idea is the same with continuous densities, except the "columns" are replaced with infinitesimal slices of the joint distribution. A little harder to conceptualize, and harder to code clearly, but the idea is exactly the same.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is pretty nifty and clearly relevant to our machine learning problem with $\mathbf X$ and $\mathbf Y$. If you give me a value that you observed from $\mathbf X$ (which is $x$), and I have the function $\mu_{\mathbf Y}$, then I can give you the value that I "expect" that $\mathbf Y$ had by computing $\mu_{\mathbf Y}(x)$. That is a prediction for $y$! Of course, we don't know what the joint distribution of $\mathbf X$ and $\mathbf Y$ is, or even just the conditional distribution of $\mathbf Y|\mathbf X = x$, so we can't compute $\mu_{\mathbf Y}$. But at least we've boiled down the question to figuring out what $\mu_{\mathbf Y}$ might be by looking at a bunch of data.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+So far we've only considered distributions that are either entirely discrete or entirely continuous, but it's totally possible to have mixed distributions. For instance, we might imagine a fruit-generating factory where the type of fruit is discrete, but the size of the fruit is a continuous value. 
+
+Let's say $\mathbf X$ is a continuous random variable that is uniformly distributed between 0 and 1 and $\mathbf Y$ is a discrete random variable that can only be 0 or 1. Let's say this is the conditional mass function:
+
+$$
+\phi_{\mathbf Y|\mathbf X=x}(y) 
+=
+\begin{cases}
+x & \text{for } y=1 \\
+1-x & \text{for } y=0
+\end{cases}
+$$
+
+To wrap your head around this, first see if you can use this conditional mass to compute $P(\mathbf Y=1|\mathbf X=0.3)$.
+
+What is $E[\mathbf Y|\mathbf X = 0.3]$? What is $\mu_{\mathbf Y}(x) = E[\mathbf Y|\mathbf X = x]$ for an arbitrary value of $x$?
+
+I told you what the marginal density of $\mathbf X$ was, so in theory you could compute the joint (recall $\phi_{\mathbf X, \mathbf Y} = \phi_{\mathbf Y|\mathbf X} \phi_{\mathbf X}$). But does your answer depend on it in any way above and beyond what the conditional distribution tells you?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The upshot of this is that maybe we don't have to care about figuring out what the whole joint density $\phi_{\mathbf Y, \mathbf X}(x,y)$ is to make useful predictions. Maybe all we need is $\phi_{\mathbf Y|\mathbf X=x}(y)$, or, better yet, $\mu_{\mathbf Y}(x)$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Explain in your own words why guessing the joint density $\phi_{\mathbf Y, \mathbf X}(x,y)$ might be more work than guessing the conditional density $\phi_{\mathbf Y|\mathbf X=x}(y)$, which might be more work than guessing the conditional mean $\mu_{\mathbf Y}(x)$. Relative to each other, how much information about the whole data-generating factory is contained in each of these functions? Can two distributions of $\mathbf X$ and $\mathbf Y$ with the same conditional mean have different conditional densities, and vice versa? Can two distributions with the same conditional density have different joint densities, and vice versa?  
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Rules-for-Expectation">Rules for Expectation<a class="anchor-link" href="#Rules-for-Expectation"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can always compute an expectation from a probability distribution. But sometimes it's hard to write out the distriubtion in question if it's some kind of transformation of random variables. Thankfully, though, there are ways to compute the expected value directly from the random variable and the transformation without having to compute the distribution of the transformed random variable.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Sums-of-random-variables">Sums of random variables<a class="anchor-link" href="#Sums-of-random-variables"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One important example of this is with sums of random variables. Let's say $\mathbf Z = \mathbf V + \mathbf U$. It turns out that</p>
+$$E[\mathbf Z] = E[\mathbf V] + E[\mathbf U]$$<p>Let's see why. The hardest part of this is at the beginning:</p>
+$$E[\mathbf Z] = \int z \phi_{\mathbf Z}(z) dz = \int \int (u+v) \phi_{\mathbf V, \mathbf U}(u,v) du dv$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I was very confused by this when I first saw it. Don't we need to figure out what $\phi_{\mathbf Z}$ is in terms of $\phi_{\mathbf U, \mathbf V}$? We could definitely do that, but it turns out we don't have to.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>linearity: sum of RVs, product with scalar</li>
+<li>transformation: lazy statistician</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Variance">Variance<a class="anchor-link" href="#Variance"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/probability/2_multivariate_prob.html">
+      〈 <span class="u-margin-right-tiny"></span> Multivariate Prob
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/CSL/grad-descent/grad-descent.html">
+      Fitting Models with Gradient Descent <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
