@@ -1,0 +1,2894 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Fitting Models with Gradient Descent</title>
+  <meta name="description" content="        Fitting Models with Gradient Descent    Gradient descent and its cousins are the core of many machine learning methods. Building a predictive model b...">
+
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/grad-descent/grad-descent.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
+
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/grad-descent/grad-descent.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Fitting Models with Gradient Descent" />
+<meta property="og:description" content="        Fitting Models with Gradient Descent    Gradient descent and its cousins are the core of many machine learning methods. Building a predictive model b..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/grad-descent/grad-descent.html",
+  "headline": "Fitting Models with Gradient Descent",
+  "datePublished": "2020-02-18T14:45:27-08:00",
+  "dateModified": "2020-02-18T14:45:27-08:00",
+  "description": "        Fitting Models with Gradient Descent    Gradient descent and its cousins are the core of many machine learning methods. Building a predictive model b...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://alejandroschuler.github.io/CSL",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://alejandroschuler.github.io/CSL",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/CSL/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/CSL/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/CSL/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/CSL/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/CSL';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/CSL/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/CSL/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/CSL/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/CSL/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/CSL/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/CSL/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/CSL/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/CSL/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: "content/grad-descent"
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/grad-descent/grad-descent">
+        <a class="c-sidebar__entry"
+          href="/CSL/grad-descent/grad-descent.html"
+        >
+          
+            1.
+          
+          Fitting Models with Gradient Descent
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linreg-dl-torch/intro">
+        <a class="c-sidebar__entry"
+          href="/CSL/linreg-dl-torch/intro.html"
+        >
+          
+            2.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg.html"
+              >
+                
+                  2.1
+                
+                Linear Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/logistic-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/logistic-reg.html"
+              >
+                
+                  2.2
+                
+                Logistic Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg-complex">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg-complex.html"
+              >
+                
+                  2.3
+                
+                Adding Complexity
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/abstracting-layers">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/abstracting-layers.html"
+              >
+                
+                  2.4
+                
+                Abstracting our Code
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        <a href="/CSL/content/grad-descent/grad-descent.ipynb" download>
+        <button id="interact-button-download" class="interact-button">.ipynb</button>
+        </a>
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+  
+  
+  
+  
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/CSL/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/CSL/search.html" class="topbar-right-button" id="search-button">
+    <img src="/CSL/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Fitting Models with Gradient Descent</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Gradient descent and its cousins are the core of many machine learning methods. Building a predictive model boils down to searching for some version of the model that best fits the data. But what do we mean by a "version" of the model and "fit"? And, once we make those concepts concrete, how do we find that best model? Let's dig in.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Motivation:-Linear-Regression">Motivation: Linear Regression<a class="anchor-link" href="#Motivation:-Linear-Regression"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Data-and-setup">Data and setup<a class="anchor-link" href="#Data-and-setup"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's say we observe $n$ patients in a hospital, each of whom has measurements of their pre-treatment blood pressure, heart rate, etc. and also their corresponding blood pressure after taking a drug. For a new patient who walks in the door, given their current vital signs, can we predict their post-treatment blood pressure?</p>
+<p>The data for this kind of problem is most often formulated as vectors and matrices. We usually say that the $i$th patient's pre-treatment values are $x_i = [x_{i1}, x_{i2} \dots x_{ip}]$, so $x_{i1}$ is patient $i$'s pre-treatment blood pressure, $x_{i2}$ is their heart rate, etc. We also usually call the post-treatment blood pressure measurement for each patient $y_i$. So our goal is to predict $y_i$ from $x_i$ for a new patient who walks in the door.</p>
+<p>Now we can stack up all the measurements for all the patients like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+X = \left[
+\begin{array}{cccc}
+x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1p} \\
+x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2p} \\
+\vdots &amp; &amp; \ddots &amp; \vdots \\
+x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{np} 
+\end{array}
+\right] = 
+\left[
+\begin{array}{cccc}
+-3.2 &amp; 28 &amp; \cdots &amp; 66 \\
+8 &amp; 22 &amp; \cdots &amp; 6.8 \\
+\vdots &amp; &amp; \ddots &amp; \vdots \\
+0.54 &amp; 10 &amp; \cdots &amp; 13 
+\end{array}
+\right]
+\quad\quad
+y = 
+\left[
+\begin{array}{c}
+y_1 \\ y_2 \\ \vdots \\ y_n
+\end{array}
+\right] 
+= 
+\left[
+\begin{array}{c}
+3.3 \\ 21.2 \\ \vdots \\ -9.97
+\end{array}
+\right] 
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We used pre-treatment vitals and post-treatment blood pressure as the predictors (or features) and outcome (or target) in our example, but this is the way we usually think of the data, no matter what the predictors and outcome are.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Predicting">Predicting<a class="anchor-link" href="#Predicting"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are an infinite number of strategies we could use to try and guess what the relationship between $y_i$ and $x_i$ might be. We're going to presume that there is some relationship $y_i = f(x_i)$, and we want to figure out what $f$ is. You can think of the "real" $f$ as the function that the gods use to decide what a patient's blood pressure will be after treatment, given that the pre-treatment vitals were $x_i$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we don't know what $f$ is, we're going to try and guess. To make our job easier, we'll assume $f$ is a linear function of the form $x_i \beta + \alpha$. Our problem now reduces to guessing what the right $\alpha$ and $\beta$ are.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-danger">
+<b>WARNING:</b> Saying $f$ is linear (or of some other form) when it's really not is called <i>model misspecification</i>. We never know for sure the form that $f$ has, so in reality our models are almost always misspecified. If we only use the model for <i>prediction</i>, misspecification  doesn't invalidate the approach, it just means that the predictions won't be as accurate as they otherwise could be. On the other hand, if the model is used for <i>inference</i> (i.e. to estimate the effect of a variable on the outcome, with p-values, confidence intervals, etc.), then misspecification often invalidates the result. Be aware of this distinction.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's play god and simulate some data where a linear relationship actually does hold between $x_i$ and $y_i$ (and let's <a href="https://github.com/jupyter/jupyter/issues/327">use neat unicode symbols</a> in our code!):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">to_array</span><span class="p">(</span><span class="n">β</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">β</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">β</span><span class="p">])</span> <span class="c1"># handle the case where user passes in a single number</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">β</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">β</span><span class="p">)</span> <span class="c1"># handle the case where user passes in a list</span>
+    <span class="k">return</span> <span class="n">β</span>
+
+<span class="k">def</span> <span class="nf">simulate_linear</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">α</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">σ</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">β</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">β</span><span class="p">)</span> <span class="c1"># number of predictors we want</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">ϵ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">σ</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="c1"># random noise</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">α</span> <span class="o">+</span> <span class="n">X</span><span class="nd">@β</span> <span class="o">+</span> <span class="n">ϵ</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">simulate_linear</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">α</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">12</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ok, now let's go back to being mere mortals. All we see are the data $X$ and $y$. We don't know for sure that the relationship is linear, and much less what $\alpha$ and $\beta$ were. But we're going to take a leap of faith and pretend it's linear. The worst that happens is our predictions won't be very good.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now all we need to do is find some values $\beta = [\beta_1, \dots \beta_p]^T$ and $\alpha$ so that $y_i \approx  x_i \beta + \alpha$ for all observed $y_i$ and $x_i$ in the data. That is, we need to find the values that make the model best "fit" the data. Once we have those best values, we can feed the vitals of a new patient $x_i$ into the formula $x_i \beta + \alpha$ to guess what their blood pressure $y_i$ will be. We often call the estimate $\hat y_i = x_i \beta + \alpha$. This whole process is called linear regression, which many of you are likely familiar with.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can set up a little <code>LinearModel</code> class in python that encapsulates what we've said so far.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">LinearModel</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">α</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">α</span> <span class="o">=</span> <span class="n">α</span> <span class="c1"># these are the &quot;parameters&quot; of the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">β</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">β</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">α</span> <span class="o">+</span> <span class="n">X</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">β</span> <span class="c1"># returns ŷ</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And we can test it out:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="p">[</span><span class="mf">1.1</span><span class="p">,</span><span class="o">-</span><span class="mi">33</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span> <span class="c1"># make a model with these coefficients</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;ŷ = {model.predict(X[0:5,:])}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;y = </span><span class="si">{y[0:5]}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>ŷ = [-16.82418122 -21.34641851 -17.74430885 -25.26176827 -10.44248974]
+y = [ 5.21094395 10.40076584  2.31874359  2.48774792  7.93600976]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Make a scatterplot of the $\hat y_i$ values (x-axis) against the corresponding $y_i$ values (y-axis) that are calculated in this code. You can read this plot as "when we predict $\hat y$, the real values are usually around $y$". What do you see in the plot? What would signify a "good" model? Change the values of $\alpha$ and $\beta$ and see how the plot changes.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Obviously the predictions look very far off since we picked the values of $\alpha$ and $\beta$ at random</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The question is: how do we find $\beta$ and $\alpha$ so that $y_i \approx  x_i \beta + \alpha$?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Defining-a-Loss">Defining a Loss<a class="anchor-link" href="#Defining-a-Loss"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first thing to do is quantitatively define what we mean by "$\approx$". We need a rule that tells us how good our approximation $\hat y_i$ is if the real blood pressure is $y_i$. We call that rule a <em>loss function</em> (sometimes also <em>cost</em> or <em>objective</em>). The loss tells us how much we "lose" by approximating $y_i$ with whatever value $\hat y_i$ is. Ultimately that depends on what's important in the problem at hand, but often we default to using the squared-error loss function: $(y_i -  \hat y_i)^2$ The intuition is simple: all we're doing is subtracting the estimate from the real value and squaring the result to make positive and negative deviations equal in penalty. So estimates that are numerically far from the truth are penalized higher, regardless of which direction they are off.</p>
+<p>To calculate the loss over the whole dataset (instead of just one individual $i$), we average the losses across each individual: $\frac{1}{n}\sum_i (y_i -  \hat y_i)^2$. This is called <em>mean-squared error</em> (MSE) loss. In python:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ŷ</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we have a concrete notion of "$\approx$": the lower the loss when using the estimate $\hat y$, the better the approximation. So what we need to do is find the estimate that minimizes the loss.</p>
+<p>If we plug in $\hat y_i = x_i \beta + \alpha$, what we're looking for are values of $\alpha$ and $\beta$ that minimize the loss $\frac{1}{n} \sum_i(y_i - (x_i\beta + \alpha))^2$. So although we introduced the loss as a function of the truth $y_i$ and the estimate $\hat y_i$, we can look at it instead as a function of the parameters $\alpha$ and $\beta$: $L(\alpha, \beta) = \frac{1}{n} \sum_i(y_i - (x_i\beta + \alpha))^2$. The parameters are the only thing we can actually control to change the loss since $x_i$ and $y_i$ are just constants that are determined by the observed data.</p>
+<p>So how do we find the $\alpha$ and $\beta$ that minimize the loss?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Intuition:-Turning-the-knobs">Intuition: Turning the knobs<a class="anchor-link" href="#Intuition:-Turning-the-knobs"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I find it useful to think about optimization problems in the following way: we have a complicated machine that makes an obnixous racket when it runs. Thankfully, the machine has a control panel with a bunch of knobs that together might increase or decrease the horrible noise.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/TASCAM_M-520_knobs.jpg" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We don't know what position of the knobs produces the quietest running conditions, but by twisting them to a particular configuration, we can hear how noisy the machine is in that configuration.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In our analogy, the knobs are the <em>parameters</em> of our model ($\alpha$ and $\beta$ in our example above), the machine is the loss function composed with the prediction equation, and the volume of the noise is the value of the loss function at a particular setting of the parameters $L(\alpha, \beta)$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can also visualize the loss as a surface. The horizontal axes correspond to the values of the parameters, while the vertical axis corresponds to the value of the loss at that set of parameter values. So when you're twisting each knob clockwise or counterclockwise, you're moving either right or left along one of the horizontal axes. The corresponding noise level of the machine is given by the height of the surface at that point.</p>
+<p><img src="https://waveopt-lab.uic.edu/wp-content/uploads/2016/07/nonconvex.jpg" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The optimum point that we're looking for is the value of the parameters that minimizes the loss- so the lowest point on the surface. If there are more than two parameters ($p&gt;2$), there will be more than two "horizontal" axes and it is no longer possible to visualize this surface, but you can still think about it basically the same way. There is some "lowest point" on a surface in $p+1$-dimensional space, which is the configuration of the $p$ knobs that makes the machine run as quietly as possible.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In general, we'll call the set of $p$ parameters $\theta = [\theta_1, \dots \theta_p]^T$ (these are our "knobs") and we'll call the loss function $L$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Don't confuse the surface of the loss function $L(\alpha, \beta)$ with the "surface" of the regression function $f_{\alpha, \beta}(x) = \alpha + x\beta$. When most people think about linear regression, the first thing that comes to mind is a line going through some points on a scatterplot (or a "plane" going through a "cloud" of points in higher dimensions)- that's $f_{\alpha, \beta}(x)$, for some particular values of $\alpha$ and $\beta$. But it's actually much more useful to think about the loss surface, which tells us how good each potential model is:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_full_width">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="images/loss_didactic.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this figure we see three different lines fit through the same set of points. Each of those is a different regression function $f_{\alpha, \beta}$, which is uniqely identified by the values of $\alpha$, $\beta$ used to draw the line. In higher dimensions, these would be "surfaces" that map a value of $x$ to a prediction $\hat y$. Each of these are <em>regression surfaces</em>, not the loss surface. What the loss function does is assign a value $L$ to <em>each</em> of those surfaces (regression functions). Since each regression function is uniquely identified by its parameters, we can thus think of the loss as assigning a value $L$ to each set of parameters.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Instead of going through the trouble of finding a good $\alpha$ and $\beta$ for the data show in the scatterplot above, what if we just predict the average observed outcome for any future observations? In other words, let's use the prediction equation $\hat y = \hat f(x) = \frac{1}{n} \sum_i x_i = \bar x$. Well, that's actually the same as saying $\alpha=\bar x$ and $\beta =0$. 
+
+Looking at the scatterplot, let's say $\bar x = 0$. In your head, add a facet to the plot (above center) with the line corresponding to this model drawn through it. Looking at that in your mind's eye, do you think it's a particularly good model compared to the other ones shown here? What about compared to a model with $\alpha=200$ and $\beta=0$? Draw a dotted line in your head mapping these models to where they fall in the parameter space (above right). How does the loss function feel about these two models? Does it agree with your intuition?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Optimization-by-Random-Search">Optimization by Random Search<a class="anchor-link" href="#Optimization-by-Random-Search"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One way to try and find a "good-enough" value of $\theta$ is to try lots of different values at random and pick whichever happens to produce the lowest loss. Let's try it out.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, for purposes of this demonstration, let's simplify the problem. We'll work in a setting where $X$ has only one column, meaning that $\beta$ is a scalar value and not a vector. That means our linear model has only two parameters, $\alpha$, and $\beta$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">simulate_linear</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">α</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">σ</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span> <span class="c1"># remember, in reality we don&#39;t know what these numbers actually are</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">αs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">βs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">guess</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">α</span> <span class="o">=</span> <span class="mi">200</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">100</span> <span class="c1"># guess α is a number between -100 and 100</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="mi">200</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">100</span> <span class="c1"># guess β is a number between -100 and 100</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+    
+    <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span> <span class="c1"># .item() extracts the value out of the 1x1 array into a float</span>
+    <span class="n">αs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">α</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">βs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">β</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+<span class="n">random_guess_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;α&#39;</span><span class="p">:</span><span class="n">αs</span><span class="p">,</span> <span class="s1">&#39;β&#39;</span><span class="p">:</span><span class="n">βs</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="n">losses</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">random_guess_data</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;α&#39;</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;β&#39;</span><span class="p">,</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/grad-descent/grad-descent_44_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here I've plotted each of our guesses $(\alpha, \beta)$ and the value of the loss at that point (in color).</p>
+<p>All we need to do is sort all the guesses in order of their loss and pick the ones that attained the lowest loss:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">best_guess</span> <span class="o">=</span> <span class="n">random_guess_data</span><span class="p">[</span><span class="n">random_guess_data</span><span class="o">.</span><span class="n">loss</span> <span class="o">==</span> <span class="n">random_guess_data</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+<span class="n">best_guess</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>α</th>
+      <th>β</th>
+      <th>loss</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>16</th>
+      <td>-1.104534</td>
+      <td>-11.038691</td>
+      <td>65.723612</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the best-fit model out of all our random guesses. Let's plot it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">best_model</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="o">=</span><span class="n">best_guess</span><span class="p">[</span><span class="s1">&#39;α&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> 
+                         <span class="n">β</span><span class="o">=</span><span class="n">best_guess</span><span class="p">[</span><span class="s1">&#39;β&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+<span class="n">ŷ</span> <span class="o">=</span> <span class="n">best_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">ŷ</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="o">+</span> \
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/grad-descent/grad-descent_49_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Wow, it totally sucks.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Unfortunately there is no guarentee that we will hit any point that's close to the optimum using random guesses. We could increase the number of guesses we make, but the more guesses, the longer it takes. The problem is exacerbated in higher-dimensional spaces because a fixed number of guesses covers less "volume" the more dimensions there are, so it's even harder to find points near the optimum. And even if a guess is very near the optimal value, the loss function may be very sensitive so that even a small distance away in terms of parameters translates to a big difference in terms of the loss. Another issues is that we had to pre-specify a range of values to search over- what if the optimal values weren't contained in that range? In problems with a single feature, we can easily plot the data to see what a range of plausible $\beta$s or $\alpha$s might be, but in higher dimensions this is impossible.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Gradient-Descent">Gradient Descent<a class="anchor-link" href="#Gradient-Descent"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's go back to our knobs. What if we try this strategy:</p>
+<ol>
+<li>start with the knobs in a random configuration</li>
+<li>fiddle each knob a tiny amount in both directions and record which direction decreases the output and by how much</li>
+<li>turn each knob in the direction that decreased the output by an amount proportional to how much the output decreased during the fiddling</li>
+<li>Repeat 1 and 2</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Mathematically, that translates to this:</p>
+<ol>
+<li>initialize $\theta$ to some random value $\theta_0$</li>
+<li>calculate $\frac{\partial L}{\partial \theta}$</li>
+<li>set $\theta$ to $\theta - \epsilon \frac{\partial L}{\partial \theta}$</li>
+<li>repeat 1 and 2</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's break down the math a little bit.</p>
+<p>First off, why does $\frac{\partial L}{\partial \theta}$ represent how much the loss changes when fiddling the knob a tiny amount? Well, because that's actually the definition of the derivative: $\frac{\partial L}{\partial \theta} = \underset{\delta \rightarrow 0}{\lim} \frac{L(\theta + \delta) - L(\theta)}{\delta}$. That is precisely how much the loss increases ($L(\theta + \delta) - L(\theta)$) as we fiddle the $\theta$ knob an tiny amount $\delta$ to the right, per the amount we move it.</p>
+<p>If the derivative is positive, then the loss is increasing as $\theta$ is increasing, so we want to decrease $\theta$ in order to lower the loss. By the same logic, if the derivative is negative, then we want to increase theta. That's why there's a minus sign in the update that sets $\theta$ to $\theta - \epsilon \frac{\partial L}{\partial \theta}$.</p>
+<p>As for the $\epsilon$, that's just a constant called the <em>learning rate</em> that mediates how big of a step we take (an overall multiplier on how much we turn all the knobs in proportion to their derivatives). We'll talk more about this later.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The great thing about using the derivative instead of manually "fiddling the knobs" is that we don't even have to touch the knobs to know which direction we need to twist them in! If we have analytically derived the function $L_\theta'(\theta) = \frac{\partial L}{\partial \theta}$, all we need to do is plug in the current value of $\theta$ to get back how much we need to twist that "knob" and in what direction.</p>
+<h3 id="An-example">An example<a class="anchor-link" href="#An-example"> </a></h3><p>Let's demonstrate by going back to our example. Our model is $\hat y_i = \alpha + x_i\beta$ and our loss is $L(y,\hat y) = \frac{1}{n}\sum_i (y_i - \hat y_i)^2$, so plugging in $\hat y$ we end up with this optimization problem:</p>
+$$\rightarrow \text{ Find } \alpha, \beta \text{ to minimize }\frac{1}{n} \sum_i (y_i - (\alpha + x_i\beta))^2 = L(\alpha, \beta)$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first step is to analytically calculate the derivatives with respect to each parameter. To get these, we can use the <a href="https://en.wikipedia.org/wiki/Differentiation_rules">chain rule and sum rule</a>.</p>
+$$\frac{\partial L}{\partial \alpha} = \frac{1}{n} \sum_i -2 (y_i - (\alpha + x_i\beta))$$$$\frac{\partial L}{\partial \beta} = \frac{1}{n} \sum_i -2 (y_i - (\alpha + x_i\beta))x_i$$<p>It's important to clarify that these derivatives themselves are functions of the parameters. How much the noise level will change when twisting a knob a little bit to the right depends (in general) on the current position of that knob and of all the other knobs.</p>
+<div class="alert alert-block alert-warning">
+<b>STOP:</b> 
+Review the rules of differentiation and try to calculate these derivatives for yourself if it's not obvious to you how we got here. <a href="https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new/ab-3-1a/v/chain-rule-introduction">These videos give a helpful overview</a>.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we have something we can code up in python:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">dL_dα</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">):</span> <span class="c1"># derivative of the MSE loss with respect to alpha, evaluated at (alpha, beta)</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">β</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">α</span> <span class="o">+</span> <span class="n">X</span><span class="nd">@β</span><span class="p">)))</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">dL_dβ</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">):</span> <span class="c1"># derivative of the MSE loss with respect to , evaluated at (alpha, beta)</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="n">to_array</span><span class="p">(</span><span class="n">β</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">α</span> <span class="o">+</span> <span class="n">X</span><span class="nd">@β</span><span class="p">))</span><span class="o">*</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And now let's implement our gradient descent algorithm:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ϵ</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="c1"># learning rate</span>
+<span class="n">α</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">α</span> <span class="o">=</span> <span class="n">α</span> <span class="o">-</span> <span class="n">ϵ</span><span class="o">*</span><span class="n">dL_dα</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="n">β</span> <span class="o">-</span> <span class="n">ϵ</span><span class="o">*</span><span class="n">dL_dβ</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the final position of the knobs that we've arrived at:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">α</span><span class="p">,</span> <span class="n">β</span> <span class="c1"># final values</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(0.11648378481846286, 0.8854581898649715)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's see what this model looks like:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+<span class="n">ŷ</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">ŷ</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="o">+</span> \
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/grad-descent/grad-descent_65_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Nailed it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can also improve the algorithm a little bit by repeating the loop until the loss is no longer quickly decreasing, instead of just looping 1000 times. Let's also record all of the parameter values and losses through the iterations so we can see what's going on.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ϵ</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># learning rate</span>
+<span class="n">tol</span> <span class="o">=</span> <span class="mf">0.00001</span> <span class="c1"># tolerance</span>
+<span class="n">α</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="c1"># initial guess</span>
+<span class="n">old_loss</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="n">losses</span><span class="p">,</span> <span class="n">βs</span><span class="p">,</span> <span class="n">αs</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">while</span> <span class="n">old_loss</span> <span class="o">-</span> <span class="n">loss</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+    <span class="n">α</span> <span class="o">=</span> <span class="n">α</span> <span class="o">-</span> <span class="n">ϵ</span><span class="o">*</span><span class="n">dL_dα</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="n">β</span> <span class="o">-</span> <span class="n">ϵ</span><span class="o">*</span><span class="n">dL_dβ</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+    <span class="n">old_loss</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">,</span> <span class="n">mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+    <span class="n">βs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">β</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">αs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">α</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+<span class="n">loss_params_trajectory</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="n">αs</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="n">βs</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span><span class="n">losses</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can use this information to plot the trajectory of the parameters. To put it into context, we'll also brute-force calculate the value of the loss function for a grid of values around the trajectory so we can overlay the trajectory on the loss surface. Don't worry about this code- focus on the picture.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+<span class="n">αs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">αs</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">αs</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">αs</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">αs</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">αs</span><span class="p">)</span><span class="o">/</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">βs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">βs</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">βs</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">βs</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">βs</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">βs</span><span class="p">)</span><span class="o">/</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">αs</span><span class="p">,</span> <span class="n">βs</span><span class="p">))</span>
+<span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span> 
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">)</span>
+<span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="n">b</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span><span class="n">L</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="n">R</span> <span class="o">-</span><span class="n">i</span> <span class="n">loss_df</span><span class="p">,</span><span class="n">loss_params_trajectory</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">viridis</span><span class="p">)</span>
+
+<span class="n">plot</span> <span class="o">=</span> <span class="n">loss_df</span> <span class="o">%&gt;%</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">b</span><span class="p">))</span> <span class="o">+</span>
+    <span class="nf">geom_raster</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="n">L</span><span class="p">))</span> <span class="o">+</span> 
+    <span class="nf">geom_contour</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">L</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;grey&#39;</span><span class="p">)</span> <span class="o">+</span>
+    <span class="nf">scale_fill_viridis</span><span class="p">()</span> <span class="o">+</span>
+    <span class="nf">geom_segment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">loss_params_trajectory</span><span class="p">,</span> 
+                 <span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">xend</span><span class="o">=</span><span class="nf">lead</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">yend</span><span class="o">=</span><span class="nf">lead</span><span class="p">(</span><span class="n">b</span><span class="p">)),</span>
+                 <span class="n">color</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span><span class="p">,</span>
+                 <span class="n">arrow</span> <span class="o">=</span> <span class="nf">arrow</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="nf">unit</span><span class="p">(</span><span class="m">0.2</span><span class="p">,</span><span class="s">&quot;cm&quot;</span><span class="p">),</span> 
+                             <span class="n">type</span> <span class="o">=</span> <span class="s">&quot;closed&quot;</span><span class="p">))</span> <span class="o">+</span> 
+    <span class="nf">labs</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="nf">expression</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="nf">expression</span><span class="p">(</span><span class="n">beta</span><span class="p">))</span> <span class="o">+</span>
+    <span class="nf">theme_bw</span><span class="p">()</span> <span class="o">+</span> <span class="nf">coord_fixed</span><span class="p">()</span>
+<span class="nf">ggsave</span><span class="p">(</span><span class="s">&quot;trajectory.png&quot;</span><span class="p">,</span> <span class="n">plot</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s">&quot;png&quot;</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+<span class="n">plot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="../images/grad-descent/grad-descent_71_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Interesting! We see that the algorithm traverses the parameter space $(\alpha, \beta)$ by "going downhill" relative to the loss, eventually ending up in the deep well where the best parameter values (models) are.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here's an animation using different data that shows how the model fit is changing (right panel) as we traverse the parameter space (left panel) using gradient descent:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://miro.medium.com/max/707/1*0Ve21Rildq950wRrlJvdLQ.gif" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Gradients:-Vector-Valued-Derivatives">Gradients: Vector-Valued Derivatives<a class="anchor-link" href="#Gradients:-Vector-Valued-Derivatives"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Up to this point we've been talking about the derivatives of the loss with respect to each individual parameter. But now we're going to define how to take the derivative with respect to a vector of parameters $\theta = [\theta_1, \theta_2, \dots \theta_p]^T$. This is just a way to write out what we've already been doing, but using a notation that will scale better to models with many parameters. It doesn't actually change or add anything to the gradient descent algorithm.</p>
+<p>So how do you take a derivative of a function with respect to a vector of parameters all at once? It's pretty simple, we just stack the derivatives with respect to each parameter in the vector into a vector of its own:</p>
+$$
+\frac{dL}{d\theta} = 
+\left[
+\begin{array}{c}
+\frac{\partial L}{\partial \theta_1} \\
+\frac{\partial L}{\partial \theta_2} \\
+\vdots \\
+\frac{\partial L}{\partial \theta_p}
+\end{array}
+\right]
+= \nabla_\theta L
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And, instead of writing $\frac{dL}{d\theta}$, which might confuse someone into thinking $\theta$ is a single parameter, we usually write $\nabla_\theta L$. This is the <em>gradient</em> of $L$ with respect to the vector $\theta$. $\nabla_\theta L$ is a function that, when evaluated at a point $\theta^*$, returns a <em>vector</em>. The elements of that vector are the derivatives of the loss with respect to each individual parameter, evaluated at the value of that parameter. Check it out:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="images/gradient.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The figure illustrates the contours of the loss function in grey (think of it as looking down into a "bowl"). The gradient evaluated at a single point returns a vector, which we draw as an arrow. The arrow points in the steepest direction "uphill" at that point. The steepest direction "downhill" is the direction corresponding to $-\nabla_\theta L$, the negative gradient. That's why we go in that direction in the gradient descent step, and it also explains why gradient descent works: at each step, we're moving the parameters in the direction that most decreases the loss.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using the gradient, we can update all of the parameters in one equation: $\theta \leftarrow \theta - \epsilon \nabla_\theta L$. If you write out the components of each vector you will see that this is exactly the same update as we had before when we were updating each parameter individually.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's rewrite our code to work generally in the multi-parameter case:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">grad_descent</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">grad_L</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">ϵ</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">):</span> <span class="c1"># apparently ∇ can&#39;t be used in a variable name in python... so no ∇L</span>
+    <span class="n">old_loss</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">L</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">old_loss</span> <span class="o">-</span> <span class="n">loss</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+        <span class="n">θ</span> <span class="o">-=</span> <span class="n">ϵ</span><span class="o">*</span><span class="n">grad_L</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span> <span class="c1"># these are vectors now- grad_L takes a vector and returns a vector</span>
+        <span class="n">old_loss</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span><span class="p">,</span> <span class="n">L</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span> <span class="c1"># L takes a vector and returns a scalar</span>
+    <span class="k">return</span> <span class="n">θ</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Example">Example<a class="anchor-link" href="#Example"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's try it out with our linear regression problem using multiple predictors. Now we have $x_i = [x_{i1}, \dots x_{ip}]$ so $\beta = [\beta_1, \dots \beta_p]^T$. Our minimization problem is again</p>
+$$\underset{\alpha,\beta}{\text{argmin}}\frac{1}{n} \sum_i (y_i - (\alpha + x_i\beta))^2$$<p>You can read "$\underset{\theta}{\text{argmin}} L(\theta)$" as "the value of $\theta$ that minimizes $L(\theta)$".  Like all mathematical notation, this is just a little bit of shorthand for what otherwise would have to write out in words. This problem looks the same as what we had in the single-variable case, but actually now $x_i \beta$ is a dot product of two vectors instead of multiplication between two numbers.</p>
+<p>To calculate $\nabla_{\alpha, \beta} L(\alpha, \beta)$ we have to find the deriviatives with respect to each of the parameters $\alpha$, $\beta_1$, $\beta_2$, ... $\beta_p$. But even though now we have $p+1$ parameters, finding the derivatives is just as easy as in the 2-parameter case. If we expand out the dot product:</p>
+$$\frac{1}{n} \sum_i (y_i - (\alpha + x_i\beta))^2 = \frac{1}{n} \sum_i (y_i - (\alpha + x_{i1}\beta_1 + x_{i2}\beta_2 + \cdots x_{ip}\beta_p))^2$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can take our derivatives just as we had before. But we don't have to do all of the $\beta$s individually- if you do two of them (say, $\beta_1$ and $\beta_4$) you'll notice a pattern and see that the derivatives are:</p>
+$$\frac{\partial L}{\partial \alpha} = \frac{1}{n} \sum_i -2 (y_i - (\alpha + x_i\beta))$$$$\frac{\partial L}{\partial \beta_j} = \frac{1}{n} \sum_i -2 (y_i - (\alpha + x_i\beta))x_{ij}$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And, in fact, there's a quick way to write this out using matrix notation (i.e. this is just a shorthand for the equations above)</p>
+$$
+\left[
+\begin{array}{c}
+\frac{\partial L}{\partial \beta_1} \\
+\frac{\partial L}{\partial \beta_2} \\
+\vdots \\
+\frac{\partial L}{\partial \beta_p}
+\end{array}
+\right]
+= 
+\nabla_\beta L(\alpha, \beta)
+= 
+-2X^T(y-(\alpha + X\beta))
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>STOP:</b> 
+Do the matrix multiplications yourself to verify that the equation for each partial derivative comes out the same. Feel free to review the <a href="https://www.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:multiplying-matrices-by-matrices/a/multiplying-matrices">definition of matrix multiplication</a> if you're a little rusty.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's code it up!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">simulate_linear</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">α</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">σ</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span> <span class="c1"># remember, in reality we don&#39;t know what these numbers actually are</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># θ=[α, β1 ... βp]</span>
+<span class="k">def</span> <span class="nf">lin_reg_mse_loss</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span> <span class="c1"># L(θ)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="o">=</span><span class="n">θ</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">β</span><span class="o">=</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">grad_lin_reg_mse_loss</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span> <span class="c1"># ∇L(θ) </span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># adds a column of ones to the front of X. See ?np.insert</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">Z</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">Z</span><span class="nd">@θ</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I used a convenient trick in the gradient function- if you pretend $\alpha$ is the coefficient for a dummy predictor that is always 1, the derivative for $\alpha$ takes the same form as the derivatives for $\beta_j$, so they can all be calculated in the same expression. That is,</p>
+$$
+\alpha + x_i \beta 
+= 
+\underbrace{[1, x_i]}_{z_i}
+\underbrace{
+\left[
+\begin{array}{c}
+\alpha \\ \beta
+\end{array}
+\right]
+}_\theta
+= z_i\theta
+\quad \quad
+\rightarrow
+\quad \quad
+\nabla_\beta L(\theta)
+= 
+-2Z^T(y-Z\theta)
+$$<p>This isn't conceptually important- I could also have coded out the derivaties for $\alpha$ and $\beta$ separately and concatenated them together to get the gradient.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, we can test out our generic gradient descent code:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">θ</span> <span class="o">=</span> <span class="n">grad_descent</span><span class="p">(</span><span class="n">lin_reg_mse_loss</span><span class="p">,</span> <span class="n">grad_lin_reg_mse_loss</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">LinearModel</span><span class="p">(</span><span class="n">α</span><span class="o">=</span><span class="n">θ</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">β</span><span class="o">=</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="n">ŷ</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's see if our predictions are close to the actual values:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span><span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">ŷ</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/grad-descent/grad-descent_95_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">θ</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([0.05121998, 1.0147769 , 0.95968747, 0.93875191])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our predictions track very well with the observed values and the estimated parameters are close to what we put in the simulation, which means our algorithm works as intended. We've now fully implemented multiple linear regression for prediction!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Beyond-Linear-Regression">Beyond Linear Regression<a class="anchor-link" href="#Beyond-Linear-Regression"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've been working with our linear model and MSE loss, but why not use gradient descent for other problems too? Gradient descent is a general purpose method to twist knobs (optimize parameters)- it doesn't care what the machine (loss and prediction function) is.</p>
+<p>For instance, what if we want to fit a model like $\hat y_i = \alpha\sin(x_i\beta)$? And what if we want to judge the predictions not with MSE, but with mean absolute error (MAE) $L(y,\hat y) = |y-\hat y|$? From the point of view of gradient descent, that's just a different machine with different knobs, totally doable!</p>
+<p>For simplicity, we'll tackle the case where there is only a single feature (i.e. $\beta$ is a scalar, not a vector).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, we compose the loss with the model to get the loss as a function of the parameters: $L(\alpha,\beta) = \frac{1}{n}\sum_i|y_i-\alpha\sin(x_i\beta)|$. Now we take derivatives:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\nabla_{\alpha, \beta}L 
+=
+\left[
+\begin{array}{c}
+\frac{\partial L}{\partial \alpha} \\
+\frac{\partial L}{\partial \beta}
+\end{array}
+\right]
+= 
+\left[
+\begin{array}{c}
+\sum_i-\text{sign}(y-\alpha\sin(x_i\beta)) \sin(x_i\beta) \\
+\sum_i -\alpha \text{sign}(y-\alpha\sin(x_i\beta))(\cos(x_i\beta)) x_i
+\end{array}
+\right]
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And we code them up:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># θ=[α, β1 ... βp]</span>
+<span class="k">def</span> <span class="nf">sin_reg_mae_loss</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span> <span class="c1"># L(θ)</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">θ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">grad_sin_reg_mae_loss</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span> <span class="c1"># ∇L(θ) </span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">θ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">dl_dα</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">dl_dβ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="n">θ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dl_dα</span><span class="p">,</span> <span class="n">dl_dβ</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">θ</span> <span class="o">=</span> <span class="n">grad_descent</span><span class="p">(</span><span class="n">sin_reg_mae_loss</span><span class="p">,</span> <span class="n">grad_sin_reg_mae_loss</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]),</span> <span class="n">ϵ</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">ŷ</span> <span class="o">=</span> <span class="n">θ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[5.49057514 2.97271082]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plot_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="n">X</span><span class="p">,</span> <span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">ŷ</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="o">+</span> \
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/grad-descent/grad-descent_106_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You should now begin to grasp the power you have at your fingertips...</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://steamuserimages-a.akamaihd.net/ugc/159157279551261206/BFA4AEC73F3B1165A1DA9EACDED6FBE9DE9213C1/" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_exercise">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+We've only considered regression problems (continuous $y$) thus far, but we can apply gradient descent to probabilistic classification (binary $y$) too. Instead of estimating $\hat y$, the expected value of $y$, we'll estimate $\hat p =P(y=1)$, the probability that the outcome occurs.
+
+Using the "cross-entropy" loss $L(y,\hat p) = -y \log(\hat p) -(1-y)\log(1-\hat p)$, write code that fits the following model using gradient descent: $\hat p_i = \sigma(X\beta + \alpha)$, where $\sigma(z) = \frac{1}{1+e^{-z}}$ is the sigmoid function. 
+
+You can either use the `grad_descent` function we've written or use your own. It may be easier to start with the univariate case where $X$ is a single column (and $\beta$ is a scalar), then rewrite the code allowing for $X$ to have an aribrary number of columns.
+
+What you've just done is called logistic regression!
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Issues-with-Gradient-Descent">Issues with Gradient Descent<a class="anchor-link" href="#Issues-with-Gradient-Descent"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It may seem like we can solve practically any optimization problem with gradient descent at this point, but there are a few small wrinkles. Don't worry, though, we can mostly iron them out.</p>
+<p>Let's start by looking at the sinusoidal regression problem we were just working on. We had set $\theta=[0.1,0.1]$ to start, but what happens if we set the initial $\theta$ to be something else?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">θ</span> <span class="o">=</span> <span class="n">grad_descent</span><span class="p">(</span><span class="n">sin_reg_mae_loss</span><span class="p">,</span> <span class="n">grad_sin_reg_mae_loss</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span><span class="o">-</span><span class="mf">6.0</span><span class="p">]),</span> <span class="n">ϵ</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">ŷ</span> <span class="o">=</span> <span class="n">θ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">θ</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[ 3.49814623 -6.21148656]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plot_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="n">X</span><span class="p">,</span> <span class="s1">&#39;ŷ&#39;</span><span class="p">:</span><span class="n">ŷ</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="o">+</span> \
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/grad-descent/grad-descent_113_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Wow. What the heck is going on?!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Local-Minima-and-Flats">Local Minima and Flats<a class="anchor-link" href="#Local-Minima-and-Flats"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I'm going to brute-force calculate the value of the loss function and gradient over a grid of parameters and plot it, so we can 
+get an idea about what that loss surface looks like. Again, the code here is less important than the picture:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+<span class="n">αs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">βs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">αs</span><span class="p">,</span> <span class="n">βs</span><span class="p">))</span>
+<span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))]</span>
+<span class="n">grads</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sin_reg_mae_loss</span><span class="p">([</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">])</span>
+    <span class="n">grads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">grad_sin_reg_mae_loss</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">]))</span>
+<span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">)</span>
+<span class="n">dL_da</span><span class="p">,</span> <span class="n">dL_db</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">grads</span><span class="p">)</span>
+<span class="n">loss_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="n">b</span><span class="p">,</span> <span class="s1">&#39;dL_da&#39;</span><span class="p">:</span><span class="n">dL_da</span><span class="p">,</span> <span class="s1">&#39;dL_db&#39;</span><span class="p">:</span><span class="n">dL_db</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span><span class="n">L</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="n">R</span> <span class="o">-</span><span class="n">i</span> <span class="n">loss_df</span><span class="p">,</span><span class="n">loss_params_trajectory</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">viridis</span><span class="p">)</span>
+
+<span class="n">plot</span> <span class="o">=</span> <span class="n">loss_df</span> <span class="o">%&gt;%</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">b</span><span class="p">))</span> <span class="o">+</span>
+    <span class="nf">geom_raster</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="n">L</span><span class="p">))</span> <span class="o">+</span> 
+    <span class="nf">geom_contour</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">L</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;grey&#39;</span><span class="p">)</span> <span class="o">+</span>
+    <span class="nf">scale_fill_viridis</span><span class="p">()</span> <span class="o">+</span>
+    <span class="nf">geom_segment</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">xend</span><span class="o">=</span><span class="n">a</span><span class="o">-</span><span class="n">dL_da</span><span class="p">,</span><span class="n">yend</span><span class="o">=</span><span class="n">b</span><span class="o">-</span><span class="n">dL_db</span><span class="p">),</span>
+                 <span class="n">color</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span><span class="p">,</span>
+                 <span class="n">arrow</span> <span class="o">=</span> <span class="nf">arrow</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="nf">unit</span><span class="p">(</span><span class="m">0.05</span><span class="p">,</span><span class="s">&quot;cm&quot;</span><span class="p">),</span> 
+                             <span class="n">type</span> <span class="o">=</span> <span class="s">&quot;closed&quot;</span><span class="p">))</span> <span class="o">+</span> 
+    <span class="nf">labs</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="nf">expression</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="nf">expression</span><span class="p">(</span><span class="n">beta</span><span class="p">))</span> <span class="o">+</span>
+    <span class="nf">theme_bw</span><span class="p">()</span> <span class="o">+</span> <span class="nf">coord_fixed</span><span class="p">()</span>
+<span class="n">plot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="../images/grad-descent/grad-descent_118_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What's happening is that when we start at $[0.1, 0.1]$, gradient descent follows the arrows up and to the right into the pit that's centered around the $[5,3]$ minimum. But when we start at $[10,-6]$, we go left and get stuck in the trough roughly corresponding to $[4,-7]$. Either there is a small dip there that we're getting stuck in, or the surface is so near flat that the algorithm stops because the loss isn't changing enough with each step.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a very common problem with gradient descent methods for optimization. You are never guarenteed to find the global minimum of the loss. Greedily moving down in the steepest direction will cause the algorithm to find the bottom of a bowl, but it might not be the deepest bowl in the landscape. It's also easy to get stuck in wide plateaus or "saddles" since the loss can get very flat.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Before moving on to the tweaks we can make to fix this problem, I should note that there <em>are</em> optimization methods that don't rely on gradients and so are not succeptible to these problems. <a href="https://en.wikipedia.org/wiki/Evolutionary_algorithm">Evolutionary algorithms</a> like <a href="https://en.wikipedia.org/wiki/Differential_evolution">differential evolution</a> and <a href="https://en.wikipedia.org/wiki/CMA-ES">CMA-ES</a> are good examples. But there's no free lunch: no gradients also often means a lot of "guessing" and <em>slow convergence</em> (many iterations to get to a minimum).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Momentum">Momentum<a class="anchor-link" href="#Momentum"> </a></h3><p>One way to fix this problem without totally giving up on gradient descent is to introduce "momentum". Instead of taking a step proportional to the current gradient, the idea is to average the current gradient together with the steps taken in the previous few iterations. The effect is that we retain the "momentum" from previous steps. Compare these animations:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<table><tr><td><img src='https://miro.medium.com/max/400/1*qUPwF7Idt2yudQu8Sh1Kzw.gif'></td><td><img src='https://miro.medium.com/max/400/1*8mgMKa1dg93fUBk1oUG42A.gif'></td></tr></table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>On the left, standard gradient descent slows down and stop as it approaches the local minimum around $\theta=4$. Why? It's because the loss surface is flat there, so the gradient is $0$ and the parameters don't change with further iterations. But on the right, when the "ball" reaches the local minimum, the "momentum" from it's previous leftward "motion" carries it through the trough and into the more desirable global minimum. One downside is that convergence at the global minimum is a bit slower, since the "balls" rocks back and forth around the minimum due to the momentum.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Implementing momentum is not difficult- you just need to keep around the calculated values from previous iterations and apply the update something like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$\theta \leftarrow \theta-\epsilon \nabla_\theta L -\frac{1}{2}\epsilon\nabla_\theta L ^{(-1)}- \frac{1}{4}\epsilon\nabla_\theta L ^{(-2)}$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>where $\nabla_\theta L ^{(-j)}$ is the value of gradient calculated at what the parameter was $j$ iterations ago. The exact number of terms you use and what numbers you scale them by are not terribly important, as long as the current gradient gets the most weight.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_exercise">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+A few sections ago, we made a plot of the parameter values over the iterations as we did standard gradient descent in linear regression and we overlaid it on the surface of the loss function:
+
+<img src='images/trajectory.png' style="width:500px;height:500px;">    
+
+On a piece of paper, sketch up a copy of this plot and add in what you think the trajectory would be (starting at the same point) if we had used momentum in our gradient descent algorithm.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Stochastic-Gradient-Descent">Stochastic Gradient Descent<a class="anchor-link" href="#Stochastic-Gradient-Descent"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The value of the gradient at a particular point depends on the data we have. The data we have is really just a sample of the data we could have. Depending on the context, you could always run another experiment or measure things more times than you did, which would generate more data. That data would also be helpful in building a predictive model. So, ideally, if we had infinite data, and using a model $\hat y_i = \hat f_\theta(x_i)$ we would want to minimize something like "$\frac{1}{\infty}\sum_i^\infty L(y_i, \hat f_\theta(x_i))$". The mathematically rigorous way of saying the same thing is to say that we want to minimize the <em>expected</em> loss, where the expectation is taken with respect to the full population (or distribution) of data that we could have measured: $E[L(y, \hat f_\theta(x))]$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The key intuition here is that $E[L(y, \hat f_\theta(x))]$ is the <em>true</em> loss surface that we wish we could minimize, but all we've got to work with is $\frac{1}{n}\sum_i L(y_i, \hat f_\theta(x_i))$. So, in a sense, when we calculate the loss over our sample, it's really just a sample from a distribution of losses we could have gotten, had we had other data. In the same vein, the gradient we calculate is really just a sample from a distribution of gradients, which on average point in the direction of lowest expected loss.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The idea behind stochastic gradient is to calculate the gradient at each iteration using a random subsample of the available data instead of all of it. The full data are just one sample from the population, and we've been fine using the gradient calculated on that sample, so what's stopping us from calculating the gradient based on a sample of that sample? The effect is to introduce a little randomness to the direction we move in, which might get us "unstuck" from spots that might be minima or flats of $\frac{1}{n}\sum_i L(y_i, \hat f_\theta(x_i))$, but not of $E[L(y, \hat f_\theta(x))]$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Strictly speaking, this approach is called <em>minibatch gradient descent</em>, whereas using just a single observation from the dataset at each iteration is <em>stochastic gradient descent</em>, but often the terms are used interchangeably. Standard gradient descent (using the full dataset at each iteration) is sometimes referred to as <em>batch gradient descent</em>.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_full_width">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://adatis.co.uk/wp-content/uploads/GradientDescentsVisualised.gif" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_exercise">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Implement minibatch gradient descent for the linear regression problem. You'll need to rewrite the loss and gradient functions to take (subsets of) $X$ and $y$ as inputs and the `grad_descent` function to create those random subsets at each iteration.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Learning-Rates-and-Line-Searches">Learning Rates and Line Searches<a class="anchor-link" href="#Learning-Rates-and-Line-Searches"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I've been conspicuously silent about the learning rate $\epsilon$ until now, but all good things must come to an end. If you go back to any of the examples and crank up $\epsilon$, you will notice that the algorithm stops producing sensible results at some point. What happens is that the loss increases from one iteration to the next, so the condition in the <code>while</code> loop is not satisfied and the algorithm stops.</p>
+<p>Why does this happen? Aren't we guarenteed to be going in a direction that shrinks the loss? Well, yes, the direction we're going in is gaurenteed to shrink the loss, but we may be taking too big or too small of a step in that direction. Consider the following figure:</p>
+<p><img src="https://miro.medium.com/max/600/1*Q-2Wh0Xcy6fsGkbPFJvMhQ.gif" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If the learning rate is too small, gradient descent can take far too long to find a minimum. In this case, we say the algorithm has <em>slow convergence</em>. If the learning rate is too big, gradient descent can <em>diverge</em> and fail to find a minimum altogether. Finding the sweet spot is often a matter of guess-and-check.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>However, most optimizers that are based on gradient descent employ some kind of <em>line search</em> to dynamically pick the step size at each iteration. It's called a line search because we know which direction to go in (the negative gradient), but we want to search along that line to find the step size that will be big enough to substantially decrease the loss, but small enough not badly overshoot the minimum. One way to do that is to start with a big learning rate at each iteration and calculate the loss we would attain if we applied the gradient update using that learning rate- if it's bigger than the current loss, we halve the learning rate and try again. That's called a <a href="https://www.cs.cmu.edu/~ggordon/10725-F12/scribes/10725_Lecture5.pdf"><em>backtracking line search</em></a>, but there are other alternatives as well.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Understanding-Gradient-Descent-Helps-You-Understand-Machine-Learning">Understanding Gradient Descent Helps You Understand Machine Learning<a class="anchor-link" href="#Understanding-Gradient-Descent-Helps-You-Understand-Machine-Learning"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To conclude, gradient descent is an extremely powerful method that in its many variations gets used under the hood of an enormous number of machine learning methods, ranging from the smallest linear regression to the mightiest neural network. Understanding how it works gives you a deeper insight into how machine learning models are fit- it all boils down to jiggling the knobs on a big complex machine until the loud noise you don't like goes away.</p>
+<p>Understanding how models are fit also gives you better insight for how to interpret them, which is to say, it's usually better not to. You never know "why" the particular configuration of the knobs made the noise go away. And it doesn't even matter if you assumed the correct model or if you assumed something totally ridiculous. The optimizer (e.g. gradient descent) looks for parameters that make the model "fit". It doesn't care whether or not that model reflects reality or not.</p>
+<h3 id="Don't-Try-This-at-Home?">Don't Try This at Home?<a class="anchor-link" href="#Don't-Try-This-at-Home?"> </a></h3><p>Unless you're researching a new kind of machine learning method or solving a different optimization problem, you will probably never have to use gradient descent algorithms directly. But if you do, the good news is that you don't need to re-implement gradient descent or any of its relatives if you want to use them- there are hundreds of high-quality "solvers" (e.g. <a href="https://en.wikipedia.org/wiki/IPOPT">IPOPT</a>) available for different kinds of optimization problems. These can be a little tricky to figure out, but it's better than trying to implement and debug your own custom software. These solvers and other methods you might hear about like Adam or RMSprop [<a href="https://ruder.io/optimizing-gradient-descent/">1</a>,<a href="https://towardsdatascience.com/why-gradient-descent-isnt-enough-a-comprehensive-introduction-to-optimization-algorithms-in-59670fd5c096">2</a>] often have lots of bells and whistles. But now that you understand gradient descent, you will be well-positioned to understand the differences between those methods, whether or not those difference actually matter, and how to set reasonable values for any hyperparameters they might throw at you.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="">
+      〈 <span class="u-margin-right-tiny"></span> 
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/CSL/linreg-dl-torch/intro.html">
+      From Linear Regression to Deep Lea... <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
