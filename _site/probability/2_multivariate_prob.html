@@ -1,0 +1,2979 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Multivariate Prob</title>
+  <meta name="description" content="        Multivariate Prob        import randomimport numpy as npimport altair as alt import pandas as pd     Multivariate Probability Until now, we've only d...">
+
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/probability/2_multivariate_prob.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
+
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/probability/2_multivariate_prob.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Multivariate Prob" />
+<meta property="og:description" content="        Multivariate Prob        import randomimport numpy as npimport altair as alt import pandas as pd     Multivariate Probability Until now, we've only d..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/probability/2_multivariate_prob.html",
+  "headline": "Multivariate Prob",
+  "datePublished": "2020-02-18T15:15:36-08:00",
+  "dateModified": "2020-02-18T15:15:36-08:00",
+  "description": "        Multivariate Prob        import randomimport numpy as npimport altair as alt import pandas as pd     Multivariate Probability Until now, we've only d...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://alejandroschuler.github.io/CSL",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://alejandroschuler.github.io/CSL",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/CSL/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/CSL/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/CSL/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/CSL/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/CSL';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/CSL/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/CSL/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/CSL/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/CSL/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/CSL/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/CSL/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/CSL/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/CSL/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: "content/probability"
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/introduction">
+        <a class="c-sidebar__entry"
+          href="/CSL/introduction.html"
+        >
+          
+            1.
+          
+          Introduction
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/probability/0_motivation">
+        <a class="c-sidebar__entry"
+          href="/CSL/probability/0_motivation.html"
+        >
+          
+            2.
+          
+          Motivation
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/1_univariate_prob">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/1_univariate_prob.html"
+              >
+                
+                  2.1
+                
+                Univariate Prob
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/2_multivariate_prob">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/2_multivariate_prob.html"
+              >
+                
+                  2.2
+                
+                Multivariate Prob
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/3_distribution_properties">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/3_distribution_properties.html"
+              >
+                
+                  2.3
+                
+                Distribution Properties
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/grad-descent/grad-descent">
+        <a class="c-sidebar__entry"
+          href="/CSL/grad-descent/grad-descent.html"
+        >
+          
+            3.
+          
+          Fitting Models with Gradient Descent
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linreg-dl-torch/intro">
+        <a class="c-sidebar__entry"
+          href="/CSL/linreg-dl-torch/intro.html"
+        >
+          
+            4.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg.html"
+              >
+                
+                  4.1
+                
+                Linear Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/logistic-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/logistic-reg.html"
+              >
+                
+                  4.2
+                
+                Logistic Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg-complex">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg-complex.html"
+              >
+                
+                  4.3
+                
+                Adding Complexity
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/abstracting-layers">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/abstracting-layers.html"
+              >
+                
+                  4.4
+                
+                Abstracting our Code
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        <a href="/CSL/content/probability/2_multivariate_prob.ipynb" download>
+        <button id="interact-button-download" class="interact-button">.ipynb</button>
+        </a>
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+  
+  
+  
+  
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/CSL/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/CSL/search.html" class="topbar-right-button" id="search-button">
+    <img src="/CSL/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Multivariate Prob</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span> 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Multivariate-Probability">Multivariate Probability<a class="anchor-link" href="#Multivariate-Probability"> </a></h1>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Until now, we've only discussed scalar-valued random variables, which produce a single value at a time. In supervised learning, we need to figure something out about the relationship between a vector of predictors $x_i$ and a label $y_i$, which we imagine are generated in pairs by some data factory. We need language to describe that kind of factory.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A multivariate (or vector-valued) random variable is a factory that produces vectors instead of scalars. More formally, it's a mapping between outcomes in the sample space to vectors of numbers. All our old rules still apply: one outcome strictly maps to one vector. We can demonstrate:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span> 
+
+<span class="k">def</span> <span class="nf">realize</span><span class="p">(</span><span class="n">rand_var</span><span class="p">):</span> <span class="c1"># run the assembly line!</span>
+    <span class="n">ω</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># grab a single nugget out of the silo at random</span>
+    <span class="k">return</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="c1"># push it through the factory</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">realize</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(0, 1), (1, 1), (1, 1), (1, 0), (0, 1)]</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a discrete multivariate random variable because it can only return four possible values: $(0,0)$, $(1,0)$, $(0,1)$, and $(1,1)$. It's also possible to make continuous multivariate random variables:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> 
+    <span class="n">z1</span> <span class="o">=</span> <span class="n">ω</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">z2</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">ω</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span> <span class="c1"># returns a single number between 0 and 1 when called</span>
+
+<span class="k">def</span> <span class="nf">realize_cont</span><span class="p">(</span><span class="n">rand_var</span><span class="p">):</span> <span class="c1"># run the assembly line!</span>
+    <span class="n">ω</span> <span class="o">=</span> <span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span><span class="p">()</span> <span class="c1"># grab a single nugget out of the silo at random</span>
+    <span class="k">return</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="c1"># push it through the factory</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">realize_cont</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(0.4401594996607749, 0.33655482542958015),
+ (0.15836935640594837, 0.6020435244829551),
+ (0.06762759642354688, 0.7399469353698233),
+ (0.2335106438659341, 0.5167706094762715),
+ (0.0014496116124496433, 0.961926234590605)]</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Probabilities are the same for multivariate random variables as they are for univariate random variables: you grab all of the outcomes in the sample space that are destined to become one of the values you're looking for and you measure their relative volume. The calculations do get a little trickier, but the intuition is the same. When we were working with univariate random variables, the sets of interest were usually intervals (i.e. what's the probability that $z$ is between $a$ and $b$?). In the multivariate case, the equivalent of an interval on the number line is a region of the vector space. In general, you can think of a picture like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="2d_rv_preimage.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For example, with $\mathbf Z(\omega) = (\omega^2, 1-\omega)$ as it is in our code, let's find the probability that the output vector $z = (z_1,z_2)$ is in the region corresponding to $z_1&lt;0.5$ and $z_2&lt;0.5$. Let's call that region $A = \{(z_1,z_2):z_1&lt;0.5, z_2&lt;0.5)\}$.</p>
+<p>In mathematical notation, what we're looking for is $P(\mathbf Z \in A)$ The first thing to notice is $z_1$ will only be less than $0.5$ if $\omega$ is less than $\sqrt{0.5}$, while $z_2$ will only be less than $0.5$ if $\omega$ is greater than $0.5$. Stop and verify both of these facts. We need both conditions to hold, so the set of $\omega$s that place $z$ into the region of interest is $Z^{-1}(A) = [0.5, \sqrt{0.5}] \approx [0.5, 0.707]$. The volume of that set relative to the total sample space $[0,1]$ is $0.707-0.5$, so $P(\mathbf Z \in A) = 0.207$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The outcomes and sample space are important to the definition of probability for multivariate random variables, but as we discussed in the previous section, we never really talk about the outcomes $\omega$. Usually we define a random variable by directly specifying a probability distribution. That implies there is some sample space that is being mapped to the different realizable values in proportions corresponding to the mass or density function, but we don't actually care what it is. Calculating the probabilities of different realizations is just a matter of integrating or summing the density or mass over the appropriate set.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A multidimensional mass or density function works the same way as a unidimensional mass or density. For some set of realizations $A$,</p>
+$$P(\mathbf Z \in A) = \int_A \phi(z) dz$$<p>or, if $\mathbf Z$ is discrete,</p>
+$$P(\mathbf Z \in A) = \sum_{z \in A} \phi(z)$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In other words, add up the total volume of the outcomes that end up mapping to an realization in $A$- same as before. The only difference is that now $A$ is a region of space instead of an interval on a line.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+
+$\int_A \phi(z) dz$ may look a little confusing to you because now we're dealing with vectors instead of scalars. But it's just a shorthand for the more elaborate $\int \dots \int \int \phi(z) dz_1 \dots dz_1 dz_2 \dots dz_p$. The issue with writing it out longform is that you then have to specify the limits on each integral that define the borders of the region $A$, which in general will be functions of the other variables that are a pain to derive and write out. It's easier to just say $\int_A \phi(z) dz$ and it means the same thing.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Example">Example<a class="anchor-link" href="#Example"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Say we have a 2-dimensional random variable $\mathbf Z$ with the following distribution:</p>
+$$ 
+\phi(z)
+= 
+\phi([z_1, z_2])
+= 
+\begin{cases}
+1 &amp; \text{for  } z_1, z_2 \in [0,1] \\
+0 &amp; \text{else}
+\end{cases}
+$$<p>This is the 2-dimensional <strong>uniform</strong> distribution over $[0,1] \times [0,1]$, which is often written $\mathbf Z \sim \text{Unif}([0,1]\times[0,1])$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+$[0,1] \times [0,1]$ is shorthand for the square set $\{(z_1,z_2) : z_1 \in [0,1], z_2 \in [0,1]\}$.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's find the probability that $\mathbf Z$ takes values in the "triangle" $A$ defined by the vertices $[0,0]$, $[1,1]$, and $[1,0]$. Another way to define this is $A = \{(z_1,z_2) : z_1 \in [0,1], 0 \le z_2 \le z_1\}$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Copy this coordinate system onto a piece of paper:
+
+<img src='axes.png'>
+
+Draw in tick marks for $z_1$ = 1 and $z_2$ = 1. On the $(z_1,z_2)$ plane, lightly shade in the region for which $\phi(z)$ is 1. Shade in the region $A$ (as defined above) more darkly. 
+
+On the vertical axis, use the lightly shaded region to draw in the surface of $\phi(z)$.
+
+Using geometry, calculate the volume under $\phi(z)$ that's on top of the darkly shaded region $A$. This is $P(\mathbf Z \in A)$.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can use calculus to get the same answer:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\begin{array}{rcl}
+P(\mathbf Z \in A) &amp; = &amp; \int_A \phi(z) dz \\
+&amp; = &amp; \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} I_{A}(z) \phi(z) dz_1 dz_2 \\
+&amp; = &amp; \int_0^1 \int_0^{z_2} 1 dz_1 dz_2 \\
+&amp; = &amp; 1/2
+\end{array}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that, just as with unidimensional random variables, the density of any multidimensional random variable has to integrate to 1 over its entire support: $\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \phi(z) dz_1 dz_2 = 1$. As before, this is so that the answer to "what is the probability that $z$ is any point in the $(z_1, z_2)$ space at all?" is the intuitive "1". It's also the same as saying that the silo of outcomes has total volume equal to 1.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Joint-Distributions">Joint Distributions<a class="anchor-link" href="#Joint-Distributions"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We often think about multivariate random variables as several different random variables "glued together" into one:</p>
+$$\mathbf Z = [\mathbf Z_1, \mathbf Z_2]$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, instead of talking about the distribution of $\mathbf Z$, we talk about the <strong>joint distribution</strong> of $\mathbf Z_1$ and $\mathbf Z_2$. It's the exact same thing, though. The only advantage of doing this is that we don't have to give the joint variable $\mathbf Z$ a name if we don't care to.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ 
+\phi_\mathbf{Z}(z)
+=
+\phi_\mathbf{Z}([z_1, z_2])
+=
+\phi_{\mathbf Z_1, \mathbf Z_2}(z_1, z_2)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="2d_joint.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What's being glued together are two factories- they still share one silo. Our metaphor gets a little tricky here because the same single nugget of ore $\omega$ now passes simultaneously through both factories to produce the two outputs $z_1$ and $z_2$. As with all metaphors, it can only carry us so far!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Example">Example<a class="anchor-link" href="#Example"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's look at a joint distribution of two discrete random variables $\mathbf V_1$ and $\mathbf V_2$ that I made up, each of which take values from $\{0,1,2,\dots 9\}$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span> <span class="c1"># v1, v2 in {0,1,2,..9}</span>
+    <span class="n">P_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+      <span class="p">[[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">28.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">35.</span><span class="p">,</span> <span class="mf">27.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">38.</span><span class="p">,</span> <span class="mf">39.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">37.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">43.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span> <span class="mf">35.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">47.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">36.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="mf">44.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">P_raw</span><span class="p">[</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P_raw</span><span class="p">)</span> <span class="c1"># need to make it so that Σ p_ij = 1 so that this is a valid mass function</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can calculate probabilities using the mass function as usual: $P(\mathbf V_1 =1, \mathbf V_2 = 5) = \phi(1,5)$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">joint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.028</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's plot the joint mass function as a heatmap so we can get a better feel for it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Python Tip:</b> 
+
+Use <a href='https://docs.python.org/2/library/itertools.html#itertools.product'>`itertools.product()`</a> to get all of the combinations of elements from two or more lists. Wrap it in `list()` if you want a list back instead of a generator. For instance, `list(product([1,2,3],[10,11]))` will give you back the "grid" `[(1, 10), (1, 11), (2, 10), (2, 11), (3, 10), (3, 11)]`. Try it yourself!
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Python Tip:</b> 
+
+<a href='https://www.geeksforgeeks.org/zip-in-python/'>`zip(*x)`</a> is a pythonic idiom that "transposes" a list of lists. For instance, if `l = [[1,10], [2,20], [3,30]]`, you'll get back `[[1,2,3], [10,20,30]]`, which you can assign into two lists. This also works for more than two lists. `zip(x)` does the opposite. It works because of <a href='https://treyhunner.com/2018/10/asterisks-in-python-what-they-are-and-how-to-use-them/'>the `*` unpacking operator</a>.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+<span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span> <span class="c1"># all the possible combinations of (v1, v2)</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="p">[</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span>
+
+<span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">v1</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span><span class="n">v2</span><span class="p">,</span> <span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">prob</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v1:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;v2:O&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/2_multivariate_prob_38_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What we're looking at is the 2D version of the mass plots from before. Think of it as looking down from above onto the stacks of outcomes that are piled up on the labels for the values that they are destined to become. In this case, the darker squares are the piles that are sticking up towards you more. For instance, the square that corresponds to $v_1=6$, $v_2=4$ is a darkish blue because about 3% of all the outcomes in $\Omega$ (whatever it is) get mapped to that combination of values. The square that corresponds to $v_1=9$, $v_2=9$ is a a pale yellow because about 0% of all the outcomes in $\Omega$ get mapped to that combination of values.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can also calculate the probability of sets of realization (which are "regions" in the realization space) as we did with our continuous random variable. For example, let's say we're interested in the probability that $\mathbf V_1$ takes a value that is at least 2 units less than $\mathbf V_2$. We can write that as $P(\mathbf V_1 \le \mathbf V_2 - 2)$ or as $P([\mathbf V_1, \mathbf V_2] \in A)$ where $A$ is the region that looks like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span>
+
+<span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">v1</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span><span class="n">v2</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span><span class="n">a</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v1:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;v2:O&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;A:N&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/2_multivariate_prob_41_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To get the probabiity we want, we just need to sum up all the values of the joint mass function that sit on top of the orange region of interest</p>
+$$P(\mathbf V_1 \le \mathbf V_2 - 2) = \sum_{v_1 \le v_2-2} \phi(v_1, v_2)$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="k">if</span> <span class="n">v1</span><span class="o">&lt;=</span><span class="n">v2</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.454</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conditional-Probabilities">Conditional Probabilities<a class="anchor-link" href="#Conditional-Probabilities"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we have joint distributions of multiple variables, we can explore the relationships between those variables. For instance, if we beleive that $[Z_1, Z_2]$ is the factory that generates measurements of people's heights ($z_1$) and weights ($z_2$), can we calculate the probability that someone who is over 2 meters tall weighs more than 80 kilograms?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+What's the difference between the probability that someone who is over 2 meters tall weighs more than 80 kilograms and the probability that someone is over 2 meters tall and weighs more than 80 kilograms? It might help to invent a population of 10 people with different heights and weights and calculate the proportions that correspond to each of those probabilities to illustrate the difference.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Probabilities like these are called <strong>conditional probabilities</strong>. That's because we're interested in the probability of something, given that some other condition holds. In our example, the "something" is that the person weighs more than 80 kg, and the condition is that the person must be over 2 meters tall. The notation for this is $P(\mathbf Z_2 &gt; 80 | \mathbf Z_1 &gt; 2)$, which is read as "the probability of $\mathbf Z_2 &gt; 80$ given $\mathbf Z_1 &gt; 2$".</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>How do we calculate that probability, given a joint density or mass? Let's think about it... any probability is just a volume of some subset of the outcomes in the sample space. So what we're really asking for is the volume of the outcomes $\omega$ that map to values of $z_1$ greater than 2 and also $z_2$ greater than 80, relative to the volume of the outcomes that map to values of $z_1$ greater than 2.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="conditional_rv.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the picture above, the conditonal probability we're looking for is the ratio of the volumes of the purple oval and the grey circle, which are subsets of the sample space.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can get the volume of outcomes mapping to a particular region of the realization space (like $z_1&gt;2$) by integrating the density over that region. Thus what we need to do is first integrate the density over the region where heights are more than 2 meters, then do the same for the region where heights are more than 2 meters <em>and</em> weights are over 80kg. Then we should divide the latter by the former to get the proportional volume of the two sets of outcomes:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+P(\mathbf Z_2 &gt; 80 | \mathbf Z_1 &gt; 2)
+= 
+\frac
+{P(\mathbf Z_2 &gt; 80, \mathbf Z_1 &gt; 2)}
+{P(\mathbf Z_1 &gt; 2)}
+= 
+\frac
+{\int_{z_2 &gt; 80, z_1 &gt; 2} \phi(z_1, z_2) dz_1 dz_2}
+{\int_{z_1 &gt; 2} \phi(z_1, z_2) dz_1 dz_2}
+=
+\frac
+{\int_{80}^{\infty} \int_{2}^{\infty} \phi(z_1, z_2) dz_1 dz_2}
+{\int_{-\infty}^{\infty} \int_{2}^{\infty} \phi(z_1, z_2) dz_1 dz_2}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It works the same way for discrete random variables:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+P(\mathbf V_1 \in A_1 | \mathbf V_2 \in A_2) 
+= 
+\frac
+{P(\mathbf V_1 \in A_1, \mathbf V_2 \in A_2)}
+{P(\mathbf V_2 \in A_2)}
+= 
+\frac
+{\sum_{v_1 \in A_1, v_2 \in A_2} \phi(v_1, v_2)}
+{\sum_{v_2 \in A_2} \phi(v_1, v_2)}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Go back to the code we had in the section above that defined a joint density function for two discrete random variables $\mathbf V_1$ and $\mathbf V_2$. Use that density function to calculate $P(V_1 < 4| V_2 > 3)$. The answer you should get is about 0.546.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can take this idea step further and define the <strong>conditioned random variable</strong> $\mathbf Z_1 | (\mathbf Z_2=z_2)$. This is random variable that you get when you take $\mathbf Z_1$, but subset the sample space $\Omega$ to include only those outcomes where $\mathbf Z_2(\omega) = z_2$. Each different value of $z_2$ defines a different conditioned version of $\mathbf Z_1 | \mathbf Z_2$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We're getting <em>really</em> close to machine learning now. Remember $x_i$ and $y_i$? Let's say we observe $x_i$ but we don't know what $y_i$ is. If those are realizations from some random variables $\mathbf X_i$ and $\mathbf Y_i$, though, and we know their joint density, then we can calculate $P(\mathbf Y_i | \mathbf X_i = x_i)$. That tells us the probability that $Y_i$ is any value we want to know, given that we know what $x_i$ was! We can then find the value or region of $y$ that has the most probability- this would be the most likely label, our best guess for what the unobserved $y_i$ is! Of course, we can't actually know what the real joint density is (we don't see the real factory). But we'll get to that.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The distribution of the random variable $\mathbf Z_1|(\mathbf Z=z_2)$ is easy to extract from the joint distribution: just hardcode the $z_2$ value in the joint distribution to the desired value: $\tilde\phi_{\mathbf Z_1|\mathbf Z_2=z_2}(z_1) = \phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)$. The only wrinkle is that the resulting $\tilde\phi$ will not be normalized so that its total probability across all $z_1$ is 1 (i.e. the new "silo" will not have volume 1). To fix this, we scale the whole function up by dividing by the total area under $\tilde\phi$:</p>
+$$
+\phi_{\mathbf Z_1|\mathbf Z_2=z_2}(z_1) 
+=
+\frac
+{\phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)}
+{\int_{-\infty}^\infty \phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2) dz_1}
+$$<p>or, for discrete random variables:</p>
+$$
+\phi_{\mathbf Z_1|\mathbf Z_2=z_2}(z_1) 
+=
+\frac
+{\phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)}
+{\sum_{z_1} \phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is a picture that conveys the idea of conditioning better than a formula can:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="bivariate_norm_cond.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here you can see two things:</p>
+<ol>
+<li>After conditioning on $\mathbf Z_2$, the density is now only a function of $z_1$. The old factory $[\mathbf Z_1, \mathbf Z_2]$ produces two values at a time ($z_1$ and $z_2$). The conditioned factory $\mathbf Z_1 | \mathbf Z_2=z_2$ just produces one: $z_1$. Another way to think about this is that we've taken the original factory and reduced it to the operating conditions under which $z_2$ comes out as a particular value.</li>
+<li>The conditioned density you get back depends on the value $z_2$ that you condition on. As you scan $z_2$ across its range, the shape of the resulting conditioned distribution will change.</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When there more than two dimensions, it's harder to picture this, but the idea is the same. You "slice" the multivariate distribution at the specified place on the specified axis. The conditional distribution can itself also be multivariate: if you have four variables and you slice at a place given by two of them, you'll get back a distribution over the remaining two.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Example">Example<a class="anchor-link" href="#Example"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's go back to the joint distribution of our friends $\mathbf V_1$ and $\mathbf V_2$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span> <span class="c1"># v1, v2 in {0,1,2,..9}</span>
+    <span class="n">P_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+      <span class="p">[[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">28.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">35.</span><span class="p">,</span> <span class="mf">27.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">38.</span><span class="p">,</span> <span class="mf">39.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">37.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">43.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span> <span class="mf">35.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span> <span class="mf">19.</span><span class="p">,</span> <span class="mf">47.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span> <span class="mf">36.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">,</span> <span class="mf">44.</span><span class="p">,</span> <span class="mf">32.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">P_raw</span><span class="p">[</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">P_raw</span><span class="p">)</span> <span class="c1"># need to make it so that Σ p_ij = 1 so that this is a valid mass function</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can implement the conditioning formula to make functions that return conditional probabilities:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">cond_V2_given_V1_is_7</span><span class="p">(</span><span class="n">v2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">joint</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">cond_V1_given_V2_is_4</span><span class="p">(</span><span class="n">v1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So $P(\mathbf V_2 = 3 | \mathbf V_1 = 7)$ is...</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cond_V2_given_V1_is_7</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.4476190476190476</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here are the mass plots of the conditional densities:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cond_v1</span> <span class="o">=</span> <span class="p">[</span><span class="n">cond_V1_given_V2_is_4</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="n">cond_v2</span> <span class="o">=</span> <span class="p">[</span><span class="n">cond_V2_given_V1_is_7</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+
+<span class="n">v1_plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">cond_v1</span><span class="p">})</span>
+<span class="n">v2_plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v2&#39;</span><span class="p">:</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">cond_v2</span><span class="p">})</span>
+
+<span class="n">v1_plot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">v1_plot_data</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v1:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">)</span>
+<span class="n">v2_plot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">v2_plot_data</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v2:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">)</span>
+
+<span class="n">v1_plot</span> <span class="o">|</span> <span class="n">v2_plot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/2_multivariate_prob_71_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>By themselves, I don't think these plots give you that much intuition about conditional distribution. But if you put them next to the joint distribution, you can see that the conditional distributions are what you get when you look at (scaled up) slices of the joint distribution from the side:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="conditional_joint.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To transfer your intuition from the discrete case to the continuous case, do what we did before: imagine the buckets shrinking down smaller and smaller to infinitesimals until the sums become integrals and the mass functions become densities.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Marginal-Probabilities">Marginal Probabilities<a class="anchor-link" href="#Marginal-Probabilities"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The "scaling factor" $\int_{-\infty}^\infty \phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2) dz_1$ or $\sum_{z_1} \phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)$ that we need to calculate the conditional distribution of $\mathbf Z_1$ only depends on what the value of $z_2$ is. You can think of it as summing up all the variation over $z_1$ at a given level of $z_2$. This quantity is called the <strong>marginal distribution</strong> of $\mathbf Z_2$ and is usually denoted $\phi_{\mathbf Z_2}(z_2)$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+I just boldly claimed that $\phi_{\mathbf Z_2}(z_2) = \int_{-\infty}^\infty \phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2) dz_1$ is a density function. But we know density functions have to a) integrate to 1 and b) be nonnegative. Show that this is the case for $\phi_{\mathbf Z_2}(z_2)$ as long as $\phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)$ is a valid density (also integates to 1 and is nonnegative). 
+
+What about for discrete random variables? What are the equivalent conditions that need to be proved? Can you prove them?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The marginal distribution of $\mathbf Z_2$ is what you get when you consider the factory $[\mathbf Z_1, \mathbf Z_2]$, but completely ignore the outputs $z_1$ and only look at the $z_2$s. You haven't changed the silo $\Omega$ at all (unlike conditioning). Thinking about it in terms of density plots, the 2D <em>joint</em> density plot is what you get when you stack up all of the outcomes on top of the labels of the points $(z_1, z_2)$ that they map to. The <em>marginal</em> density plot is what you get when you combine all of the stacks of outcomes that have the same $z_2$ label.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The marginal distribution allows for the calculation of things like $P(\mathbf Z_2 \in A)$ when a joint distribution is given. For example, what if we wanted to know the outright probability that someone is between 1.9 and 2.3 meters tall, regardless of their weight? If we start out with the joint distribution of height and weight, first we have to find the marginal distribution of height (by integrating out the weight variable), then integrate the resulting distribution between 1.9 and 2.3 to get the final answer.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Example">Example<a class="anchor-link" href="#Example"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's return again to $\mathbf V_1$ and $\mathbf V_2$. This time, we'll write functions that compute marginal probabilities:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">marginal_V1</span><span class="p">(</span><span class="n">v1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+    
+<span class="k">def</span> <span class="nf">marginal_V2</span><span class="p">(</span><span class="n">v2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can calculate probabilities like $P(\mathbf V_2 = 5)$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">marginal_V2</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.21999999999999997</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As before, we can make mass plots:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">marg_v1</span> <span class="o">=</span> <span class="p">[</span><span class="n">marginal_V1</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">v1</span><span class="p">]</span>
+<span class="n">marg_v2</span> <span class="o">=</span> <span class="p">[</span><span class="n">marginal_V2</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">v2</span><span class="p">]</span>
+
+<span class="n">v1_plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">v1</span><span class="p">,</span> <span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">marg_v1</span><span class="p">})</span>
+<span class="n">v2_plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v2&#39;</span><span class="p">:</span><span class="n">v2</span><span class="p">,</span> <span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">marg_v2</span><span class="p">})</span>
+
+<span class="n">v1_plot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">v1_plot_data</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v1:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">)</span>
+<span class="n">v2_plot</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">v2_plot_data</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v2:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">)</span>
+
+<span class="n">v1_plot</span> <span class="o">|</span> <span class="n">v2_plot</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/2_multivariate_prob_86_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are fine as-is, but it helps to understand what they mean when you arrange them alongside the joint distribtion like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="marginal_joint.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can see that the marginal distributions are what you get when you "squish" the joint distribution by summing along one axis. The picture also clarifies why it's called a <em>marginal</em> distribution: the sums are tallied up on the margins of the figure.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Relationship-between-joint,-marginal,-and-conditional-distributions">Relationship between joint, marginal, and conditional distributions<a class="anchor-link" href="#Relationship-between-joint,-marginal,-and-conditional-distributions"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The marginal distribution also allows for a simplified formula to compute conditional distributions, which works for both discrete and continuous random variables:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\phi_{\mathbf Z_1|\mathbf Z_2=z_2}(z_1) 
+=
+\frac
+{\phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)}
+{\phi_{\mathbf Z_2}(z_2)}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the definition of the conditional distribution, but written with the marginal distribution instead of the elaborated integral or sum. Writing it this way also makes it easy to see that the joint distribution is a product of the conditional and marginal distributions:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\phi_{\mathbf Z_1, \mathbf Z_2}(z_1,z_2)
+=
+\phi_{\mathbf Z_1|\mathbf Z_2=z_2}(z_1) 
+\phi_{\mathbf Z_2}(z_2)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This relationship is so important and so widely referenced that it often gets written in an even more abbreviated way: $\phi_{\mathbf Z_1, \mathbf Z_2} = \phi_{\mathbf Z_1|\mathbf Z_2} \phi_{\mathbf Z_2}$. Just remember this is communicating the same thing as what we have above.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can also go the other way by conditioning $\mathbf Z_2$ on $\mathbf Z_1$:</p>
+$$
+\phi_{\mathbf Z_2|\mathbf Z_1} \phi_{\mathbf Z_1}
+=
+\phi_{\mathbf Z_1, \mathbf Z_2} 
+= 
+\phi_{\mathbf Z_1|\mathbf Z_2} \phi_{\mathbf Z_2}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>which gives us a result called <strong>Bayes' Theorem</strong> (not to be confused with Bayesian statistics):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\phi_{\mathbf Z_2|\mathbf Z_1}
+= 
+\phi_{\mathbf Z_1|\mathbf Z_2} 
+\frac{\phi_{\mathbf Z_2}}{\phi_{\mathbf Z_1}}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Let's pretend that fruits are generated by some probability distribution that specifies their *color* $\mathbf C$, which can be red, yellow, or green, and their *type* $\mathbf T$, which can be apple, pear, or banana. Basically, we're imagining that a "fruit" is actually a pair of variables $c,t$ which come out of the factory $(\mathbf C, \mathbf T)$, which has some joint mass function $\phi_{\mathbf C, \mathbf T}(c,t)$. 
+
+Until this point, we've been extracting conditional and marginal distributions from the joint, but now we will see how conditional and marginal distributions can also be used to reconstruct a joint distribution.
+
+Let's pretend that we know the following: 
+- 50% of apples are red, 0% are yellow, 50% are green
+- 20% of pears are red, 40% are yellow, 40% are green
+- 0% of bananas are red, 90% are yellow, 10% are green
+
+Write out each of these nine facts as conditional probabilities. For instance "50% of apples are red" is $P(\mathbf C = \text{red} | \mathbf T = \text{apple}) = 0.5$. These are also statements about the probability mass function: $\phi_{C|T=\text{apple}}(\text{red}) = 0.5$
+
+Now let's pretend that 50% of all fruits are apples, 20% are pears, and 30% are bananas. Write the probability mass function for the marginal distribution of $\mathbf T$.
+
+Now we're ready to answer some questions. What is the probability that a fruit is a red apple? In other words, what is $P(\mathbf C = \text{red}, \mathbf T = \text{apple}) = \phi_{\mathbf C, \mathbf T}(\text{red}, \text{apple})$?
+
+Now you can any probability under the joint distribution that you like, which means you can calculate <i>any</i> marginals or conditonals. Give it a try: calculate the probability that a fruit is red: $P(\mathbf{C}=\text{red})$.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Consider three continuous random variables $\mathbf X$, $\mathbf Y$, and $\mathbf Z$. I've written python functions that implement $\phi_{\mathbf Z | \mathbf X = x, \mathbf Y = y}(z)$ and $\phi_{\mathbf X = x, \mathbf Y = y}(x,y)$. 
+
+```
+from scipy.stats import norm, multivariate_normal
+
+# call this like: conditional_z_xy(0,(2,1)) to get ϕ(Z=0|X=2,Y=1)
+def conditional_z_xy(z, condition): 
+    x, y = condition
+    return norm(x+y,1).pdf(z)
+
+def marginal_xy(x,y):
+    return multivariate_normal([0,0], [[1,0.5],[0.5,3]]).pdf((x,y))
+```
+
+Use these two to write a python function `joint_xyz` that implements $\phi_{\mathbf X, \mathbf Y, \mathbf Z}(x,y,z)$. What is $\phi_{\mathbf X, \mathbf Y, \mathbf Z}(1,1,2)$? The answer I get is about 0.22.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Higher-dimensions">Higher dimensions<a class="anchor-link" href="#Higher-dimensions"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In higher dimensions, it's possible to "marginalize out" one or several variables at once, which leaves you with a distribution over the remaining variables. For example, if we had a joint distribution of 5 variables given by $\phi_{\mathbf Z_1, \mathbf Z_2, \mathbf Z_3, \mathbf Z_4, \mathbf Z_5}(z_1, z_2, z_3, z_4, z_5)$, we could marginalize out $\mathbf Z_2$ and $\mathbf Z_5$ to get</p>
+$$
+\phi_{\mathbf Z_1, \mathbf Z_3, \mathbf Z_4}(z_1, z_3, z_4)
+=
+\int_{-\infty}^\infty \int_{-\infty}^\infty 
+\phi_{\mathbf Z_1, \mathbf Z_2, \mathbf Z_3, \mathbf Z_4, \mathbf Z_5}(z_1, z_2, z_3, z_4, z_5)
+dz_2 dz_5
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this case, the "marginal" distribution $\phi_{\mathbf Z_1, \mathbf Z_3, \mathbf Z_4}(z_1, z_3, z_4)$ is itself "joint" between $\mathbf Z_1$, $\mathbf Z_3$, and $\mathbf Z_4$. These "joint marginals" are necessary to condition on multiple variables at once:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\phi_{\mathbf Z_2, \mathbf Z_5|\mathbf Z_1=z_1, \mathbf Z_3=z_3, \mathbf Z_4=z_4}(z_2, z_5) 
+=
+\frac
+{\phi_{\mathbf Z_1, \mathbf Z_2, \mathbf Z_3, \mathbf Z_4, \mathbf Z_5}(z_1, z_2, z_3, z_4, z_5)}
+{\phi_{\mathbf Z_1, \mathbf Z_3, \mathbf Z_4}(z_1, z_3, z_4)}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The equations look gross because we're keeping track of all of the individual random variables, but the notation simplifies if use vector-valued (multivariate) random variables to give the different groups of variables their own names:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\mathbf X = [\mathbf Z_1, \mathbf Z_3, \mathbf Z_4]
+\quad
+\mathbf Y = [\mathbf Z_2, \mathbf Z_5]
+$$$$
+\phi_{\mathbf Y|\mathbf X=x}(y) 
+=
+\frac
+{\phi_{\mathbf X, \mathbf Y}(x,y)}
+{\phi_{\mathbf X}(x)}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This notation is very common. Just remember that now we are talking about conditioning or marginalizing on a vector-valued random variable instead of a scalar-valued random variable. You can always write it out in the longform notation if you get confused.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://i.imgflip.com/3g9ofp.jpg" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Here is a density function of three variables that I made up: 
+
+$$\phi(z_1, z_2, z_3) 
+=
+\begin{cases}
+8 z_1 z_2 z_3 & \text{if } z_1,z_2,z_3 \in [0,1] \\
+0 & \text{else}
+\end{cases}
+$$
+
+I <a href='https://www.wolframalpha.com/input/?i=int+from+0+to+1%28int+from+0+to+1%28int+from+0+to+1+of+%288*x*y*z%29+dx%29dz%29dy'>verified using WorlframAlpha</a> that the total probability is 1, and obviously it's not negative anywyere, so this is a valid density function.
+
+Calculate $P(\mathbf Z_1 \in [0,0.1])$. Also calculate $P(\mathbf Z_1 \in [0,0.1]| \mathbf Z_2 = z_2, \mathbf Z_3=z_3)$ for any values $z_2$ and $z_3$ of your choosing. Again, feel free to use WolframAlpha to evaluate the integrals if you don't feel like doing them. What's interesting about this result?
+
+Can you come up with another function $\phi(z_1, z_2, z_3)$ where this interesting result also holds?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Independence">Independence<a class="anchor-link" href="#Independence"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you saw in the previous exercise, there are cases where for two random variables $\mathbf U$ and $\mathbf V$ we have $\phi_{\mathbf U | \mathbf  V = v}(u) = \phi_{\mathbf U}(u)$ no matter what $v$ is. In other words, knowing $v$ never gives us any additional information about what $u$ might be. Visually, you can imagine that squishing the distribution along one axis gives you the same result as slicing somewhere along that axis and scaling the result. If this is the case,</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\phi_{\mathbf U, \mathbf V}
+= 
+\phi_{\mathbf U|\mathbf V} \phi_{\mathbf V}
+=
+\phi_{\mathbf U} \phi_{\mathbf V}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and we say that $\mathbf U$ and $\mathbf V$ are <strong>independent</strong>, which is often written $\mathbf U \perp \!\!\! \perp \mathbf V$. Independence is a property of the <em>factory</em> $[\mathbf U, \mathbf V]$. There is no way to definitively know that variables are independent just by looking at the data they produce.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+If $\phi_{\mathbf U | \mathbf  V = v}(u) = \phi_{\mathbf U}(u)$ no matter what $v$ is, use Bayes' theorem to show that $\phi_{\mathbf V | \mathbf  U = u}(v) = \phi_{\mathbf V}(v)$ no matter what $u$ is. In other words, show independence goes both ways.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When we're using random variables to model a real-world phenomenon, we transfer our intuition about the real world into conditions that the random variables must satisfy. For instance, if $\mathbf U$ and $\mathbf V$ are the results of two coin flips, saying $\mathbf U$ and $\mathbf V$ are independent is an assumption that the result of one coin flip can't affect the result of the next. It's not actually true, of course, but it's an intuition about the world that we've embedded in our model of it. Remember, however, that we never actually know what the real joint distribution of our data is. One reason independence is such a useful thing to assume is that it lets us break up the joint distribution into two parts that we can make guesses about separately. That often simplifies our models.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's also possible to have groups of variables that are independent of each other. For instance, if $\phi_{\mathbf Z_2, \mathbf Z_5|\mathbf Z_1=z_1, \mathbf Z_3=z_3, \mathbf Z_4=z_4}(z_2, z_5) = \phi_{\mathbf Z_2, \mathbf Z_5}(z_2, z_5)$ for all $z_1, z_3, z_4$, we'd say $\mathbf Z_2, \mathbf Z_5 \perp \!\!\! \perp \mathbf Z_1, \mathbf Z_3, \mathbf Z_4$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Python Tip:</b> 
+
+Note that if variables are given to you in terms of their marginal distributions and no joint relationship is specified, the implicit assumption is that they are independent so that the joint distribution is given by the product of the marginals. For instance, if we just say $\mathbf X \sim \mathcal N(0,1)$ and $\mathbf Z \sim \text{Unif}([0,1])$, then by convention we assume that the joint density of the two is the product of the marginals.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Conditional-independence">Conditional independence<a class="anchor-link" href="#Conditional-independence"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's also possible for two random variables $\mathbf U$ and $\mathbf V$ to be <strong>conditionally independent</strong>, given a third $\mathbf Z$. That just means that</p>
+$$
+\phi_{\mathbf U | \mathbf V, \mathbf Z} = \phi_{\mathbf U | \mathbf Z}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Or, equivalently, $\phi_{\mathbf U, \mathbf V | \mathbf Z} = \phi_{\mathbf U | \mathbf Z} \phi_{\mathbf V | \mathbf Z}$, and $\phi_{\mathbf U, \mathbf V, \mathbf Z} = \phi_{\mathbf U | \mathbf Z} \phi_{\mathbf V | \mathbf Z} \phi_{\mathbf Z}$.</p>
+<p>Conditional independence means that knowing the value of $u$ doesn't tell us anything about the value of $v$ above and beyond what $z$ does. Variables that are independent don't have to be conditionally independent, and vice-versa. An easy example to see this is in is $\mathbf U = \mathbf V = \mathbf Z$. In this example, $\mathbf U$ and $\mathbf V$ can't possibly independent because knowing $u$ means we know $v$ exactly. But if we already know $z$, $u$ actually can't tell us anything more about $v$ that we don't already know, so they are conditionally independent. Weird, but that's how it is.</p>
+<p>As with independence, conditional independence is a way of embedding our assumptions about the world into our probabilistic models. For instance, let's say that $\mathbf U$ is how long it takes me to get to work one morning, $\mathbf V$ is how long it takes my partner, and $\mathbf Z$ is the total strain on public transit in the city. Our commutes don't affect each other, but they are both affected by delays on public transit. If there are no other factors that affect both of our commutes, then it's reasonable to assume that our commute times are are conditionally independent given the transit strain. Knowing how long it took her to get to work won't tell you anything about how long it took me if you already know what the transit strain was like. But if you don't know the transit strain and I tell you it took me a long time to get to work, it's likely that it also took my partner a long time. Thus the two variables aren't independent,  just conditionally indpendent.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Let's say the amount of time it takes me to get to work on a particular morning is determined by a random variable $\mathbf U$ and the amount of time it takes my partner is given by $\mathbf V$. The transit strain, which is affected by a lot of things, is all rolled up into one number represented by $\mathbf Z$.
+
+If $\mathbf Z \sim \mathcal N(0,1)$ and $\mathbf V|(\mathbf Z=z) \sim \mathcal N(20+5z,3)$ and $\mathbf U|(\mathbf Z=z) \sim \mathcal N(30+4z,7)$, what is $P(\mathbf U < 20, \mathbf V < 20)$? That is, what's the probability that we both get to work in under 20 minutes? You can express your answer in terms of integrals of a function of $u$, $v$, and $z$. No need to compute the integrals.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Transformation-of-Random-Variables">Transformation of Random Variables<a class="anchor-link" href="#Transformation-of-Random-Variables"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The last thing we need before getting into machine learning is a way to do algebra with random variables. For instance, what if I have a data factory $\mathbf U$, which makes $u$s and a factory $\mathbf V$ that makes $v$s. But instead of showing you $u$ and $v$, I add them together and just show you $z = u+v$. You don't know about $\mathbf U$ or $\mathbf V$. From your perspective, there is a factory somewhere called $\mathbf Z$ that's making the $z$s. Similarly, what if instead of $v$ I showed you $z = v^2 + 6$? Again, you would only think there were a $\mathbf Z$ factory.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can apply all of our usual algebraic tools to random variables: adding and subtracting them, multiplying them, applying functions, etc. etc. You can think of all of this as "post-processing" of the realization(s) produced by the random variable(s). The key insight is that if you step back, you still have something that's mapping outcomes in the sample space to realizations: that's a random variable. Here's a visual example where two variables $\mathbf U$ and $\mathbf V$ are transformed by some function $h$ to produce what acts like a single random variable $\mathbf Z$. We write this $\mathbf Z = h(\mathbf V, \mathbf U$):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="transform_rv.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The question is: how do statements about the probability of $\mathbf U$ or $\mathbf V$ translate to statements about the probability of $\mathbf Z$? In other words, what's $P(\mathbf Z \in A)$ in terms of probabilities or $\mathbf U$ and $\mathbf V$?</p>
+<p>Ultimately, the probability of a set of realizations is the volume of outcomes in the sample space that correspond to that set. With a single variable, working back from the set of realizations $A$ to the set of outcomes that correspond to those is a one-step process: find whatever $\mathbf Z^{-1}(A)$ is, then get its volume. But now we have to work back through a chain of transformations. First we need to find the set of points $[u,v]$ that map to $z \in A$ under the transformation $h$. Call that set $h^{-1}(A)$. Now we need to find the set of outcomes that produce $[u,v] \in h^{-1}(A)$. Call that set $[\mathbf U, \mathbf V]^{-1}(h^{-1}(A))$  Finally, we need to find the volume of that set: $\mathbb P([\mathbf U, \mathbf V]^{-1}(h^{-1}(A)))$. If we have the joint density of $\mathbf U$ and $\mathbf V$, we can automate the last step:</p>
+$$P(\mathbf Z \in A) = \mathbb P([\mathbf U, \mathbf V]^{-1}(h^{-1}(A))) = \int_{h^{-1}(A)} \phi_{\mathbf U, \mathbf V}(u,v) du dv$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>with the integral replaced by a sum over $A$ if $\mathbf U$ and $\mathbf V$ are discrete.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can illustrate with our example in code. Let's say $\mathbf V_1$ and $\mathbf V_2$ are distributed with the mass function shown below (same as what we were working with before):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)))</span> <span class="c1"># all the possible combinations of (v1, v2)</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="p">[</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span>
+
+<span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">v1</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span><span class="n">v2</span><span class="p">,</span> <span class="s1">&#39;ϕ&#39;</span><span class="p">:</span><span class="n">prob</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v1:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;v2:O&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;ϕ&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/2_multivariate_prob_129_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's say $\mathbf Z = \mathbf V_1 + 3\mathbf V_2^2$. What's $P(\mathbf Z &lt; 10)$? For $\mathbf Z$ to be less than $10$, $\mathbf V_1 + 3\mathbf V_2^2$ has to be less than $10$, so that defines the region we have to sum over:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="mi">10</span>
+
+<span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">v1</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span><span class="n">v2</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span><span class="n">a</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">mark_rect</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v1:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;v2:O&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;A:N&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/2_multivariate_prob_131_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That is, for $h(v_1, v_2) = v_1 + 3v_2^2$, the preimage $h^{-1}((-\infty, 10])$ is $\{[v_1, v_2]: v_1 + 3v_2^2 &lt; 10\}$, which is the set illustrated above in orange.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And, as usual, to calculate the probability of a realization in this region we simply sum up the joint distribution over the region:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="k">if</span> <span class="n">v1</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="n">v2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.011</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There you have it. This is often more difficult with continuous random variables since finding preimages and integrating over weird sets can be a hassle. But the basic idea is the same, regardless of how much bean-counting you have to do to get the result. The point isn't to be able to do it, it's to understand what is happening in theory.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Joint-and-conditional-distributions-of-transformed-variables">Joint and conditional distributions of transformed variables<a class="anchor-link" href="#Joint-and-conditional-distributions-of-transformed-variables"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's go back to our factories $\mathbf U$ and $\mathbf V$. The outputs $u$ and $v$ are transformed together with some postprocessing $h$ to give $z$, so it looks like there is just one factory $\mathbf Z$. But what if I showed you $u$, $v$, and $z$ without telling you that $z$ actually comes from transforming $u$ and $v$? It would then look to you like a factory $[\mathbf U, \mathbf V, \mathbf Z]$. And, indeed, we can define joint, conditional, and marginal distributions on these random variables just as we had when they weren't transformations of each other. That will let us calculate things like the probability that $\mathbf U$ is 4 if $\mathbf Z$ is 10.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is important for machine learning. For example, if we assume that $\mathbf U$ is the "code" that determines whether or not a cat walks into the frame of a picture when it is being taken, and $h()$ is a function that translates the presence or absence of that cat, as well as a bunch of other variables $\mathbf V$ (like what else is in the frame) into a matrix of pixels $z$. Then $\mathbf Z = h(\mathbf U, \mathbf V)$ and $P(\mathbf U=1|\mathbf Z=z)$ is the probability that there is a cat in a picture, given that we observe the pixels $z$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Let's say $\mathbf U$ and $\mathbf V$ are some discrete random variables with some joint mass $\phi_{\mathbf U, \mathbf V}$ and let $\mathbf Z = \mathbf U + \mathbf V$. 
+
+What is $P(\mathbf Z=2 | \mathbf U=1, \mathbf V=0)$? In other words, if we see $u$ is 1 and $v$ is 0, what's the chance that $z$ comes out as 2? Why does it not matter what the joint mass $\phi_{\mathbf U, \mathbf V}$ is? What other values of $z$, $u$, and $v$ is this the case for?
+
+For any values $u$ and $v$, what is $P(\mathbf Z=u+v | \mathbf U=u, \mathbf V=v)$ in terms of $\phi_{\mathbf U, \mathbf V}(u,v)$?
+
+Use what you have to find a way to write the whole conditional mass $\phi_{ \mathbf Z | \mathbf U, \mathbf V}$ in terms of $\phi_{\mathbf U, \mathbf V}$.
+
+What is the joint mass $\phi_{\mathbf U, \mathbf V, \mathbf Z}$? Recall the relationship between conditional, joint, and marginal distributions.
+
+What is the joint mass $\phi_{\mathbf U, \mathbf V, \mathbf Z}$ in terms of $\phi_{\mathbf U, \mathbf V}$ if $\mathbf Z = h(\mathbf U, \mathbf V)$ instead of $\mathbf Z =\mathbf U + \mathbf V$?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Sometimes you will see conditions that are transformations of random variables. For instance, what's $P(\mathbf V_1 &lt; 5 | \mathbf V_1 + \mathbf V_2 = 10)$? One way to understand that conditioning mathematically is to break it down into two steps. First create a new variable $\mathbf Z = \mathbf V_1 + \mathbf V_2$, then calculate $P(\mathbf V_1 | \mathbf Z = 10)$. Alternatively, you can calculate the sums/integrals directly by integrating the joint density over the appropriate regions:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">numerator</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="k">if</span> <span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span> <span class="o">==</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">v1</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">denominator</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">joint</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="k">if</span> <span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span> <span class="o">==</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">numerator</span><span class="o">/</span><span class="n">denominator</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.3147410358565737</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>But, more generally, you can also derive whole densities that are conditioned on transformations, like $\phi_{\mathbf V_1 | \mathbf V_1 + \mathbf V_2 = 10}(v_1)$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Chapter-summary">Chapter summary<a class="anchor-link" href="#Chapter-summary"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Multivariate random variables are groups of single random variables and their distribution together is called a joint distribution. The joint can be integrated/summed to yield the probability that a set of conditions on all the variables is simultaneously satisfied.</p>
+<p>The joint distribution can also be used to calculate conditional probabilities, which are the probabilities that one or more random variables satisfy a condition, given that other random variables satisfy some other conditon. We used our intuition about the sample space to realize that conditional probabilities are just ratios of volumes of subsets of the sample space. Thus we can calculate conditional probabilities by taking the ratio of two integrals or sums of the joint density or mass function.</p>
+<p>We took the idea further to define conditioned random variables, which are random variables that operate on a subset of the original sample space that's defined by a condition on other random variables. The conditional distribution is easy to extract from the joint: just hardcode the value of the conditioning variables in the joint distribution, and divide by a scaling factor so that the conditioned distribution still integrates/sums to 1.</p>
+<p>It turns out that the scaling factor, when viewed as a function of the hardcoded value, is itself a probability distribution that we call the marginal. That allows us to write any joint distribution as a product of a conditional distribution and a marginal distribution. Bayes theorem uses that relation to equate different products of conditional and marginal distribution via the joint distribution.</p>
+<p>We also saw that there are joint distributions where conditioning on some variables gives you the same result as marginalizing them out. When this is the case, we say that the variables that are marginalized out are independent from those that you have the marginal of. Independence lets us factor the joint distribution into a product of marginals. Independence means that information about one variable (or set of variables) doesn't tell you anything about another (or another set). A similar factorization holds if the variables are only conditionally independent, which means that information about one variable (or set) doesn't tell you anything about another above and beyond what the conditioning variable or variables tell you.</p>
+<p>Lastly, we saw that random variables can be transformed algebraically to yield new random variables. The key to figuring out how the distributions are related is to know how to find the pre-image of sets under the transformation. We also saw that transformations can be marginalized over, conditoned on, etc. just the same as other random variables.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/probability/1_univariate_prob.html">
+      〈 <span class="u-margin-right-tiny"></span> Univariate Prob
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/CSL/probability/3_distribution_properties.html">
+      Distribution Properties <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

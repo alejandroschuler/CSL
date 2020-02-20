@@ -16,6 +16,14 @@
 # - divider: true  # Will insert a divider in the sidebar
 # - header: My Header  # Will insert a header with no link in the sidebar
 
+- url: /introduction
+
+- url: /probability/0_motivation
+  sections:
+  - url: /probability/1_univariate_prob
+  - url: /probability/2_multivariate_prob
+  - url: /probability/3_distribution_properties
+
 - url: /grad-descent/grad-descent
 
 - url: /linreg-dl-torch/intro

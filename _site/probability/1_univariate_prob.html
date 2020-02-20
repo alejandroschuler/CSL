@@ -1,0 +1,2926 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Univariate Prob</title>
+  <meta name="description" content="        Univariate Prob        import numpy as np    Univariate Probability In the example above, we demonstrated some code that generates fake data $X$ and ...">
+
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/probability/1_univariate_prob.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
+
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/probability/1_univariate_prob.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Univariate Prob" />
+<meta property="og:description" content="        Univariate Prob        import numpy as np    Univariate Probability In the example above, we demonstrated some code that generates fake data $X$ and ..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/probability/1_univariate_prob.html",
+  "headline": "Univariate Prob",
+  "datePublished": "2020-02-18T15:15:36-08:00",
+  "dateModified": "2020-02-18T15:15:36-08:00",
+  "description": "        Univariate Prob        import numpy as np    Univariate Probability In the example above, we demonstrated some code that generates fake data $X$ and ...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://alejandroschuler.github.io/CSL",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://alejandroschuler.github.io/CSL",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/CSL/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/CSL/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/CSL/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/CSL/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/CSL';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/CSL/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/CSL/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/CSL/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/CSL/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/CSL/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/CSL/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/CSL/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/CSL/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: "content/probability"
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/introduction">
+        <a class="c-sidebar__entry"
+          href="/CSL/introduction.html"
+        >
+          
+            1.
+          
+          Introduction
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/probability/0_motivation">
+        <a class="c-sidebar__entry"
+          href="/CSL/probability/0_motivation.html"
+        >
+          
+            2.
+          
+          Motivation
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/1_univariate_prob">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/1_univariate_prob.html"
+              >
+                
+                  2.1
+                
+                Univariate Prob
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/2_multivariate_prob">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/2_multivariate_prob.html"
+              >
+                
+                  2.2
+                
+                Multivariate Prob
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/probability/3_distribution_properties">
+              <a class="c-sidebar__entry"
+                href="/CSL/probability/3_distribution_properties.html"
+              >
+                
+                  2.3
+                
+                Distribution Properties
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/grad-descent/grad-descent">
+        <a class="c-sidebar__entry"
+          href="/CSL/grad-descent/grad-descent.html"
+        >
+          
+            3.
+          
+          Fitting Models with Gradient Descent
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linreg-dl-torch/intro">
+        <a class="c-sidebar__entry"
+          href="/CSL/linreg-dl-torch/intro.html"
+        >
+          
+            4.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg.html"
+              >
+                
+                  4.1
+                
+                Linear Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/logistic-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/logistic-reg.html"
+              >
+                
+                  4.2
+                
+                Logistic Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg-complex">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg-complex.html"
+              >
+                
+                  4.3
+                
+                Adding Complexity
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/abstracting-layers">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/abstracting-layers.html"
+              >
+                
+                  4.4
+                
+                Abstracting our Code
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        <a href="/CSL/content/probability/1_univariate_prob.ipynb" download>
+        <button id="interact-button-download" class="interact-button">.ipynb</button>
+        </a>
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+  
+  
+  
+  
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/CSL/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/CSL/search.html" class="topbar-right-button" id="search-button">
+    <img src="/CSL/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Univariate Prob</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Univariate-Probability">Univariate Probability<a class="anchor-link" href="#Univariate-Probability"> </a></h1>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the example above, we demonstrated some code that generates fake data $X$ and $Y$. On the other hand, real data comes from the real world, not from some python code. For every dataset, there is an immensely complex network of causal interactions that ultimately "produces" the data.</p>
+<p>For example, in our blood pressure example, a patient's pre-treatment vital signs are caused by their physiological state: their genetics, life history, what they ate for breakfast that morning, whether or not they just ran up a flight of stairs, and so on and so forth. Taking a drug influences the levels of certain chemicals in the blood, which are taken up at particular rates in certain organs by certain enzymes, the levels of which are impacted by the patient's genetics and prior physiological state, which was influenced by their life history, etc. Thus the impact of the drug on cellular processes is mediated by these factors. The cells respond by increasing or decreasing their production of some proteins or metabolites, which, in combination with the immediate condition of the patient when the measurement is taken, determines the post-treatment blood pressure.</p>
+<p>Or, let's say we're trying to determine whether or not there is a cat in a photograph. The cat being in front of the camera when the photo was taken ($y_i$) could be caused by a huge number of factors, and the values of the pixels in the photograph ($x_i$) are caused by the reflection of photons emitted from sources of light off the cat (and other objects) and the mechanics of the detection of light inside the camera.</p>
+<p>In a nutshell, the world is complicated. There is no way that mere mortals could ever write code accurate enough to perfectly simulate the exact processes that produce data about complex real-world phenomena.</p>
+<p>But, despite the complexity, you should start thinking about that complex web of causality as "code" that's being run in some cosmic simulation. Maybe you can imagine that there are "data gods" that write and are running this code. We'll never see their code, and we'll never be able to understand it, but somewhere, out there, that metaphysical code is running, and it's generating the observations that we see in our data.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can think of that code as a little "factory" that pumps out observations of $x_i$ and $y_i$, one at a time. The factory is behind a curtain that we can't ever look behind, but we can see the pile of $x_i$s and $y_i$s that come out of it, which are our $X$ and $Y$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="factory.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we had that code, we'd be able to reverse engineer it to find the most likely value of $y_i$ given $x_i$ as accurately as would be possible with those predictors. In practice, however, we can only build a <em>model</em> of that code. Our model will never capture the complexities of reality, the same way that a model plane doesn't even begin to approach the complexity of a real aircraft. But, ideally, it will be similar enough in ways that are important for the task at hand: if we're using a model plane just to demonstrate what an aircraft might look like, we don't need the model to have functioning jet engines. And if all we need to do is estimate $y_i$ for a new $x_i$, we don't exactly need to understand the complex web of causality linking the two together.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We do, however, need a way to talk about the relationship that $x_i$ and $y_i$ might have. And to do that, we need a way to talk abstractly about the "code" or "data factory" that's behind the curtain, the same way we developed abstract terms to describe our data. Thankfully, the language of probability works perfectly for that.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Random-variables-are-factories-that-generate-data">Random variables are factories that generate data<a class="anchor-link" href="#Random-variables-are-factories-that-generate-data"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The data factories we're interested in are the kind that output $x_i$s and $y_i$s, but to understand how these factories work it's better to consider a simpler factory that produces one number at a time, instead of one vector $x_i$ and one number $y_i$.</p>
+<p>We'll call our factory $\mathbf Z$. This factory pushes out one value $z_i$ at a time. Furthermore, let's say that half the time you get a $1$ and half the time you get a $0$; those are the only values that the $\mathbf Z$ factory can produce. And the factory is built to reset itself between producing each value, so whatever $z_i$ is has no impact on $z_{i+1}$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the language of probability theory, $z_i$ are <strong>realizations</strong> from $\mathbf Z$, which has a <strong>distribution</strong>:</p>
+$$
+\begin{array}{rcl}
+P(\mathbf Z = 0) &amp;=&amp; 1/2 \\ 
+P(\mathbf Z = 1) &amp;=&amp; 1/2
+\end{array}
+\quad \quad \text{or} \quad \quad
+P(\mathbf Z=z) =
+\begin{cases}
+1/2 &amp; \text{for }z=0 \\
+1/2 &amp; \text{for }z=1
+\end{cases}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What we've been loosely calling a "factory" is a <strong>random variable</strong> in the language of probability theory. But that's just a name. You can keep thinking of them as factories, or code, that generate data.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+Random variables are often written in uppercase, (e.g. Z) and their realizations in lowercase (z). We're going to be using uppercase for matrices (and sets), so I'm going to use boldface in conjunction with uppercase ($\mathbf Z$) to denote random variables.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ok, so if the random variable is a factory, and the realizations of the random variable are the output of that factory (the data we get to see), then how do we read a statement like $P(\mathbf Z = 0) = 1/2$? Well, that just means that the value $z$ that $\mathbf Z$ produces is $0$ half of the time. But what exactly do we mean by "half the time"? While we usually don't have to think deeper than this, you'll see later that it is sometimes necessary to have a more rigorous definition of probability.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Remember that the entire purpose of talking about these factories is so that we can imagine what's behind the curtain, producing the data that we observe. Think of a real-world scenario where we could pretend that the data we observe was generated by $\mathbf Z$. In other words, what's something we could measure in the real world that we might model using $\bf Z$?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's build that definition. We'll start with some raw materials. All factories have raw materials that go into them, which end up being turned into the finished product. In a similar way, random variables have inputs which get mapped to realized values. We'll call them "data ore": the unrefined precursor that gets transformed by our factory (random variable $\mathbf Z$) into the data product $z$. The data ore exists in units (data ore nuggets). The factory takes one nugget at a time and transforms it into a realization.</p>
+<p>The nuggets are kept in an big silo called $\Omega$ before they go to $\mathbf Z$. This silo is filled to the brim with <em>all</em> of the possible nuggets that could be fed into the factory, one of each of them. It's also a magic silo, so when you take out a nugget, another one exactly like it is mined out of the depths of the cosmos to take its place in the silo.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="factory_rv.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each nugget is gets transformed into a value of $z$, but the process isn't random. For instance, if a nugget named "Karl" turned into a 1 when fed through $\mathbf Z$, then we would <em>always</em> get a 1 when Karl goes into $\mathbf Z$. But we know that sometimes $\mathbf Z$ produces 0s, so there must be other nuggets whose destiny is to become 0s, just like Karl's destiny is to be a 1. The "randomness" in $\mathbf Z$ isn't caused by what's in the factory, it's caused by randomly picking a nugget to throw into it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can even code up our little example, imagining that we have 10 nuggets, boringly named "0", "1", "2"... "9":</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> <span class="c1"># factory (random variable)</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]):</span> <span class="c1"># these are the outcomes (nuggets) that map to the value 1 </span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]):</span> <span class="c1"># these are the outcomes (nuggets) that map to the value 0 </span>
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span> <span class="c1"># sample space (silo) of outcomes (ore nuggets) attached to Z</span>
+    
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="k">def</span> <span class="nf">realize</span><span class="p">(</span><span class="n">rand_var</span><span class="p">):</span> <span class="c1"># run the assembly line!</span>
+    <span class="n">ω</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># grab a single nugget out of the silo at random</span>
+    <span class="k">return</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="c1"># push it through the factory</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Python Tip:</b> 
+
+`random.sample(x,n)` grabs `n` values at random out of the set `x` and returns them as a list.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here are 20 observations $z=[z_1, z_2, \dots z_{20}]$, fresh off the assembly line of the $\mathbf Z$ factory:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">realize</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span> 
+<span class="n">z</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we're ready to define probability: the probability of an realization (a particular value $z$) is just the proportion of the silo that's taken up by nuggets that are destined to become that value $z$ when fed through $\mathbf Z$. That's it. We denote that proportion with the notation $P(\mathbf Z = z)$. In our example above, saying $P(\mathbf Z = 1) = 1/2$ means that half of all the possible nuggets that could go into $\mathbf Z$ would produce a 1, assuming each nugget takes up the same amount of space.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That's a definition we can code up:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">P</span><span class="p">(</span><span class="n">rand_var</span><span class="p">,</span> <span class="n">realization</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ω</span> <span class="k">for</span> <span class="n">ω</span> <span class="ow">in</span> <span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span> <span class="k">if</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="ow">in</span> <span class="n">realization</span><span class="p">)</span> <span class="c1"># what are all the nuggets that map to the value(s) in question?</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span><span class="p">)</span> <span class="c1"># what is the &quot;volume&quot; of those nuggets relative to the volume of the silo Ω? (assuming each takes up the same amount of space)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,[</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># P(z=0), P(z=1)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(0.5, 0.5)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So to build a factory that makes 0s and 1s in even proportions, all I had to do was evenly split up the number of nuggets that are destined to produce each value. It also doesn't matter what I call the nuggets. For example, here is equally good code to implement $\mathbf Z$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> <span class="c1"># factory (random variable)</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="o">-</span><span class="mi">1234</span><span class="p">]):</span> <span class="c1"># these are the outcomes (nuggets) that map to the value 1 </span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">980123</span><span class="p">]):</span> <span class="c1"># these are the outcomes (nuggets) that map to the value 0 </span>
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">980123</span><span class="p">,</span> <span class="o">-</span><span class="mi">1234</span><span class="p">])</span> <span class="c1"># sample space (silo) of outcomes (ore nuggets) attached to Z</span>
+
+<span class="p">[</span><span class="n">realize</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1]</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Write code for a new random variable $\mathbf W$ that behaves like this:
+
+$$
+P(\mathbf W=w) =
+\begin{cases}
+0.1 \dots  & \text{for }w=-1 \\
+0.4 \dots & \text{for }w=0 \\
+0.2 & \text{for }w=1 \\
+0.3 & \text{for }w=2
+\end{cases}
+$$
+
+You'll need to make your own nugget silo `Ω` and define the function `W(ω)`. Test it out using the `realize()` and `P()` functions we wrote. Use `P()` to calculate $P(\mathbf W =0)$.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="A-mathematical-description-of-random-variables">A mathematical description of random variables<a class="anchor-link" href="#A-mathematical-description-of-random-variables"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTCXQ098kIFldwWw8VEPSR_q9Tbk1BFjuhFH8V8NVPskxrtVj7&amp;s" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you're looking at this and thinking that I can't possibly be serious, that the foundations of statistics and machine learning can't possibly be built up from imagining data factories and magical silos... well, you're wrong. Sure, I've concocted a somewhat elaborate metaphor, but it's a metaphor that accurately describes how these otherwise very abstract concepts relate to each other. If you can look at something like $P(\mathbf Z = z) := \mathbb P(\{\omega \in \Omega \vert \mathbf Z(w)=z\})$ and immediately come away with an understanding of what that means, all the more power to you. But I don't. At least not without first building up an intuition for each of the components.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In probability theory, the silo $\Omega$ is called a <strong>sample space</strong> and the data ore nuggets $\omega$ are called <strong>outcomes</strong> (not to be confused with what we call the variable we want to predict in machine learning). A random variable $\mathbf Z$ is defined as a function that maps an element $\omega$ of $\Omega$ to a realization $z$. The probability of a realization $z$ is the <strong>measure</strong> (volume, or proportion of total volume) of the set of outcomes (data ore nuggets) that map to $z$ (are destined to be transformed to $z$ by $\mathbf Z$).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="prob_preimage.png" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When I talk about these things outside of the context of explaining them, I do call them by their real names (e.g. random variable, sample space, etc.) because that's what people have called them for nearly a century. But when I close my eyes and <em>reason</em> about these concepts, I'm thinking about something tangible, like a factory. As we go on I'm going to introduce more mathematical notation as we need it, and I'm going to wean off the factory metaphor, but I encourage you to keep building your intuition about these concepts instead of thinking about them as abstract symbols on a page. The symbols are just a convenient shorthand for the ideas. The only reason to know the standard names and symbols is to be able to read and understand what others have written. If you find yourself skimming over an equation- stop. Read it slowly and think about what each part means.</p>
+<p>So now that we're here, let's demystify the notation in that equation I dropped up above! Here it is again:</p>
+$$P(\mathbf Z = z) := \mathbb P(\{\omega \in \Omega \vert \mathbf Z(w)=z\})$$<p>To start, the $:=$ means "the thing on the left is defined as the thing on the right". So we're saying that when we write "$P(\mathbf Z = z)$", we really mean whatever "$\mathbb P(\{\omega \in \Omega \vert \mathbf Z(\omega)=z\})$" is. Ok, next up is <a href="https://www.mathsisfun.com/sets/set-builder-notation.html">set-builder notation</a>: you can read $\{a\in A | f(a) = 1\}$ as "the collection of all the elements $a$ in the set $A$ <em>such that</em> $f(a)=1$". So $\{\omega \in \Omega \vert \mathbf Z(\omega)=z\}$ is the set of outcomes $\omega$ that become $z$ when passed through the random variable $\mathbf Z$. There may be many such outcomes, or just one, or none, so the set can be big, small, or nonexistent. We will write the name of that set a little more compactly using the notation $\mathbf Z^{-1}(z) = \{\omega \in \Omega \vert \mathbf Z(w)=z\}$ since usually $f^{-1}(y)$ denotes the element $x$ such that $f(x)=y$. We call this the <strong>preimage</strong> of $z$ under $\mathbf Z$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+
+Preimages aren't just for random variables- you can define preimages for any function. If the function is $y=f(x)$, the preimage of a set $A$ (denoted $f^{-1}(A)$) is a set of all of the values $x$ that become one of the $y$ values in $A$ when shoved through $f$. The set $A$ is called the image of $f^{-1}(A)$ under $f$.
+
+For example, if $f(x) = x^2$ and $A$ is the set of numbers between 0 and 4, then $f^{-1}(A)$ is the set of numbers between -2 and 2, since every number between -2 and 2, when squared, is between 0 and 4, and these are the only numbers for which that is the case. Another example: if $f(x) = \cos(x)$ and $A=\{1\}$, then $f^{-1}(A) = \{\dots, -4\pi, -2\pi, 0, 2\pi, 4\pi, 6\pi, \dots\}$. Plot or draw a picture of $\cos(x)$ and mark the points where $\cos(x) = 1$ to see why.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, we have $\mathbb P()$, which is the <a href="https://en.wikipedia.org/wiki/Probability_measure"><strong>probability measure</strong></a>. Think of it as a function that measures the proportion of all of the outcomes in $\Omega$ that are contained in the subset $\mathbf Z^{-1}(z)$. This is basically the volume of space that the nuggets in $\mathbf Z^{-1}(z)$ take up in the silo $\Omega$. By convention, we say that $\Omega$ has volume 1 so that the volume of $\mathbf Z^{-1}(z)$ is also the proportion of volume that $\mathbf Z^{-1}(z)$ takes up in $\Omega$. In the figure above, that's represented by the area of the shaded gray region.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you put all of that together, you'll see that it's exactly the same as the definition we put together using our factory analogy.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can also talk about the probability of sets of realizations instead of just single realization $z$. For instance, what's the probability that $z$ is 0 <em>or</em> 1? We write that like $P(\mathbf Z \in A)$, where $A$ is the set of possible realizations, like $\{0,1\}$. That's more general than the probability of a single realization $z$: $P(\mathbf Z = z)$. The definition is the same though: $P(\mathbf Z \in A) := \mathbb P(\mathbf Z^{-1}(A))$. All we need to do is count up the volume of all the nugets that produce any of the values that are in $A$, instead of just the nuggets that produce $z$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>REMEMBER:</b> 
+
+If your eyes glaze over every time you see mathematical notation, don't worry. Remember, that's normal. Just slow down and read it again. Try and think about what it <i>means</i>.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you look at the code we wrote before, you'll notice it can already calculate probabilities for sets of realizations:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">P</span><span class="p">(</span><span class="n">rand_var</span><span class="p">,</span> <span class="n">realization</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ω</span> <span class="k">for</span> <span class="n">ω</span> <span class="ow">in</span> <span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span> <span class="k">if</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="ow">in</span> <span class="n">realization</span><span class="p">)</span> <span class="c1"># what are all the nuggets that map to the value(s) in question?</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">rand_var</span><span class="o">.</span><span class="n">Ω</span><span class="p">)</span> <span class="c1"># what is the &quot;volume&quot; of those nuggets relative to the volume of the silo Ω? (assuming each takes up the same amount of space)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.5</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1.0</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Properties-of-probability">Properties of probability<a class="anchor-link" href="#Properties-of-probability"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ok- I promised that it would be useful to define probability in a more rigorous way than "$z$ happens $x$% of the time". Now we're going to see why.</p>
+<p>To start with, let's "derive" a relatively simple fact: for any subset of possible realizations $A$,</p>
+$$P(\mathbf Z \in A) \in [0,1]$$<p>This is a compact way of writing that for any subset of realizations, the volume of the subset of outcomes $\mathbf Z^{-1}(A)$ that map to those realzations is a number between 0 and 1. Why? Well, if the volume of our silo $\Omega$ is 1, the volume of any subset of that has to be less than or equal to 1. And there is no subset that can occupy negative space, so the volume has to be greater than or equal to 0.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here's a trickier one: if two sets of realizations $A$ and $B$ have no realizations in common, then the probability of a realization from either of them is the sum of the probabilities of a realization from each of them. Mathematically:</p>
+$$A \cap B = 0 \rightarrow P(\mathbf Z \in A \cup B) = P(\mathbf Z \in A) + P(\mathbf Z \in B)$$<p>$A \cap B$ is read as "the intersection of the sets $A$ and $B$", which is the set of elements that are in both sets. It's the middle part of a Venn diagram. $A \cup B$ is read  as "the union of $A$ and $B$", which is all of the elements in either set- that's the entirety of the Venn diagram.</p>
+<p>That also seems cryptic until you think about it in terms of quantities of ore nuggets that produce certain values when fed through the factory. If you take all the ore nuggets that end up becoming any of the values in $A$ (call that set of nuggets $\mathbf Z^{-1}(A)$), and all the nuggets that end up becoming values in $B$ (call that $\mathbf Z^{-1}(B)$), then the total volume that end up becoming values in either $A$ or $B$ is the sum of the volumes that become $A$ and those that become $B$. This is true as long as there are no nuggets that become both a realization in $A$ and a realization in $B$ because we would double-count these. But we've also ensured that these do not exist since each nugget is destined to become only a single value, and we made sure that there is no overlap between $A$ and $B$.</p>
+<p>If there is overlap, the proposition doesn't hold. For instance, if $A= \{0,1\}$ and $B = \{0\}$, every element of $B$ is also an element of $A$, so the volume of $Z^{-1}(A \cup B)$ is the volume of $Z^{-1}(A)$, which is not the volume of $Z^{-1}(A)$ plus the volume of $Z^{-1}(B)$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can even use our code from before to demonstrate this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">A</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">B</span><span class="p">)</span> <span class="o">==</span> <span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">A</span><span class="o">|</span><span class="n">B</span><span class="p">)</span> <span class="c1"># in python, set union ∪ is written | because an element is in A∪B if it is in A OR B (A|B)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">A</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">B</span><span class="p">)</span> <span class="o">==</span> <span class="n">P</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">A</span><span class="o">|</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>False</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Draw a picture based on the figure above that helps explain why $A \cap B = 0 \rightarrow P(\mathbf Z \in A \cup B) = P(\mathbf Z \in A) + P(\mathbf Z \in B)$
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Let's say the sets $A$ and $B$ have some overlap. Can you come up with a formula to calculate $P(\mathbf Z \in A \cup B)$ given $P(\mathbf Z \in A)$, $P(\mathbf Z \in  B)$, and $P(\mathbf Z \in A \cap B)$?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The upshot of this is that the probability of a set of outcomes is the same as the sum of their probabilities:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+P(\mathbf Z \in A) 
+=
+\mathbb P (\mathbf Z^{-1}(A))
+=
+\sum_{\omega \in Z^{-1}(A)} \mathbb P(\omega)
+= 
+\sum_{Z^{-1}(A)} \mathbb P(\omega)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+In all our code so far we've been using a finite sample set with $n$ outcomes and we've chosen to use $\mathbb P(B)= |B|/n$ where $|B|$ denotes the number of elements in $B$. That's called the <b>counting measure</b> It helps your understanding, however, to know that it isn't the only probability measure we could use. We could instead say that some outcomes take up twice as much space in the silo, or that they all have totally different volumes. As long as whatever $\mathbb P$ we come up with satisfies $\mathbb P(\Omega)=1$ and $\mathbb P(\bigcup B_i)= \sum \mathbb P(B_i)$ for non-overlapping sets $B_i$ (of outcomes), it's a legitimate choice.
+
+Let's go back to this version of $\mathbf Z$:
+
+```
+def Z(ω): # factory (random variable)
+    if ω in set([1,4,5,8,9]): # these are the outcomes (nuggets) that map to the value 1 
+        return 1
+    if ω in set([0,2,3,6,7]): # these are the outcomes (nuggets) that map to the value 0 
+        return 0
+Z.Ω = set([0,1,2,3,4,5,6,7,8,9]) # sample space (silo) of outcomes (ore nuggets) attached to Z
+```
+
+
+Change the code for `P(rand_var, realization)` so that $\mathbb P(\omega) = 0.25$ if $\omega \in \{0,1,2,3\}$ and 0 otherwise. The idea is that now nuggets 0, 1, 2, and 3 each take up a quarter of the space in the silo, while the other nuggets take up none. What is $P(Z=1)$ now?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Continuous-sample-spaces">Continuous sample spaces<a class="anchor-link" href="#Continuous-sample-spaces"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So far, all the random variables we've talked about have produced outputs from a finite, discrete set (e.g. $\{0,1\}$ or $\{-1,0,1,2\}$). If we're imagining a factory that might produce the data we observe when flipping a coin, a binary output is all we need. Similarly, if we want to imagine the factory that assigns an "apple", "orange", or "banana" label to a photograph of a fruit, it just needs to output a discrete set of three values. But if we want to imagine the kind of factory that could produce the prices of different apartments in New York, we need something that can output a continuous range of values.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's think up a random variable (call it $\bf Z$ again) that can take any value between 0 and 10. How many numbers are there between 0 and 10? Well, an infinite number: for any two numbers in that interval, you can find a number that's right between them. Since one nugget from the silo always prodcues the same realization when pushed through the factory, there need to be an infinite number of nuggets in the silo to be able to produce an infinite number of realizations. That means that our old code, where we manually enumerated all of the elements in $\Omega$, is not going to work anymore. What we can do instead is imagine that $\Omega$ is itself an interval, like all the numbers between 0 and 1. So, to pick a random nugget to throw into the factory, we just pick a random number between 0 and 1. Here's an example:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> 
+    <span class="k">return</span> <span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="n">ω</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># when ω goes into the factory, the factory makes ω^2</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span> <span class="c1"># returns a single number between 0 and 1 when called</span>
+
+<span class="k">def</span> <span class="nf">realize_cont</span><span class="p">(</span><span class="n">rand_var</span><span class="p">):</span> <span class="c1"># run the assembly line!</span>
+    <span class="n">ω</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">Ω</span><span class="p">()</span> <span class="c1"># returns a single number between 0 and 1</span>
+    <span class="k">return</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="c1"># push it through the factory</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">realize_cont</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[0.00043633473280647156,
+ 4.7598808426832635,
+ 0.4179755779099658,
+ 9.001908033139621,
+ 3.371737291738859]</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So $\mathbf Z$ is defined by $\mathbf Z(\omega) = 10\omega^2$ with $\omega \in [0,1]$. Great. But now what does $P(\mathbf Z = z)$ mean? We just apply the same old definition of probability: it's the proportion of nuggets in the silo that are destined to become the value $z$. In notation: $\mathbb P(\mathbf Z^{-1}(z))$. Same as before.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+
+Notation like $[a,b]$ is often used to concisely write intervals- this just means "all the numbers between $a$ and $b$, including those endpoints". We use parentheses like $(a,b)$ to indicate that the endpoints should not be included. $(a,b]$ and $[a,b)$ have one of the two endpoints included, with the bracket indicating the endpoint that's included and the parenthesis indicating which isn't.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The issue is that now we need a probability measure that works with continuous sets. For example, let's say we're looking for $P(\mathbf Z = 2.5)$. As $\mathbf Z(\omega) = 10\omega^2$ is defined in the code above, the only value of $\omega$ that makes $z=2.5$ is $\omega = \sqrt{2.5/10} = 0.5$. Any other value of $\omega$ would produce a different value of $z$. So $\mathbf Z^{-1}(z) = 0.5$. What "volume" does the single number $0.5$ take up in the interval $[0,1]$? In other words, how are we going to define a probability measure to use here?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The most commonly used measure in this case is based on the "length" of the set relative to the length of $\Omega$. In our case, the length of $\Omega$ is 1, so the probability measure of any interval $(a,b)$ or $[a,b]$ is $b-a$. For sets more complicated than an interval, we have to find the smallest collection of intervals, in terms of total length, that contains the set in question. We say the length of that set is the total length of the collection of intervals that covers it. Using length as a notion of measure makes good sense because if two sets don't overlap, then the length of their union is the sum of their lengths. This measure is called the <strong>Lebesgue measure</strong>, but I only mention the name so you can recognize it elsewhere.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+
+When you get down to the nitty gritty math, it turns out there actually are <a href=https://en.wikipedia.org/wiki/Vitali_set>some really messed up sets</a> where this notion of "length" breaks down, in that the "length" of the union of two disjoint sets might not be the sum of their lengths. These are not sets you would ever come across in any real-world context. The technical solution is to only allow random variables where the preimage of any interval is not one of these messed up sets. This really isn't something you should think or worry about. This note is only here to satisfy nosy probabilists or measure theorists who were offended by the above paragraph.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ok, back to our problem: what's $\mathbb P(0.5)$? Well, $\{0.5\} = [0.5, 0.5]$, so its length is $0.5-0.5=0$! In fact, for any single element $\omega$, $\mathbb P(\omega)= 0$ for the same reason. That's a problem if we want to use discrete sums to calculate probabilities over sets:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+P(\mathbf Z \in A) 
+\overset{?}{=}
+\sum_{Z^{-1}(A)} \mathbb P(\omega)
+= 
+\sum_{Z^{-1}(A)} 0
+=
+0
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>But if $Z^{-1}(A)$ is an interval with finite length, then the probability has to be the length of that interval, not 0!</p>
+<p>The reason this doesn't make any sense is that we're trying to use a discrete sum to add up a continuous infinity of 0s. Basically, we're trying to break down $\sum_{Z^{-1}(A)}$ into each of its component $\omega$s and measuring each of those. Instead of doing that, though, we can <em>integrate</em> over infinitesimal units of "$d \omega$":</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+P(\mathbf Z \in A) 
+=
+\int_{Z^{-1}(A)} \mathbb P(d\omega)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This thing is called a <strong>Lebesgue integral</strong>. What we're doing here is adding up all of the infinitesimal lengths $\mathbb P(d\omega)$ for all $\omega$s in the set $\mathbf Z^{-1}(A)$. We'll write this as $\int d \mathbb P$ for short. It has all the same rules as a standard integral (just write $d \mathbb P$ instead of $dx$), so the integral of a sum is the sum of integrals, etc. And it always agrees with the integrals you're used to from calculus:</p>
+$$
+\int_{[a,b]} f(\omega) d\mathbb P = \int_a^b f(x) dx
+$$<p>The neat thing is that it actually works no matter what $\mathbb P$ is, as long as it satisfies all the properties of a measure. In fact, if $\mathbb P$ is the discrete counting measure that we were using before, then</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\int_{Z^{-1}(A)} d \mathbb P
+= 
+\sum_{Z^{-1}(A)} \mathbb P(\omega)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you have no idea why any of this matters, don't worry, just keep going. We're not going to get into the theory of Lebesgue integration. I really went back and forth on whether to include this at all, but I did because having this unifying formalism in your back pocket makes it really easy to prove a lot of things later, even if you don't really understand the theoretical details. You'll be fine if you just think of a Lebesgue integral as a tool to find the volume of outcomes in arbitrary sets that happens to follow all the rules of a normal integral. In other words: no matter how you're measuring stuff, you can use the Lebesgue integral to figure out how much space different sets of outcomes take up.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Probability-distributions">Probability distributions<a class="anchor-link" href="#Probability-distributions"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The formal definition of a random variable as a function from a sample space to some set of numbers is really useful for proving useful relationships, but ultimately the sample space is totally imaginary: all we get to see are the realizations. So we're going to build some tools that will let us avoid talking about the sample space so much if we don't need to.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As perhaps you've noticed, neither the exact nature of what is in the sample space nor which of its elements map to which realizations change the observable behavior of a random variable as long as the total measure of all the outcomes mapping to each realization are the same. For example, we looked at two equivalent ways to implement our random variable $\mathbf Z$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="o">-</span><span class="mi">1234</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">980123</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">980123</span><span class="p">,</span> <span class="o">-</span><span class="mi">1234</span><span class="p">])</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are technically two different random variables because they have different sample spaces and different mappings to the realizations, but they behave exactly the same. When this is the case, we say they have the same <strong>probability distribution</strong>. The probability distribution describes how the factory should <em>behave</em> from the perspective of someone who can only see its products $z_i$: half the time you get a 0, half the time you get a 1. There is no need to mention the silo of ore nuggets, give them names, and specify which nuggets are destined to be 0s and which are destined to be 1s. We know they're back there, and we know what total <em>measure</em> are destined to be 0s and 1s (since that's what the probability means), but we don't need the details of who is who and what goes where. In fact, unless you're a probability theorist, you will never need to think about the sample space to solve a problem. The only reason you need to know about it is so that you can understand useful identities, which we will continue to derive as we go along.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The discrete probability distribution is function of the factory product $z$. For each unique value of $z$, it tells us the total volume of the nuggets in the silo that map to that outcome. We can visualize that by sorting all the nuggets in the silo into piles according to which value they are destined to become. The relative heights of each pile are proportional to the volume of space (measure) that each group of nuggets take up in the silo. Let's demonstrate with a new random variable $\bf V$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">V</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]):</span> 
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ω</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="mi">1</span>
+<span class="n">V</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vs</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># all the values v can take</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">P</span><span class="p">(</span><span class="n">V</span><span class="p">,[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">]</span> <span class="c1"># calculate the probability of each, assuming the counting measure</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span> <span class="c1"># for plotting</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> <span class="c1"># to make dataframes</span>
+
+<span class="n">distribution</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;v&#39;</span><span class="p">:</span><span class="n">vs</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="n">ps</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;v:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/1_univariate_prob_80_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Python Tip:</b> 
+
+`altair` is a useful python package for visualization. It's optimized to work with dataframes from the `pandas` package. Feel free to browse the documentation for these packages, but you don't need to be an expert to continue on in this book.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the graphical representation of the probability distribution</p>
+$$
+\phi(v) 
+=
+P(V=v)
+=
+\mathbb P(\mathbf V^{-1}(v))
+=
+\begin{cases}
+0.3 &amp; \text{for }v=-1 \\
+0.2 &amp; \text{for }v=0 \\
+0.4 &amp; \text{for }v=1 \\
+0.1 &amp; \text{for }v=2
+\end{cases}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$\phi(v)$ is called a <strong>probability mass function</strong>. If we have multiple random variables floating around and we want to distinguish their mass functions, we'll sometimes write $\phi_{\mathbf V}(v)$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we want to know the probability of a particular set of realizations, say, $P(\mathbf V \in \{0,1\})$, it's easy to get using the mass function:</p>
+$$P(\mathbf V \in A) = \sum_{v \in A} \phi(v)$$<p>We simply sum up the probabilities that $\mathbf V$ is any of the realizations within the set $A$ of interest. Compare this to what we had before:</p>
+$$P(\mathbf V \in A) = \sum_{\omega \in \mathbf V^{-1}(A)} \mathbb P(\omega)$$<p>The advantage is that we don't have to talk about outcomes or sample spaces anymore. All of the information we need to calculate any probabilities of $\mathbf V$ is baked into the mass function $\phi(v)$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Let's say $\mathbf V$ is a random variable that maps outcomes from the interval $[0,1]$ to either 0, 1, or 2 in the following way:
+
+$$
+\mathbf V(\omega)
+=
+\begin{cases}
+0 & \text{if } \omega \in [0, 0.2) \cup (0.8,1] \\
+1 & \text{if } \omega \in [0.2, 0.3) \cup (0.7, 0.8] \\
+2 & \text{if } \omega \in [0.3, 0.7] \\
+\end{cases}
+$$
+
+Note that $\mathbf V$ is discrete, but with a continuous sample space.
+
+Assuming the Lebesgue measure, what is the mass function of $\mathbf V$? In other words, for each value that $\mathbf V$ can take, what's the total length of the set that produces each value?
+
+Use the mass function to calculate $P(\mathbf V \in \{1,0\})$. You should get 0.6.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Continuous-random-variables-and-densities">Continuous random variables and densities<a class="anchor-link" href="#Continuous-random-variables-and-densities"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's say $\mathbf Z$ is defined by $\mathbf Z(\omega) = 10\omega^2$ with $\omega \in [0,1]$. How can we find some kind of function that we can manipulate to calculate probabilities without reference to the sample space or measure?</p>
+<p>For starters, we do know how to calculate probabilities. For instance, if we want to know $P(\mathbf Z \in [0.625, 2.5])$, what we need to do is find $\mathbb P(\mathbf Z^{-1}([0.625, 2.5]))$, which is the "length" of the set $\mathbf Z^{-1}([0.625, 2.5])$ if we're using the Lebesgue measure. So what is $\mathbf Z^{-1}([0.625, 2.5])$? Well, $\mathbf Z(\omega) = 10\omega^2 \in [0.625, 2.5]$ is the same as saying $0.625 \le 10\omega^2 \le 2.5$. Dividing by 10 and taking square roots, we're left with $0.25 \le \omega \le 0.5$. So $\mathbf Z^{-1}([0.625, 2.5]) = [0.25, 0.5]$. The length of that set is clearly 0.25, so that's the probability we're looking for.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Let $\mathbf Z$ be as it is above. Find a formula for $P(\mathbf Z \in [a,b])$ for any values $a \le b$ and $a,b \in [0,10]$.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Mission accomplished? Not quite. We managed to calculate a probability given the sample space and random variable, but what we want is some kind of function that we can manipulate to calculate these probabilities without reference to the sample space at all. We don't want to have to think about what $\Omega$ is or exactly how the different outcomes map to the different realizations.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So here's an idea: let's bin $z$ into 10 non-overlapping buckets, like $[0,1)$, $[1,2)$ ... $[9,10]$ and calculate the probability within each of those buckets. This is just like what we did in the discrete case. We're sorting all of the nuggets in the silo into different piles depending which set of values they are destined to become, and then measuring the volume of each pile. Here's what we get when we do that for the example random variable $\bf z$ defined in the code above:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
+
+<span class="k">def</span> <span class="nf">Pz</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span> <span class="o">-</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">zs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pz</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zs</span><span class="p">]</span>
+<span class="n">zs_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{z}</span><span class="s1">,{z+1})&#39;</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zs</span><span class="p">]</span>
+
+<span class="n">distribution</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="n">zs_labels</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="n">ps</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;z:O&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/1_univariate_prob_91_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And why stop at 10 buckets? Let's split it up into 100.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pz</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">z</span><span class="o">+</span><span class="mf">0.1</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zs</span><span class="p">]</span>
+<span class="n">zs_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{z}</span><span class="s1">,{z+0.1})&#39;</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zs</span><span class="p">]</span>
+
+<span class="n">distribution</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="n">zs_labels</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="n">ps</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;z:O&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/1_univariate_prob_93_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>More buckets gives us more information. If we want to know $P(\mathbf Z \in [0,0.5))$, for instance, we can sum up the probabilities for the buckets $[0,0.1)$, $[0.1,0.2)$, ... $[0.4,0.5)$. But we can't get <em>any</em> probability. The graph doesn't have enough information to let us calculate probabilities over intervals whose ends are between two cutpoints of the buckets. It only has resolution up to increments of $0.1$ in terms of $z$. It would be nice to have a graph that lets us read off arbitrary probabilities like $P(\mathbf Z \in [a,b])$ just by looking at how much "stuff" there is between $a$ and $b$. Something like this:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">z</span><span class="p">))</span> <span class="c1"># magic, for now...</span>
+
+<span class="n">distribution</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="n">p</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/1_univariate_prob_95_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Before I explain how I managed to make this graph, which is called a <strong>density plot</strong>, I want to establish an intuition for what it means. We've gone from 10 buckets, to 100 buckets, to "infinite" buckets. I like to think of these pictures literally: all the outcomes $\omega$ neatly piled up on top of the labels $z$ for the values they will become. So to get $P(\mathbf Z \in [a,b])$ from this picture, which is just the volume of outcomes that map to values between $a$ and $b$, all we need to do is see how much stuff there is piled up between $a$ and $b$ in the picture.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy-facebook_s.jpg" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To do this, we turn to a useful tool from calculus: the integral. To make the picture above, we need a curve $\phi(z)$ such that the area under $f$ between $a$ and $b$ is $P(\mathbf Z \in [a,b])$ for all values $a$ and $b$. In the previous exercise you should have figured out that $P(\mathbf Z \in [a,b]) = \sqrt{\frac{b}{10}} - \sqrt{\frac{a}{10}}$. So what we need is the curve $\phi(z)$ that satisfies this equation:</p>
+$$\int_a^b \phi(z) dz = P(\mathbf Z \in [a,b]) = \sqrt{\frac{b}{10}} - \sqrt{\frac{a}{10}}$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Looking at the integral equation, it's clear that $\Phi(z) = \sqrt{\frac{z}{10}}$ is the antiderivative of $\phi(z)$, so all we need to do to get $\phi$ is differentiate $\Phi$:</p>
+$$\phi(z) = \frac{d\Phi(z)}{dz} = \frac{d}{dz} \sqrt{\frac{z}{10}} = \frac{1}{2\sqrt{10z}}$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That's why we have <code>ps = [1/(2*sqrt(10*z)) for z in zs]</code> in the code above.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The function $\phi(z)$ is called a <strong>probability density function</strong> (PDF), which is the continuous equivalent of the probability mass function. Its integral $\Phi(z) = \int_{-\infty}^z \phi(t)dt = P(\mathbf Z \le z)$ is called a <strong>cumulative density function</strong> (CDF). Either of these functions tell you everything you need to know about probabilities of the random variable $\mathbf Z$. The probability that $\mathbf Z$ takes any of the values in an arbitrary set $A$ is</p>
+$$P(\mathbf Z \in A) = \int_{A} \phi(z) dz$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This works the same way as the probability mass function for a discrete random variable $\mathbf V$:</p>
+$$P(\mathbf V \in A) = \sum_{v \in A} \phi(v)$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;=</span><span class="n">z</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">z</span><span class="o">&lt;=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">distribution</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span><span class="n">A</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span>
+<span class="p">)</span> <span class="o">+</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/1_univariate_prob_103_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For example, the probability that $\mathbf Z$ is in the set $[1,4]$ is the area shaded in orange above.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+
+The notation $\int_{A} \phi(z) dz$ just means $\int_{-\infty}^\infty I_A(z)\phi(z) dz$ where the <b>indicator function</b> $I_A(z)$ is 1 if $z\in A$ and 0 else. In othe words, all we're doing is summing up the $\phi(x)dx$s where $x \in A$. That's analogous to summing up the $\phi(v)$s where $v \in A$ in the discrete case.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+For our random variable $\mathbf Z$ with density $\phi(z) =\frac{1}{2\sqrt{10z}}$, what is $P(\mathbf Z \in [0, 10])$? Calculate the probability by integrating the density function. Does your answer line up with what you expect based on our original definition of $\mathbf Z$? 
+
+Here is another random variable that, like $\mathbf Z$, maps outcomes in $\Omega = [0,1]$ to values in $[0,10]$: $\mathbf W(\omega) = 10\omega$. Calculate $P(\mathbf W \in [a,b])$ for some interval $[a,b]$. What is the probability density function for $\mathbf W$? What is $P(\mathbf W \in [0, 10])$?
+
+For <i>any</i> continuous random variable $\mathbf X$, what is $\int_{-\infty}^{\infty} \phi(x) dx$ (<i>hint</i>: what probability does this represent)? What is $\Phi(-\infty)$? $\Phi(\infty)$? 
+
+Is it possible to have a random variable $\mathbf Q$ with $\phi_{\mathbf Q}(q) < 0$ for some $q$ that is a possible realization of $\mathbf Q$? Why does this not make sense?
+
+For two values $a < b$, is it possible that $\Phi(a) > \Phi(b)$? Why nor why not?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>At this point, talking about the outcomes $\omega$ is kind of silly. If two random variables have the same probability mass function or the same probability density function, then, for all intents and purposes, they are the same random variable. It doens't matter exactly which outcomes map to which values, as long as the proportions are the same. We already demonstrated this in the discrete case.</p>
+<p>To show the same concept for continuous random variables, here is a new random variable $\mathbf Z'$ whose sample space $\Omega$ is $[-100, 100]$ instead of $[0,1]$, but which has the same probability density function as our other random variable $\mathbf Z$:</p>
+$$
+\mathbf Z'(\omega) = 10\left(\frac{\omega+100}{200}\right)^2
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Prove to yourself that $\mathbf Z'$ has the same probability density function as $\mathbf Z$.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For this we use the notation $\mathbf Z \sim \mathbf Z'$. Technically they are not the same since the sample spaces are different, so we shouldn't write $\mathbf Z = \mathbf Z'$. But as far as an observer who is outside the curtain is concerned, there is no way to tell them apart. The <em>distribution</em> of the random variable is what really matters.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I think about mass or density functions as convenient abstraction layers between me and the random variable. If I want to know a probability, I don't have to go to the random variable and count up the volume of something in the sample space, I just "query" the mass or density. The "query engine" happens to be an integral or sum, and the query itself is the region of space that I want to integrate over. In a nutshell:</p>
+$$
+\mathbb P(\mathbf Z^{-1}(A)) = \int_A \phi_{\mathbf Z}(z) dz
+\quad
+\text{or}
+\quad
+\mathbb P(\mathbf Z^{-1}(A)) = \sum_{z \in A} \phi_{\mathbf Z}(z)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So if we have $\phi_Z$, we don't need to worry about figuring out what $\mathbf Z^{-1}(A)$ is or how to do the measurement of that set using $\mathbb P$. Finding preimages and measuring them is hard. Integrating or summing distribution functions is easier.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Histograms-vs.-mass-and-density-functions">Histograms vs. mass and density functions<a class="anchor-link" href="#Histograms-vs.-mass-and-density-functions"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Many of you are probably already familiar with histograms. Histograms are a way of visualizing observed data. Each observed value is stacked up on top of its approximate label (e.g. any $z$ between 0.5 and 1.5 is labeled "1") and the counts are plotted:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">Z</span><span class="p">(</span><span class="n">ω</span><span class="p">):</span> 
+    <span class="k">return</span> <span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="n">ω</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># when ω goes into the factory, the factory makes ω^2</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">Ω</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span> <span class="c1"># returns a single number between 0 and 1 when called</span>
+
+<span class="k">def</span> <span class="nf">realize_cont</span><span class="p">(</span><span class="n">rand_var</span><span class="p">):</span> <span class="c1"># run the assembly line!</span>
+    <span class="n">ω</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">Ω</span><span class="p">()</span> <span class="c1"># returns a single number between 0 and 1</span>
+    <span class="k">return</span> <span class="n">rand_var</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="c1"># push it through the factory</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">realize_cont</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span> <span class="c1"># 1000 draws from Z</span>
+
+<span class="n">plot_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="n">z</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">plot_df</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/1_univariate_prob_115_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That looks suspicously like our bucketed density plot:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pz</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">z</span><span class="o">+</span><span class="mf">0.1</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zs</span><span class="p">]</span>
+<span class="n">zs_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{z}</span><span class="s1">,{z+0.1})&#39;</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zs</span><span class="p">]</span>
+
+<span class="n">distribution</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="n">zs_labels</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="n">ps</span><span class="p">})</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;z:O&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/probability/1_univariate_prob_117_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So what's the difference? Think about what it is we're "stacking up" in the bars. In the histogram, we're sorting and stacking up a <em>finite number</em> $n$ of <em>observed values</em> $z_i$ according to what they are. In the density plot, we're sorting and stacking up <em>all</em> of the <em>outcomes</em> $\omega$ in the silo according to the values they are destined to become, and we're measuring their relative volume, not absolute counts.</p>
+<p>In a nutshell, the histogram is what we can actually observe, given outputs from the factory. But the density descibes the inner workings of the factory itself, which we can never actually observe.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+What do you expect to happen to the shape of the histogram above as the number of observations is increased from $1000$ to larger and larger numbers? Can you provide an intuitive explanation for why this happens?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Common-Distributions">Common Distributions<a class="anchor-link" href="#Common-Distributions"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've seen that, for all practical purposes, a random variable is determined by its probability distribution (mass or density function). In reality, the distribution of any particular measurement (e.g. blood pressure) is unknown- it depends on a complex web of causal factors. The true density function is almost certainly so complex it's not even something that we could write down. But, for the purposes of <em>modeling</em> that measurement, we <em>pretend</em> that the density is something we can write down.</p>
+<p>Over the centuries, people have come up with a lot of distributions that are useful as models across various scenarios. Here are a few of them:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Bernoulli-distribution">Bernoulli distribution<a class="anchor-link" href="#Bernoulli-distribution"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's say we're interested in modeling the result of a coin flip. The actual value (heads/tails, which we code as 0/1) of the coin flip is determined by some insanely complicated physics, but we're going to pretend that the value comes out of a little factory called $\mathbf Z$ that has the following probability mass function:</p>
+$$
+P(\mathbf Z=z) =
+\begin{cases}
+1/2 &amp; \text{for }z=0 \\
+1/2 &amp; \text{for }z=1
+\end{cases}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we want to model a biased coin that comes up heads $(p\times100)$% of the time, we can use a mass function like:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+P(\mathbf Z=z) =
+\begin{cases}
+p &amp; \text{for }z=0 \\
+1-p &amp; \text{for }z=1
+\end{cases}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is often written as $\mathbf Z \sim \text{Bernoulli}(p)$ (read: "$\mathbf Z$ is Bernoulli-distributed"). The number $p$ is said to be a <strong>parameter</strong> of the Bernoulli distribution. It would be more accurate to say that a random variable is distributed as a <strong>member</strong> of the Bernoulli <strong>family</strong> of distributions, since, technically, every different value of $p$ encodes a different distribution, or factory, for making data.</p>
+<p>Another way to think about it is that there's one data factory, but it has a control panel with a knob labeled "$p$". If $p$ is set to 0.7, we expect about 70% of the outputs to be 1. If $p$ is set to $0.1$, 10%, and so on. It's a matter of semantics whether or not you want to say that factory is representing two different factories, or merely one factory under two different operating conditions. Both perspectives are useful.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Normal-Distribution">Normal Distribution<a class="anchor-link" href="#Normal-Distribution"> </a></h4><p>Let's say we want to model the heights of everyone on Earth. We have an intuition that people are typically a bit shorter than two meters, and taller and shorter people are more and more rare the taller and shorter they get. We can pretend that height measurements come from a <strong>normal</strong> distribution (also called <strong>Gaussian</strong> distribution):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\phi(z) = 
+\frac{1}{\sqrt{2\pi\sigma}} 
+e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Most often you'll see this written as $\mathbf Z \sim \mathcal N(\mu, \sigma)$ (read: "$\mathbf Z$ is normally distributed"). The numbers $\mu$ and $\sigma$ are the parameters (control knobs) of the normal distribution.</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Normal_Distribution_PDF.svg" alt=""></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see in the picture, $\mu$ controls where the "bell curve" is centered and $\sigma$ controls how wide or narrow it is.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning">
+<b>Note:</b> 
+
+Every distribution is defined by its mass or density function $\phi$. The mass or density is often a complicated function, so instead of saying someting like "$\phi(z) = \frac{1}{\sqrt{2\pi\sigma}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}$" every time we want a normally-distributed variable, we'll abbreviate that to "$\mathbf Z \sim \mathcal N (\mu, \sigma)$". But they mean the same thing. 
+
+Every time you see something like $\mathbf Z \sim \mathcal D(\theta_1, \theta_2, \dots)$, just know there is some mass or density function that is associated with the name $\mathcal D$ and which has parameters $\theta_1, \theta_2, \dots$. You can always look it up if you need to know exactly what it is.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Others">Others<a class="anchor-link" href="#Others"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are <a href="https://upload.wikimedia.org/wikipedia/commons/7/74/Normal_Distribution_PDF.svg">hundreds</a> of well-studied distributions available to choose from when modeling. The most important thing to know about a distribution is what values it can generate. This is sometimes called the <strong>support</strong> of the distribution, since if you were to make a density or mass plot, the support would be the region of the x-axis that has positive density or mass, so it's the region that appears to be "supporting" the curve or mass.</p>
+<p>For example, varaibles that are normally-, Cauchy-, or Laplace-distributed are supported on $-\infty$ and $\infty$. The $\chi^2$ distribution has support on $[0,\infty)$. The beta and standard uniform distributions have support on $[0,1]$. The Poisson distribution has support on the counting numbers 0, 1, 2..., and the K-categorical distribution has support on a finite number of integers 0, 1, 2, ... K.</p>
+<p>It's also totally possible to invent your own distribution by defining your own support set $S$ and mass/density function $\phi$, as long as $\phi(s) \ge 0$ for all $s \in S$ and $\int_S \phi(s) ds = 1$ or $\sum_{s \in S} \phi(s) = 1$. These properties have to be satisfied to have a valid density or mass (see exercise in previous section).</p>
+<p>The point of this diversity is that it is possible to model different kinds of data. Apartment rents are always positive numbers, but theoretically unbounded above (a scary thought), so perhaps $\chi^2$ is a good choice. The number of cars that pass through an intersection in a given day is always an integer, so Poisson is a reasonable choice for that. You don't have to remember any of these specific distributions or examples- just know there are many preconstructed pretend data factories out there to play with. Also know that the real data-generating process is pretty much <em>never</em> actually one of these distributions, although, sometimes, it might be well-approximated by one.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-info">
+<b>Exercise:</b> 
+
+Define your own density function that has support on $[0,1]$. Make it so that the probability of getting a bigger number is bigger than that of getting a smaller number. Be sure that your function integrates to $1$ and is nonnegative over its support, otherwise it's not a valid density.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Chapter-summary">Chapter summary<a class="anchor-link" href="#Chapter-summary"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Data in the real world is generated by complex processes that we can't ever hope to replicate. But if we want to uncover relationships between measurements, we at least need a framework for imagining what kinds of processes might be generating our data. Random variables and probability theory do that for us.</p>
+<p>Random variables are like factories that generate data. We don't observe them directly, but we see the data they output and we can imagine different kinds of random variables that make different kinds of data. We defined a notion of probability that posits that the probability of observing a particular realization is actually just the volume of material in the factory's silo (sample space) that is destined to become that realization. This is a pure abstraction, but it turns out to capture relationships between probabilities that we would intuitively expect to hold.</p>
+<p>It's easier to work with the probability distribution of a random variable than it is to constantly talk about the sample space and the mapping between that space and realizations. The probability distribution is a function that, when integrated over a region of the space of realizations, gives us the volume of outcomes in the sample space that map to realizations in that region. In other words: the probability that the random variable gives a realization in that region. Random variables can be continuous or discrete, but all have a distribution function that can be integrated or summed to yield probabilities.</p>
+<p>Random variables are most often talked about in terms of their porbability distributions. Defining a new variable is as easy as choosing a support and a mass or density function over that support. Some distributions are so commonly used that they have their own names and notations so that we don't have to write out their mass or density functions out over and over again to refer to them.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/probability/0_motivation.html">
+      〈 <span class="u-margin-right-tiny"></span> Motivation
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/CSL/probability/2_multivariate_prob.html">
+      Multivariate Prob <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
