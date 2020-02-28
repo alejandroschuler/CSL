@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Model Evaluation</title>
+  <meta name="description" content="        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...">
+
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/model-eval/model-eval.html">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
+
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/model-eval/model-eval.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Model Evaluation" />
+<meta property="og:description" content="        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ..." />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
+  "headline": "Model Evaluation",
+  "datePublished": "2020-02-27T17:48:59-08:00",
+  "dateModified": "2020-02-27T17:48:59-08:00",
+  "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://alejandroschuler.github.io/CSL",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://alejandroschuler.github.io/CSL",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/CSL/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/CSL/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/CSL/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/CSL/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/CSL';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/CSL/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+<!-- Display Thebelab button in each code cell -->
+<script>
+/**
+ * Set up thebelab button for code blocks
+ */
+
+const thebelabCellButton = id =>
+  `<a id="thebelab-cell-button-${id}" class="btn thebebtn o-tooltip--left" data-tooltip="Interactive Mode">
+    <img src="/CSL/assets/images/edit-button.svg" alt="Start thebelab interactive mode">
+  </a>`
+
+
+const addThebelabButtonToCodeCells =  () => {
+
+  const codeCells = document.querySelectorAll('div.input_area > div.highlight:not(.output) pre')
+  codeCells.forEach((codeCell, index) => {
+    const id = codeCellId(index)
+    codeCell.setAttribute('id', id)
+    if (document.getElementById("thebelab-cell-button-" + id) == null) {
+      codeCell.insertAdjacentHTML('afterend', thebelabCellButton(id));
+    }
+  })
+}
+
+initFunction(addThebelabButtonToCodeCells);
+</script>
+
+
+<script src="https://unpkg.com/thebelab@latest/lib/index.js" async></script>
+<script>
+    /**
+     * Add attributes to Thebelab blocks
+     */
+
+    const initThebelab = () => {
+        const addThebelabToCodeCells = () => {
+            console.log("Adding thebelab to code cells...");
+            // If Thebelab hasn't loaded, wait a bit and try again. This
+            // happens because we load ClipboardJS asynchronously.
+            if (window.thebelab === undefined) {
+                setTimeout(addThebelabToCodeCells, 250)
+            return
+            }
+
+            // If we already detect a Thebelab cell, don't re-run
+            if (document.querySelectorAll('div.thebelab-cell').length > 0) {
+                return;
+            }
+
+            // Find all code cells, replace with Thebelab interactive code cells
+            const codeCells = document.querySelectorAll('.input_area pre')
+            codeCells.forEach((codeCell, index) => {
+                const id = codeCellId(index)
+
+                // Clean up the language to make it work w/ CodeMirror and add it to the cell
+                dataLanguage = ""
+                dataLanguage = detectLanguage(dataLanguage);
+                codeCell.setAttribute('data-language', dataLanguage)
+                codeCell.setAttribute('data-executable', 'true')
+
+                // If the code cell is hidden, show it
+                var inputCheckbox = document.querySelector(`input#hidebtn${codeCell.id}`);
+                if (inputCheckbox !== null) {
+                    setCodeCellVisibility(inputCheckbox, 'visible');
+                }
+            });
+
+            // Remove the event listener from the page so keyboard press doesn't
+            // Change page
+            document.removeEventListener('keydown', initPageNav)
+            keyboardListener = false;
+
+            // Init thebelab
+            thebelab.bootstrap();
+
+            // Remove copy buttons since they won't work anymore
+            const copyAndThebeButtons = document.querySelectorAll('.copybtn, .thebebtn')
+            copyAndThebeButtons.forEach((button, index) => {
+                button.remove();
+            });
+
+            // Remove outputs since they'll be stale
+            const outputs = document.querySelectorAll('.output *, .output')
+            outputs.forEach((output, index) => {
+                output.remove();
+            });
+
+            // Find any cells with an initialization tag and ask ThebeLab to run them when ready
+            var thebeInitCells = document.querySelectorAll('div.tag_thebelab-init');
+            thebeInitCells.forEach((cell) => {
+                console.log("Initializing ThebeLab with cell: " + cell.id);
+                cell.querySelector('.thebelab-run-button').click();
+            });
+        }
+
+        // Add event listener for the function to modify code cells
+        const thebelabButtons = document.querySelectorAll('[id^=thebelab], [id$=thebelab]')
+        thebelabButtons.forEach((thebelabButton,index) => {
+            if (thebelabButton === null) {
+                setTimeout(initThebelab, 250)
+                return
+            };
+            thebelabButton.addEventListener('click', addThebelabToCodeCells);
+        });
+    }
+
+    // Initialize Thebelab
+    initFunction(initThebelab);
+
+// Helper function to munge the language name
+var detectLanguage = (language) => {
+    if (language.indexOf('python') > -1) {
+        language = "python";
+    }
+    return language;
+}
+</script>
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/CSL/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/CSL/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/CSL/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/CSL/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/CSL/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/CSL/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/CSL/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: "content/model-eval"
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/introduction">
+        <a class="c-sidebar__entry"
+          href="/CSL/introduction.html"
+        >
+          
+            1.
+          
+          Introduction
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/using-sl">
+        <a class="c-sidebar__entry"
+          href="/CSL/using-sl.html"
+        >
+          
+            2.
+          
+          Using Supervised Learning
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/questions">
+              <a class="c-sidebar__entry"
+                href="/CSL/questions.html"
+              >
+                
+                  2.1
+                
+                Types of Scientific Questions
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/what-is-sl">
+              <a class="c-sidebar__entry"
+                href="/CSL/what-is-sl.html"
+              >
+                
+                  2.2
+                
+                What is Supervised Learning?
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/grad-descent/grad-descent">
+        <a class="c-sidebar__entry"
+          href="/CSL/grad-descent/grad-descent.html"
+        >
+          
+            3.
+          
+          Fitting Models with Gradient Descent
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linreg-dl-torch/intro">
+        <a class="c-sidebar__entry"
+          href="/CSL/linreg-dl-torch/intro.html"
+        >
+          
+            4.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg.html"
+              >
+                
+                  4.1
+                
+                Linear Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/logistic-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/logistic-reg.html"
+              >
+                
+                  4.2
+                
+                Logistic Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg-complex">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg-complex.html"
+              >
+                
+                  4.3
+                
+                Adding Complexity
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/abstracting-layers">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/abstracting-layers.html"
+              >
+                
+                  4.4
+                
+                Abstracting our Code
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/model-eval/model-eval">
+        <a class="c-sidebar__entry"
+          href="/CSL/model-eval/model-eval.html"
+        >
+          
+            5.
+          
+          Model Evaluation
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        <a href="/CSL/content/model-eval/model-eval.ipynb" download>
+        <button id="interact-button-download" class="interact-button">.ipynb</button>
+        </a>
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+  <button id="interact-button-thebelab" class="interact-button">Thebelab</button>
+
+  
+  
+  
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/CSL/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/CSL/search.html" class="topbar-right-button" id="search-button">
+    <img src="/CSL/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+                  <main class="jupyter-page">
+    <div id="page-info"><div id="page-title">Model Evaluation</div>
+</div>
+    
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate a model would be to travel forward in time from the time of model deployment until the end of time, gather up all of the model predictions, and compare them to what actually ended up happening. Obviously this isn't feasible, but we need to clearly identify what it is we're trying to optimize before we can figure out a way to get around the practical problems in estimating it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Evaluation-Metrics">Evaluation Metrics<a class="anchor-link" href="#Evaluation-Metrics"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first thing we need to do is iron out the details of what we mean by "comparing" the predictions to what actually happened. To do that, we need to come up with a rule that tells us how happy we are with a prediction $\hat y$ (in the case of regression) or $\hat p$ (in the case of probabilistic classification) if the real outcome was $y$. We'll call that rule an <em>evaluation metric</em> and denote it $M(y,\hat y)$. The absolute error $|\hat y - y|$ is one possible metric in the case of regression, as is accuracy $(\hat p &gt; 0.5) == y$ in the case of classification. The purpose of the evaluation metric is to encode what <em>you</em> think makes a good prediction, so the sky is the limit. Maybe if you predict within 0.1 of the truth it's all the same to you, but if you're further out than that then you want to penalize quadratically. Maybe after a certain amount of error all predictions are equally bad so you don't care to penalize any more than some maximum value. It's up to you to decide.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>Write python code for an evaluation metric <code>def M(y, ŷ):</code> that returns $|\hat y - y|$ when that value is less than 10, but returns 10 otherwise. Think up a scenario where you might want to use an evaluation metric like this.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>Imagine you're using some kind of regression model to predict the roll angle (in degrees) of a drone based on video from the drone (i.e. is the drone upside down? tilting 30 degrees left?). The regression model can theoretically output any number between minus and positive infinity. One of your colleagues proposes using absolute deviation $|\hat y -y|$ as the evaluation metric, but another colleague instead proposes <code>def M(y, ŷ): np.abs(y-ŷ) % 360</code>. Which do you think is better and why?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_remove_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Metrics-and-Losses">Metrics and Losses<a class="anchor-link" href="#Metrics-and-Losses"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The evaluation metric is a lot like a loss function in that it tells you how bad or good your prediction is relative to reality. In many cases, the evaluation metric and the loss function used to fit the model in the first place are the same (e.g. mean-squared error for both). However, there are many cases in which they are not the same. There are several reasons why you might want to use a different loss function than your evaluation metric. One common reason is that the evaluation metric you want to use is not differentiable, but the optimization algorithm you are using requires gradients. This is often the case with classification: perhaps the 1/0 classification accuracy is the metric you really care about, but, since it is not differentiable, you use the log loss (cross entropy) instead. Another possible reason is that your evaluation metric includes interactions between several model predictions and outcomes instead of just comparing them one-by-one (we won't discuss metrics like these, but know you can construct them). Or perhaps you would like to use a particular software package that has a particular loss function built into the algorithm, so you aren't free to choose it.</p>
+<p>All in all, you can think of the loss as a "dumbed down" version of the evaluation metric. The evaluation metric is the thing you really care about, but for the purpose of fitting a model, you're willing to use a (simpler) loss as a proxy.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Generalization-Error">Generalization Error<a class="anchor-link" href="#Generalization-Error"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we have a way to quantify how good or how bad a prediction is relative to the truth, we can get back to our model evaluation problem. Let's imagine that between now and the end of time, we would gather the data $(X^{\dagger}, y^{\dagger})$, where the $\dagger$ is just there to differentiate these data from what we've observed in the past. These datasets could be either finite or infinite based on how many times we expect the model to run in the future, but either way let's call the total number of future model runs $n^\dagger$. Let's also say that the model that we've built/trained today is baked into a function $f(x)$ which in code looks something like <code>def f(x): model.predict(x)</code>, and that we've chosen an evaluation metric $M$. Then our final measure of how good our model is should be:</p>
+$$
+\mathcal E(f) 
+=
+\frac{1}{n^\dagger} \sum^{n^\dagger}_i M(y_i^\dagger, f(x_i^\dagger))
+\label{gen-error}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This quantity is called the <em>generalization error</em> of the model $f$.</p>
+<p>The obvious problem with this is that we need to evaluate the model <em>now</em>. We don't have the data from the future at this moment, and we can't afford to wait until the end of time (also, if $n^\dagger$ is infinite, the sum might not even make sense). So because we can't calculate it directly, we have to find a way to <em>approximate</em> the generalization error.</p>
+<p>Approximating the generalization error is <em>the</em> central problem of supervised learning. Anyone can come up with a model that produces predictions of one kind or another (using either machine learning or hand-coding), but without quantifying how good this model is likely to perform in the future, it's totally useless.</p>
+<p>Moreover, there is no "wrong" way to fit a model. The consequence of doing a bad job fitting a model is that your model may perform poorly. But that's ok! If you evaluate correctly, you know exactly how poor the performance is and you can try different approaches to try to improve it. On the other hand, there are many wrong ways to approximate the generalization error of a model. If you assess your model incorrectly, you will have absolutely no idea of how good your model is in reality. Furthermore, unless you think critically about the result you're seeing, you may not even have any indication that you did something wrong.</p>
+<p>This point is so important that it bears repeating: knowing how to <em>evaluate</em> a model is more important than knowing how to <em>fit</em> a model. You should only worry about the latter once you understand the former. So keep your eye on the prize!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Estimating-Generalization-Error">Estimating Generalization Error<a class="anchor-link" href="#Estimating-Generalization-Error"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We want to calculate the generalization error for our model but we can't because we don't have all the future data. One approach we can use to estimate the generalization error is to calculate it using <em>past</em> data instead of <em>future</em> data. In essence, what we are assuming is that what has happened is a pretty good approximation for what will happen. The extent to which this is not true is the extent to which our approximation will be off. We'll use $\hat{\mathcal E}(f)$ to denote this approximation of the generalization error:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\mathcal {\hat E}(f) 
+=
+\frac{1}{n} \sum^{n}_i M(y_i, f(x_i))
+\label{empirical-error}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's try this approach out with a simulation. We're going to build a little "data factory" that generates rows of data for us. We'll run it $n=1000$ times to generate our observed data $(X,y)$. Then we're going to fit a model using that data, which will give us $f$. Once we have our model, we'll estimate the generalization error $\hat{\mathcal E}(f)$ using the above formula \ref{empirical-error}.</p>
+<p>However, since our data is simulated, we can also simulate all of the future data $(X^\dagger,y^\dagger)$ that we will observe if we let the model run $n^\dagger=1000$ more times. Assuming we only planned on making 1000 predictions from get-go, that is all the data we need to calcualte the true generalization error $\mathcal E(f)$ using \ref{gen-error}. Then we will compare our previously estimated generalization error $\hat{\mathcal E}(f)$ to the truth $\mathcal E(f)$ to see if our approach works. We'll repeat this whole process 500 times so we can see if how good our estimates of model performance are on average.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our data factory can be whatever we want, but for this experiment we'll set it up to generate random $x$ and $y$:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">data_factory</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span> <span class="c1"># 5 predictors</span>
+<span class="c1">#     y = np.random.random((n,))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">y</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's look at the first 3 rows:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,:],</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(array([[0.91586927, 0.34109255, 0.18769485, 0.25513254, 0.99946363],
+        [0.96560603, 0.91925419, 0.99269982, 0.36219822, 0.95019696],
+        [0.7137451 , 0.79316455, 0.84880701, 0.28760566, 0.67715313]]),
+ array([-0.23678489,  0.8482024 ,  0.27770748]))</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Great. Now let's fit a model. I'll use a random forest model for this, but it doesn't matter if you understand how a random forest works or not- all you need to know is that it's an algorithm that takes data $(X,y)$ and produces a model $f$ that will produce new estimates of $y$ given new predictors $x$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestRegressor</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>RandomForestRegressor(bootstrap=True, criterion=&#39;mse&#39;, max_depth=None,
+                      max_features=&#39;auto&#39;, max_leaf_nodes=None,
+                      min_impurity_decrease=0.0, min_impurity_split=None,
+                      min_samples_leaf=1, min_samples_split=2,
+                      min_weight_fraction_leaf=0.0, n_estimators=100,
+                      n_jobs=None, oob_score=False, random_state=None,
+                      verbose=0, warm_start=False)</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll use absolute error as our evaluation metric and estimate the generalization error.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">metric</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">ŷ</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ŷ</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ê</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we'll generate our "future" data and calculate the real generalization error</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">ŷ_future</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_future</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_future</span><span class="p">,</span> <span class="n">ŷ_future</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's compare the two:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;ê: {ê}</span><span class="se">\n</span><span class="s1">e: </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>ê: 0.013804021647218306
+e: 0.038541343476292525
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This doesn't seem promising... our estimate of the generalization error is much smaller than it should be! But maybe we just got unlucky this one time. Let's repeat the simulation 500 times to make sure.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simulate_model_eval</span><span class="p">():</span>
+    <span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">ê</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+    
+    <span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">ŷ_future</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_future</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_future</span><span class="p">,</span> <span class="n">ŷ_future</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">ê</span><span class="p">,</span> <span class="n">e</span>
+
+<span class="n">ês</span><span class="p">,</span> <span class="n">es</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">simulate_model_eval</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+
+<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
+    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_32_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ouch. This shows that our estimates are of generalization error are consistently far too low. Out of curiosity, let's see if that still happens if we use a linear model instead of a random forest.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When an estimator is on average less than the quantitiy it is trying to estimate, we say that the estimator is <em>biased downward</em>. Thus $\hat{\mathcal E}$ is biased downward (for $\mathcal{E}$).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LinearRegression</span>
+
+<span class="k">def</span> <span class="nf">simulate_model_eval</span><span class="p">():</span>
+    <span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">ê</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">ŷ</span><span class="p">)</span>
+    
+    <span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">ŷ_future</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_future</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_future</span><span class="p">,</span> <span class="n">ŷ_future</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">ê</span><span class="p">,</span> <span class="n">e</span>
+
+<span class="n">ês</span><span class="p">,</span> <span class="n">es</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">simulate_model_eval</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
+    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_36_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What the heck!? Now it looks like our estimate is pretty decent. Let's dig in a little closer and look at the distribution of exactly how far off we are in our error estimate across all simulations.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">error_in_error_estimate</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">-</span><span class="n">ê</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">ê</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">ês</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Error in error estimate&#39;</span><span class="p">:</span><span class="n">error_in_error_estimate</span><span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">&quot;Error in error estimate:Q&quot;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">20</span><span class="p">)),</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_39_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The plot shows that the distribution of $\mathcal E - \hat{\mathcal E}$ is slightly skewed to the right, meaning that, on average, our estimate of the generalization error is a little less than the true generalization error. So we still have the same problem as before, just to a much smaller extent.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Putting all of this together, we have to conclude that we cannot use the estimator defined in \ref{empirical-err}: we would always be underestimating the generalization error. Moreover, the reason this happens is <em>not</em> that the past data is not representative of the future data because we are using the exact same <code>data_factory</code> function to generate both datasets. Furthermore, the amount we're off by depends on what kind of model we use (and perhaps other factors we didn't investigate), so we can't even know ahead of time how much correction might be necessary.</p>
+<p>This is really bad news for us. If we can't estimate ahead of time how our model will perform, how can we tell which model will be better than another? How can we tell if our model is better than random guessing?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>Repeat these experiments with a <em>classifier</em> of your choosing (e.g. <code>sklearn.ensemble.RandomForestClassifier</code>). You can use this code to generate data with binary outcomes:</p>
+
+<pre><code>def class_data_factory(n):
+    X = np.random.random((n,5)) # 5 predictors
+    y = np.random.randint(2, size=n)
+    return X,y</code></pre>
+<p>Use classification accuracy as your evaluation metric. Are your estimates of generalization error still biased downward?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Training-and-Test-Sets">Training and Test Sets<a class="anchor-link" href="#Training-and-Test-Sets"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Although things look bleak at the moment, there is actually a simple solution to our problem. All we have to do is split our data up into two subsamples: one that will be used to fit the model, and one that will be used to evaluate it. The data we use to fit the model is called a <em>training set</em> and the data we use to evaluate the model is called a <em>test set</em>.</p>
+<p><img src="https://www.dataquest.io/wp-content/uploads/kaggle_train_test_split.svg" alt=""></p>
+<p>In other words, our new estimate of generalization error will be</p>
+$$
+\mathcal {\hat E}(f) 
+=
+\frac{1}{n^{\mathcal T}} \sum_{i \in \mathcal{T}}  M(y_i, f_{\mathcal S}(x_i))
+\label{test-error}
+$$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "training" also starts with a T) are a sets of indices indicating which observations are in the test and training sets, respectively. $n^{\mathcal T}$ is the number of observations in the test set. The notation $f_{\mathcal S}$ indicates that the model $f$ was fit using the training data $\mathcal S$ and not the test data. We'll demonstrate in code first and then explain why this works.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simulate_model_eval</span><span class="p">():</span>
+    <span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    
+    <span class="n">S</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span> <span class="c1"># training set</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> <span class="c1"># test set index</span>
+    
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">S</span><span class="p">,:],</span> <span class="n">y</span><span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="c1"># take the first 500 rows as training data</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    
+    <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">T</span><span class="p">,:],</span> <span class="n">y</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="c1"># take the last 500 rows as test data</span>
+    <span class="n">ŷ_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">ê</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">ŷ_test</span><span class="p">)</span>
+    
+    <span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">ŷ_future</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_future</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_future</span><span class="p">,</span> <span class="n">ŷ_future</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">ê</span><span class="p">,</span> <span class="n">e</span>
+
+<span class="n">ês</span><span class="p">,</span> <span class="n">es</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">simulate_model_eval</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+
+<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
+    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_46_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">error_in_error_estimate</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">-</span><span class="n">ê</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">ê</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">ês</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Error in error estimate&#39;</span><span class="p">:</span><span class="n">error_in_error_estimate</span><span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">&quot;Error in error estimate:Q&quot;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">30</span><span class="p">)),</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_48_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This looks much, much better than it did when we were using random forests before. Now our estimates of generalization error are quite good on average.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To figure out why this works we have to think about what the difference is between the test set $(X^{\mathcal T}, y^{\mathcal T})$ and the full observed data $(X, y)$ in terms of how well each of those sets approximate the future data $(X^\dagger, y^\dagger)$. In terms of what the data themselves are, there is clearly no substantive difference between the test set and the full observed data except that the test set is a subset of the observed data. But using a smaller random sample to estimate the generalization error isn't what's fixing the problem, which we can substantiate with an experiment:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simulate_model_eval</span><span class="p">():</span>
+    <span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> <span class="c1"># subset index</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="c1"># fit on the full dataset</span>
+    
+    <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">T</span><span class="p">,:],</span> <span class="n">y</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="c1"># take the last 500 rows to estimate the generalization error</span>
+    <span class="n">ŷ_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">ê</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">ŷ_test</span><span class="p">)</span>
+    
+    <span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">ŷ_future</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_future</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_future</span><span class="p">,</span> <span class="n">ŷ_future</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">ê</span><span class="p">,</span> <span class="n">e</span>
+
+<span class="n">ês</span><span class="p">,</span> <span class="n">es</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">simulate_model_eval</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+
+<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
+    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_52_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>The code above corresponds to the estimator</p>
+$$
+\mathcal {\hat E}(f) 
+=
+\frac{1}{n^{\mathcal T}} \sum_{i \in \mathcal{T}}  M(y_i, f_{\mathcal S \cup \mathcal T}(x_i))
+$$<p>Use the code and the expression above to explain in your own words what this estimator is doing.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The real difference is not what's in the data or how much of it there is, but <em>how it is used</em>. The test set is not used to fit the model $f_{\mathcal S}$, whereas the training set is. This matters because <em>future</em> data also cannot ever be used to fit the model since it's data we don't even have at the time the model is fit. In that sense, the test set is a much better approximation of future data than the training data are because, like the future data, the test data are not used to fit the model. The very fact that we have observed the training data and used it to fit the model makes it unsuitable as an approximation to future data, even though we have done nothing to change the data itself!</p>
+<p>We're going to dig into this further, but for now it might be useful to think of an analogy. Imagine that a student is taking a course whose ultimate goal is to prepare the student to do well in their future career. The course includes both practice problems (with solutions) and a final exam. How can the student make sure she is prepared to succeed in the future? If the student studies using the practice problems, but then evaluates her performance using those same practice problems, she will always be optimistic about what she has actually learned. She may have simply memorized the answers to those problems or learned certain tricks that only work for those problems. However, her performance on the final exam, which has problems she has never seen before, is more likely to indicate how successful she will be in the future, since she will encounter new problems in her career, not textbook problems.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+ 
+
+
+    </main>
+    
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+    
+    
+
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/linreg-dl-torch/abstracting-layers.html">
+      〈 <span class="u-margin-right-tiny"></span> Abstracting our Code
+    </a>
+  
+
+  
+    
+
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="">
+       <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
