@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: model data error y mathcal our generalization f evaluation future metric e hat using not x dagger n fit test well estimate lets set random t problems good m used training think loss much evaluate predictions need same want code function problem observed s us case classification its bad might between instead better since times also sum cant even because approximation generate estimates estimator end predict actually before prediction regression youre dont exercise def another why just into frac yi xi calculate performance works average new sets those student compare get metrics real absolute accuracy maybe truth care any less
+search: model data error y mathcal our generalization f evaluation future metric e x hat using not dagger n fit test well estimate random lets set t problems good m used training think code loss much evaluate predictions need same want function problem observed generate s us actually case classification its bad exercise might between instead better since times also sum yi cant even because approximation factory estimates estimator end predict before prediction regression youre dont any def another why outcomes just into frac xi calculate performance above works average new predictors sets those student compare get metrics real absolute accuracy
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -229,8 +229,7 @@ $$
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">data_factory</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span> <span class="c1"># 5 predictors</span>
-<span class="c1">#     y = np.random.random((n,))</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,))</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">y</span>
 </pre></div>
 
@@ -741,6 +740,17 @@ e: 0.038541343476292525
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>The data factory we're using produces predictors and outcomes, but they are actually random numbers that have no relationship to each other. What if we use a data factory that uses the predictors to determine what the outcome is? Change the data factory code above to generate outcomes according to $y_i = x_1^2 + \log(x_2) - x_4x_5$ and rerun our experiments. Is the result any different?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>Repeat these experiments with a <em>classifier</em> of your choosing (e.g. <code>sklearn.ensemble.RandomForestClassifier</code>). You can use this code to generate data with binary outcomes:</p>
 
 <pre><code>def class_data_factory(n):
@@ -833,7 +843,7 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_46_0.png"
+<img src="../images/model-eval/model-eval_47_0.png"
 >
 </div>
 
@@ -875,7 +885,7 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_48_0.png"
+<img src="../images/model-eval/model-eval_49_0.png"
 >
 </div>
 
@@ -957,7 +967,7 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_52_0.png"
+<img src="../images/model-eval/model-eval_53_0.png"
 >
 </div>
 
