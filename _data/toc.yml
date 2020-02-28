@@ -18,11 +18,16 @@
 
 - url: /introduction
 
-- url: /probability/0_motivation
+- url: /using-sl
   sections:
-  - url: /probability/1_univariate_prob
-  - url: /probability/2_multivariate_prob
-  - url: /probability/3_distribution_properties
+  - url: /questions
+  - url: /what-is-sl
+
+# - url: /probability/0_motivation
+#   sections:
+#   - url: /probability/1_univariate_prob
+#   - url: /probability/2_multivariate_prob
+#   - url: /probability/3_distribution_properties
 
 - url: /grad-descent/grad-descent
 
@@ -32,6 +37,8 @@
   - url: /linreg-dl-torch/logistic-reg
   - url: /linreg-dl-torch/linear-reg-complex
   - url: /linreg-dl-torch/abstracting-layers
+
+- url: /model-eval/model-eval
 #   not_numbered: true
 #   expand_sections: true
 #   sections:

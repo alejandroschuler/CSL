@@ -5,16 +5,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,minimum-scale=1">
 
-  <title>From Linear Regression to Deep Learning in Pytorch</title>
-  <meta name="description" content="        From Linear Regression to Deep Learning in Pytorch    In this chapter we'll see how to build supervised learning models of seemingly arbitrary comple...">
+  <title>Using Supervised Learning</title>
+  <meta name="description" content="        Using Supervised Learning    Understanding supervised learning isn't just about knowing how the methods work. What's actually far more important is u...">
 
-  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/linreg-dl-torch/intro.html">
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/using-sl.html">
   <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
 
-  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/linreg-dl-torch/intro.html" />
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/using-sl.html" />
 <meta property="og:type"        content="article" />
-<meta property="og:title"       content="From Linear Regression to Deep Learning in Pytorch" />
-<meta property="og:description" content="        From Linear Regression to Deep Learning in Pytorch    In this chapter we'll see how to build supervised learning models of seemingly arbitrary comple..." />
+<meta property="og:title"       content="Using Supervised Learning" />
+<meta property="og:description" content="        Using Supervised Learning    Understanding supervised learning isn't just about knowing how the methods work. What's actually far more important is u..." />
 <meta property="og:image"       content="" />
 
 <meta name="twitter:card" content="summary">
@@ -24,11 +24,11 @@
   {
   "@context": "http://schema.org",
   "@type": "NewsArticle",
-  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/linreg-dl-torch/intro.html",
-  "headline": "From Linear Regression to Deep Learning in Pytorch",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/using-sl.html",
+  "headline": "Using Supervised Learning",
   "datePublished": "2020-02-22T11:43:08-08:00",
   "dateModified": "2020-02-22T11:43:08-08:00",
-  "description": "        From Linear Regression to Deep Learning in Pytorch    In this chapter we'll see how to build supervised learning models of seemingly arbitrary comple...",
+  "description": "        Using Supervised Learning    Understanding supervised learning isn't just about knowing how the methods work. What's actually far more important is u...",
   "author": {
     "@type": "Person",
     "name": "Alejandro Schuler"
@@ -407,7 +407,7 @@ initFunction(initPrint)
     },
     kernelOptions: {
     kernelName: "python3",
-    path: "content/linreg-dl-torch"
+    path: "content"
     }
 }
 </script>
@@ -717,7 +717,7 @@ initFunction(initPrint)
 <div class="download-buttons-dropdown">
     <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
     <div class="download-buttons">
-        <a href="/CSL/content/linreg-dl-torch/intro.ipynb" download>
+        <a href="/CSL/content/using-sl.ipynb" download>
         <button id="interact-button-download" class="interact-button">.ipynb</button>
         </a>
         
@@ -750,14 +750,14 @@ initFunction(initPrint)
       <main class="c-textbook__page" tabindex="-1">
             <div class="c-textbook__content" id="textbook_content">
                   <main class="jupyter-page">
-    <div id="page-info"><div id="page-title">From Linear Regression to Deep Learning in Pytorch</div>
+    <div id="page-info"><div id="page-title">Using Supervised Learning</div>
 </div>
     
 <div class="jb_cell">
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this chapter we'll see how to build supervised learning models of seemingly arbitrary complexity without having to manually specify a particular parametric form. The key to this is to stack regression models on top of each other so that the outputs of previous models become the inputs to the subsequent models. But instead of training these models up one-at-a-time, we can use gradient descent to simultaneously search the combined parameter spaces of each of these "layers". Deriving the expressions for the gradients of the loss relative to each of these parameters would be incredibly tedious, so we will introduce an auto-differentiation tool provided by the <code>torch</code> pacakge that will make gradient descent a breeze to implement.</p>
+<p>Understanding supervised learning isn't just about knowing how the methods work. What's actually far more important is understanding <em>when</em> and <em>how</em> to apply these tools. It doesn't help to know how to use a tool if you don't know when to use it. To get to that, we'll first discuss the different kinds of scientific questions there are, and then find out if and how supervised learning can be used to answer them.</p>
 
 </div>
 </div>
@@ -777,8 +777,8 @@ initFunction(initPrint)
     
     
 
-    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/grad-descent/grad-descent.html">
-      〈 <span class="u-margin-right-tiny"></span> Fitting Models with Gradient Descent
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/introduction.html">
+      〈 <span class="u-margin-right-tiny"></span> Introduction
     </a>
   
 
@@ -786,8 +786,8 @@ initFunction(initPrint)
     
 
     
-    <a id="js-page__nav__next" class="c-page__nav__next" href="/CSL/linreg-dl-torch/linear-reg.html">
-      Linear Regression <span class="u-margin-right-tiny"></span> 〉
+    <a id="js-page__nav__next" class="c-page__nav__next" href="/CSL/questions.html">
+      Types of Scientific Questions <span class="u-margin-right-tiny"></span> 〉
     </a>
   
 </nav>
