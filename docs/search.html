@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Search the site</title>
+  <meta name="description" content="        ">
+
+  <link rel="canonical" href="https://alejandroschuler.github.io/CSL/search">
+  <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
+
+  <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/search" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Search the site" />
+<meta property="og:description" content="        " />
+<meta property="og:image"       content="" />
+
+<meta name="twitter:card" content="summary">
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/search",
+  "headline": "Search the site",
+  "datePublished": "2020-02-27T17:44:26-08:00",
+  "dateModified": "2020-02-27T17:44:26-08:00",
+  "description": "        ",
+  "author": {
+    "@type": "Person",
+    "name": "Alejandro Schuler"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://alejandroschuler.github.io/CSL",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://alejandroschuler.github.io/CSL",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/CSL/assets/css/styles.css">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/CSL/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<!-- (mostly) copied from nbconvert configuration -->
+<!-- https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/mathjax.tpl -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true },
+    },
+    
+    // Number LaTeX-style equations
+    "TeX": {
+        equationNumbers: {
+          autoNumber: "all"
+        }
+    }
+    
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML' async></script>
+
+
+  <!-- DOM updating function -->
+  <script src="/CSL/assets/js/page/dom-update.js"></script>
+
+  <!-- Selectors for elements on the page -->
+  <script src="/CSL/assets/js/page/documentSelectors.js"></script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/CSL';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js" async></script>
+  <script src="/CSL/assets/js/page/anchors.js" async></script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+<!-- Display Thebelab button in each code cell -->
+<script>
+/**
+ * Set up thebelab button for code blocks
+ */
+
+const thebelabCellButton = id =>
+  `<a id="thebelab-cell-button-${id}" class="btn thebebtn o-tooltip--left" data-tooltip="Interactive Mode">
+    <img src="/CSL/assets/images/edit-button.svg" alt="Start thebelab interactive mode">
+  </a>`
+
+
+const addThebelabButtonToCodeCells =  () => {
+
+  const codeCells = document.querySelectorAll('div.input_area > div.highlight:not(.output) pre')
+  codeCells.forEach((codeCell, index) => {
+    const id = codeCellId(index)
+    codeCell.setAttribute('id', id)
+    if (document.getElementById("thebelab-cell-button-" + id) == null) {
+      codeCell.insertAdjacentHTML('afterend', thebelabCellButton(id));
+    }
+  })
+}
+
+initFunction(addThebelabButtonToCodeCells);
+</script>
+
+
+<script src="https://unpkg.com/thebelab@latest/lib/index.js" async></script>
+<script>
+    /**
+     * Add attributes to Thebelab blocks
+     */
+
+    const initThebelab = () => {
+        const addThebelabToCodeCells = () => {
+            console.log("Adding thebelab to code cells...");
+            // If Thebelab hasn't loaded, wait a bit and try again. This
+            // happens because we load ClipboardJS asynchronously.
+            if (window.thebelab === undefined) {
+                setTimeout(addThebelabToCodeCells, 250)
+            return
+            }
+
+            // If we already detect a Thebelab cell, don't re-run
+            if (document.querySelectorAll('div.thebelab-cell').length > 0) {
+                return;
+            }
+
+            // Find all code cells, replace with Thebelab interactive code cells
+            const codeCells = document.querySelectorAll('.input_area pre')
+            codeCells.forEach((codeCell, index) => {
+                const id = codeCellId(index)
+
+                // Clean up the language to make it work w/ CodeMirror and add it to the cell
+                dataLanguage = ""
+                dataLanguage = detectLanguage(dataLanguage);
+                codeCell.setAttribute('data-language', dataLanguage)
+                codeCell.setAttribute('data-executable', 'true')
+
+                // If the code cell is hidden, show it
+                var inputCheckbox = document.querySelector(`input#hidebtn${codeCell.id}`);
+                if (inputCheckbox !== null) {
+                    setCodeCellVisibility(inputCheckbox, 'visible');
+                }
+            });
+
+            // Remove the event listener from the page so keyboard press doesn't
+            // Change page
+            document.removeEventListener('keydown', initPageNav)
+            keyboardListener = false;
+
+            // Init thebelab
+            thebelab.bootstrap();
+
+            // Remove copy buttons since they won't work anymore
+            const copyAndThebeButtons = document.querySelectorAll('.copybtn, .thebebtn')
+            copyAndThebeButtons.forEach((button, index) => {
+                button.remove();
+            });
+
+            // Remove outputs since they'll be stale
+            const outputs = document.querySelectorAll('.output *, .output')
+            outputs.forEach((output, index) => {
+                output.remove();
+            });
+
+            // Find any cells with an initialization tag and ask ThebeLab to run them when ready
+            var thebeInitCells = document.querySelectorAll('div.tag_thebelab-init');
+            thebeInitCells.forEach((cell) => {
+                console.log("Initializing ThebeLab with cell: " + cell.id);
+                cell.querySelector('.thebelab-run-button').click();
+            });
+        }
+
+        // Add event listener for the function to modify code cells
+        const thebelabButtons = document.querySelectorAll('[id^=thebelab], [id$=thebelab]')
+        thebelabButtons.forEach((thebelabButton,index) => {
+            if (thebelabButton === null) {
+                setTimeout(initThebelab, 250)
+                return
+            };
+            thebelabButton.addEventListener('click', addThebelabToCodeCells);
+        });
+    }
+
+    // Initialize Thebelab
+    initFunction(initThebelab);
+
+// Helper function to munge the language name
+var detectLanguage = (language) => {
+    if (language.indexOf('python') > -1) {
+        language = "python";
+    }
+    return language;
+}
+</script>
+
+
+
+  <!-- Load the auto-generating TOC (non-async otherwise the TOC won't load w/ turbolinks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.8.1/tocbot.min.js" async></script>
+  <script src="/CSL/assets/js/page/tocbot.js"></script>
+
+  <!-- Google analytics -->
+  
+
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script>
+
+  <!-- Load custom website scripts -->
+  <script src="/CSL/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/CSL/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/CSL/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" async></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+
+  <!-- Load JS that depends on site variables -->
+  <script src="/CSL/assets/js/page/copy-button.js" async></script>
+
+  <!-- Hide cell code -->
+  <script src="/CSL/assets/js/page/hide-cell.js" async></script>
+
+  <!-- Printing the screen -->
+  <!-- Include nbinteract for interactive widgets -->
+<script src="https://printjs-4de6.kxcdn.com/print.min.js" async></script>
+<script>
+printContent = () => {
+    // MathJax displays a second version of any math for assistive devices etc.
+    // This prevents double-rendering in the PDF output.
+    var ignoreAssistList = [];
+    assistives = document.querySelectorAll('.MathJax_Display span.MJX_Assistive_MathML').forEach((element, index) => {
+        var thisId = 'MathJax-assistive-' + index.toString();
+        element.setAttribute('id', thisId);
+        ignoreAssistList.push(thisId)
+    });
+
+    // Print the actual content object
+    printJS({
+        printable: 'textbook_content',
+        type: 'html',
+        css: "/CSL/assets/css/styles.css",
+        style: "#textbook_content {padding-top: 40px};",
+        scanStyles: false,
+        targetStyles: ["*"],
+        ignoreElements: ignoreAssistList,
+        documentTitle: "Made with Jupyter Book"
+    })
+};
+
+initPrint = () => {
+    document.querySelector('#interact-button-print').addEventListener('click', printContent)
+}
+
+initFunction(initPrint)
+</script>
+
+</head>
+
+  <body>
+    <!-- Include the ThebeLab config so it gets reloaded on each page -->
+    <script type="text/x-thebe-config">{
+    requestKernel: true,
+    binderOptions: {
+    repo: "jupyter/jupyter-book",
+    ref: "gh-pages",
+    },
+    codeMirrorConfig: {
+    theme: "abcdef",
+    mode: "python"
+    },
+    kernelOptions: {
+    kernelName: "python3",
+    path: ""
+    }
+}
+</script>
+
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  
+  <h2 class="c-sidebar__title">Concepts in Supervised Learning</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/introduction">
+        <a class="c-sidebar__entry"
+          href="/CSL/introduction.html"
+        >
+          
+            1.
+          
+          Introduction
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/using-sl">
+        <a class="c-sidebar__entry"
+          href="/CSL/using-sl.html"
+        >
+          
+            2.
+          
+          Using Supervised Learning
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/questions">
+              <a class="c-sidebar__entry"
+                href="/CSL/questions.html"
+              >
+                
+                  2.1
+                
+                Types of Scientific Questions
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/what-is-sl">
+              <a class="c-sidebar__entry"
+                href="/CSL/what-is-sl.html"
+              >
+                
+                  2.2
+                
+                What is Supervised Learning?
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/grad-descent/grad-descent">
+        <a class="c-sidebar__entry"
+          href="/CSL/grad-descent/grad-descent.html"
+        >
+          
+            3.
+          
+          Fitting Models with Gradient Descent
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/linreg-dl-torch/intro">
+        <a class="c-sidebar__entry"
+          href="/CSL/linreg-dl-torch/intro.html"
+        >
+          
+            4.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+        
+
+        
+
+        <ul class="c-sidebar__sections u-hidden-visually">
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg.html"
+              >
+                
+                  4.1
+                
+                Linear Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/logistic-reg">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/logistic-reg.html"
+              >
+                
+                  4.2
+                
+                Logistic Regression
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/linear-reg-complex">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/linear-reg-complex.html"
+              >
+                
+                  4.3
+                
+                Adding Complexity
+              </a>
+            </li>
+            
+            
+          
+            
+            
+
+            
+            
+            
+            
+
+            <li class="c-sidebar__section" data-url="/linreg-dl-torch/abstracting-layers">
+              <a class="c-sidebar__entry"
+                href="/CSL/linreg-dl-torch/abstracting-layers.html"
+              >
+                
+                  4.4
+                
+                Abstracting our Code
+              </a>
+            </li>
+            
+            
+          
+        </ul>
+      
+
+      
+    
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter" data-url="/model-eval/model-eval">
+        <a class="c-sidebar__entry"
+          href="/CSL/model-eval/model-eval.html"
+        >
+          
+            5.
+          
+          From Linear Regression to Deep Learning in Pytorch
+        </a>
+      </li>
+
+      
+      
+
+      
+
+      
+      
+
+      
+
+      
+    
+  </ul>
+  <p class="sidebar_footer"></p>
+</nav>
+
+      
+      <div class="c-topbar" id="top-navbar">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <div class="c-topbar__buttons">
+    <button
+      id="js-sidebar-toggle"
+      class="hamburger hamburger--arrowalt is-active"
+    >
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
+    <div class="buttons">
+<div class="download-buttons-dropdown">
+    <button id="dropdown-button-trigger" class="interact-button"><img src="/CSL/assets/images/download-solid.svg" alt="Download" /></button>
+    <div class="download-buttons">
+        
+        <a id="interact-button-print"><button id="interact-button-download" class="interact-button">.pdf</button></a>
+    </div>
+</div>
+
+
+</div>
+
+  </div>
+  <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+  <aside class="sidebar__right">
+    <header><h4 class="nav__title"><img src="/CSL/assets/images/list-solid.svg" alt="Search" />   On this page</h4></header>
+    <nav class="onthispage">
+    </nav>
+  </aside>
+  <a href="/CSL/search.html" class="topbar-right-button" id="search-button">
+    <img src="/CSL/assets/images/search-solid.svg" alt="Search" />
+  </a>
+</div>
+
+      <main class="c-textbook__page" tabindex="-1">
+            <div class="c-textbook__content" id="textbook_content">
+              <div class="search-content__inner-wrap">
+    <input type="text" id="lunr_search" class="search-input" tabindex="-1" placeholder="'Enter your search term...''" />
+    <div id="results" class="results"></div>
+</div>
+
+<script>
+    // Add the lunr store since we will now search it
+    var store = [{
+        "title": "Fitting Models with Gradient Descent",
+        
+        "excerpt": "beta theta alpha loss gradient l xi yi frac x descent partial hat y our function model parameters values alert data its lets just value n f array not using sumi knobs regression right direction parameter linear problem div point well surface machine going learning also left p dont derivatives nabla same vector end code need calculate algorithm minimum begin think try much good weve plot instead thats get fit treatment blood pressure rate might want class e where set random optimization line epsilon why step respect models often vdots block b called actually take into little org knob different",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/grad-descent/grad-descent.html",
+        "teaser":null},{
+        "title": "Introduction",
+        
+        "excerpt": "book math not learning its dont read just need language learn machine code much symbols should get once because youre able good any x books give concepts understand intuition methods take after also something quickly used map maps alice very into reading without assume statistics theory only slow mathematical hope even things off part youll cover although plenty discuss useful easy easier think world expressed city theyre beginning sister nothing pictures conversation why wrote existing resources either comfortable recipe really understanding true written small core build foundational new probability optimization work run youve online feeling still help isnt proofs throughout",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/introduction.html",
+        "teaser":null},{
+        "title": "Abstracting our Code",
+        
+        "excerpt": "model data gradient descent training optimizer layers pytorch well parameters also using layer loss into need predictions step weve calculate set test malignant our size class sizes its through code dont change dataset fit module output gradients mymodel algorithm batch any predictors since define easy get lets between y implementing linear nn figure e changes adam doing neural dataloader once epoch models outcome probabilities predicted arbitrary h want new because different x own subclass methods method input things relu sigmoid worry just understand really run problem far automate optim available after primer github com alejandroschuler articles blob master graddescent gradientdescent",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/linreg-dl-torch/abstracting-layers.html",
+        "teaser":null},{
+        "title": "From Linear Regression to Deep Learning in Pytorch",
+        
+        "excerpt": "models regression learning gradient descent linear deep pytorch chapter well build supervised seemingly arbitrary complexity without having manually specify particular parametric form key stack top outputs previous become inputs subsequent instead training simultaneously search combined parameter spaces layers deriving expressions gradients loss relative parameters incredibly tedious introduce auto differentiation tool provided torch pacakge breeze implement",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/linreg-dl-torch/intro.html",
+        "teaser":null},{
+        "title": "Adding Complexity",
+        
+        "excerpt": "x model alpha z linear beta h g w our y array p b new parameters fit lets predictors age hat times just left end right layer loss hidden text using into features begin zj weight regression transformation well being relu function vdots img src images png width vector xwb between exercise size does relationship complexity say matrix c regressions predictions nonlinear both together gradient instead add predicting n cdots sigma output its representation different information because while descent learning algorithm neural where activation functions categories aj adding back example want build better xw purpose original step logistic also not",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/linreg-dl-torch/linear-reg-complex.html",
+        "teaser":null},{
+        "title": "Linear Regression",
+        
+        "excerpt": "beta gradient frac yi loss hat array model l y n partial torch descent our pytorch linear x value lets well tensors sumi algorithm update calculate using random data begin rcl end us functions delta regression xi not also get mean called values try search here should thats current betaj instead answer nograd new different iterations implement simple start store think tensor numpy looking coefficients p whatever squared error guess grade gives best optimization need kind better numbers autograd parameter code iteration derivatives element t grad into why respect gradients weights learning context without single just add going right components",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/linreg-dl-torch/linear-reg.html",
+        "teaser":null},{
+        "title": "Logistic Regression",
+        
+        "excerpt": "yi loss hat model beta pi p log text logistic outcome regression our function cases linear prediction gradient between sigma frac called png parameters before sumi descent xi probability output predicted looks dont not l n begin end just respect weve works try predicts instead changing because infinity want well z e org curve svg still only right sum true brier score observation penalty under should kind closer y same strategy although amazing through code much pytorch compute any seen implement probabilities class continuous data change things firstly cant anymore plus minus wheras fix apply takes squishes sigmoid upload wikimedia",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/linreg-dl-torch/logistic-reg.html",
+        "teaser":null},{
+        "title": "Motivation",
+        
+        "excerpt": "x treatment n y blood pressure patient observation well predictors array patients pre measurements data our refer etc new post example measurement called p left begin cdots end right vdots heart rate different having subscript ith unit numbers target e g j xi vector lists talking say observe also walks door predict problems same every z value photographs cats refers observations usually any dots features index list cccc its outcomes c matrix want here lets hospital whom corresponding after taking drug given current vital signs need talk abstractly kinds apply methods without completely rethink approach made zi classifying not general",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/probability/0_motivation.html",
+        "teaser":null},{
+        "title": "Univariate Prob",
+        
+        "excerpt": "z mathbf p b omega alert probability random set div function phi factory variable v data mathbb nuggets density its need just space distribution outcomes volume code values same mass value x between sample any sum not our silo measure realizations text class block thats sets dont variables into s want different lets get realization well think w f length say called probabilities frac example above become calculate only using cases where take destined numbers discrete sqrt produce end going info bexercise notation why d support real possible factories instead read means something nugget also here map continuous interval integral",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/probability/1_univariate_prob.html",
+        "teaser":null},{
+        "title": "Multivariate Prob",
+        
+        "excerpt": "z mathbf v phi u variables distribution random joint alert p probability get div conditional density dz infty marginal function x variable also mass its outcomes lets just int our region calculate same set y space factory probabilities b values class block text distributions given h only value volume example independent sample omega say multivariate need into dont red discrete sum us back instance frac between instead info bexercise conditioning independence because whats case think any result c t png both different above product where condition conditioned vector xi yi picture total actually before functions means under thats answer meters",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/probability/2_multivariate_prob.html",
+        "teaser":null},{
+        "title": "Distribution Properties",
+        
+        "excerpt": "z mathbf x phi y value mean random expectation e int sum variable dz alert n its omega conditional density expected not sample v same div array mass function compute distribution joint average mu just factory dots take left right continuous discrete end variables dont lets frac values xj example begin get need sometimes where support us takes unique p thats realizations class block info bexercise b moment c u maybe idea taken using numbers called say instance zs text pj case important data also above point any marginal weve might distributions every well single functions think though those vector",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/probability/3_distribution_properties.html",
+        "teaser":null},{
+        "title": "Types of Scientific Questions",
+        
+        "excerpt": "math phobia causal analysis data questions analyses different our its between effect just model children not inferential variables prediction claim lets instead regression association does relationship variable classroom cool kids curriculum question answer called say descriptive exploratory instance hard less inference gender dont also causality curricula book risk before really think ask report reported kind p value likely assumptions result gathered possible boring taught e neighborhood common outcome interest mean often predictive new accurate scientific any should seem obvious sometimes implicitly cite science bad numbers interested world addition interpreted those being difference made based reporting rigorous mechanistic performed expresses strength",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/questions.html",
+        "teaser":null},{
+        "title": "Using Supervised Learning",
+        
+        "excerpt": "supervised learning understanding using isnt just knowing methods work whats actually far important apply tools doesnt help tool dont get well discuss different kinds scientific questions used answer",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/using-sl.html",
+        "teaser":null},{
+        "title": "What is Supervised Learning?",
+        
+        "excerpt": "x y blood pressure predict data patients treatment well our patient observation array n model learning given based called predictors measurements pre refer example photographs spam etc measurement p left begin cdots end right vdots problem prediction supervised cats new future heart rate post subscript ith value unit numbers target features j xi its vector lists prevbloodpressure rule output input either algorithm label matter predicting weather diabetic non emails not say observe also training walks door z having refers usually dots often different index list cccc c matrix dont instance might age already idea process task figuring guess previously seen",
+        "categories": [],
+        "tags": [],
+        "url": "https://alejandroschuler.github.io/CSL/what-is-sl.html",
+        "teaser":null},]
+</script>
+            </div>
+            <div class="c-textbook__footer" id="textbook_footer">
+              
+<nav class="c-page__nav">
+  
+
+  
+</nav>
+
+              <footer>
+  <p class="footer"></p>
+</footer>
+
+            </div>
+
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
