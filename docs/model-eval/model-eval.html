@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-02-27T17:48:59-08:00",
-  "dateModified": "2020-02-27T17:48:59-08:00",
+  "datePublished": "2020-02-27T17:53:24-08:00",
+  "dateModified": "2020-02-27T17:53:24-08:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -1214,19 +1214,9 @@ $$
 </div>
 </div>
 
-<div class="jb_cell tag_hide_input">
+<div class="jb_cell tag_remove_input">
 
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;ê: {ê}</span><span class="se">\n</span><span class="s1">e: </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1397,34 +1387,9 @@ e: 0.038541343476292525
 </div>
 </div>
 
-<div class="jb_cell tag_hide_input">
+<div class="jb_cell tag_remove_input">
 
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
-    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
-<span class="p">})</span>
-
-<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
-    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
-    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1621,37 +1586,9 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 </div>
 </div>
 
-<div class="jb_cell tag_hide_input">
+<div class="jb_cell tag_remove_input">
 
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
-
-<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
-    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
-<span class="p">})</span>
-
-<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
-    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
-    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1691,24 +1628,9 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 </div>
 </div>
 
-<div class="jb_cell">
+<div class="jb_cell tag_remove_input">
 
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Error in error estimate&#39;</span><span class="p">:</span><span class="n">error_in_error_estimate</span><span class="p">})</span>
-
-<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">&quot;Error in error estimate:Q&quot;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">30</span><span class="p">)),</span>
-    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1788,37 +1710,9 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 </div>
 </div>
 
-<div class="jb_cell tag_hide_input">
+<div class="jb_cell tag_remove_input">
 
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
-
-<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
-    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
-<span class="p">})</span>
-
-<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
-    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
-    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
