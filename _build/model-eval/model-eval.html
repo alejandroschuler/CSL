@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: model data error y mathcal our generalization f evaluation future metric e x hat using not dagger n fit test well estimate random lets set t problems good m used training think code loss much evaluate predictions need same want function problem observed generate s us actually case classification its bad exercise might between instead better since times also sum yi cant even because approximation factory estimates estimator end predict before prediction regression youre dont any def another why outcomes just into frac xi calculate performance above works average new predictors sets those student compare get metrics real absolute accuracy
+search: model error data mathcal y generalization f our x test e future training using fit evaluation metric hat not n estimate set dagger random s well m t function lets problems good even estimator think code used average actually same loss much evaluate predictions need before its want since problem observed times sum yi because performance only generate ref us isnt get case classification real bad dont exercise where might between instead better why just also frac xi label cant approximation factory repeat estimates end predict compare prediction regression youre any def another both outcomes into weve gen calculate simulation
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -780,13 +780,20 @@ e: 0.038541343476292525
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Although things look bleak at the moment, there is actually a simple solution to our problem. All we have to do is split our data up into two subsamples: one that will be used to fit the model, and one that will be used to evaluate it. The data we use to fit the model is called a <em>training set</em> and the data we use to evaluate the model is called a <em>test set</em>.</p>
 <p><img src="https://www.dataquest.io/wp-content/uploads/kaggle_train_test_split.svg" alt=""></p>
-<p>In other words, our new estimate of generalization error will be</p>
+<p>In other words, our new estimate of generalization error will be the <em>test error</em>:</p>
 $$
-\mathcal {\hat E}(f) 
+\mathcal {\hat E}_{\mathcal T}(f) 
 =
 \frac{1}{n^{\mathcal T}} \sum_{i \in \mathcal{T}}  M(y_i, f_{\mathcal S}(x_i))
 \label{test-error}
-$$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "training" also starts with a T) are a sets of indices indicating which observations are in the test and training sets, respectively. $n^{\mathcal T}$ is the number of observations in the test set. The notation $f_{\mathcal S}$ indicates that the model $f$ was fit using the training data $\mathcal S$ and not the test data. We'll demonstrate in code first and then explain why this works.</p>
+$$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "training" also starts with a T) are a sets of indices indicating which observations are in the test and training sets, respectively. $n^{\mathcal T}$ is the number of observations in the test set. The notation $f_{\mathcal S}$ indicates that the model $f$ was fit using the training data $\mathcal S$ and not the test data.</p>
+<p>Compare this to the <em>training error</em>, which is basically what we were using before:</p>
+$$
+\mathcal {\hat E}_{\mathcal S}(f) 
+=
+\frac{1}{n^{\mathcal S}} \sum_{i \in \mathcal{S}}  M(y_i, f_{\mathcal S}(x_i))
+\label{training-error}
+$$<p>We'll demonstrate the use of the test set in code first and then explain why it works.</p>
 
 </div>
 </div>
@@ -844,48 +851,6 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 
 <div class="output_png output_subarea output_execute_result">
 <img src="../images/model-eval/model-eval_47_0.png"
->
-</div>
-
-</div>
-</div>
-</div>
-</div>
-
-</div>
-</div>
-
-<div class="jb_cell">
-
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">error_in_error_estimate</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">-</span><span class="n">ê</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">ê</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">ês</span><span class="p">)]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-</div>
-
-<div class="jb_cell tag_remove_input">
-
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="jb_output_wrapper }}">
-<div class="output_area">
-
-
-
-<div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_49_0.png"
 >
 </div>
 
@@ -967,7 +932,7 @@ $$<p>Where $\mathcal T$ (for "test") and $\mathcal S$ (for "study", since "train
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_53_0.png"
+<img src="../images/model-eval/model-eval_51_0.png"
 >
 </div>
 
@@ -1002,6 +967,209 @@ $$<p>Use the code and the expression above to explain in your own words what thi
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The real difference is not what's in the data or how much of it there is, but <em>how it is used</em>. The test set is not used to fit the model $f_{\mathcal S}$, whereas the training set is. This matters because <em>future</em> data also cannot ever be used to fit the model since it's data we don't even have at the time the model is fit. In that sense, the test set is a much better approximation of future data than the training data are because, like the future data, the test data are not used to fit the model. The very fact that we have observed the training data and used it to fit the model makes it unsuitable as an approximation to future data, even though we have done nothing to change the data itself!</p>
 <p>We're going to dig into this further, but for now it might be useful to think of an analogy. Imagine that a student is taking a course whose ultimate goal is to prepare the student to do well in their future career. The course includes both practice problems (with solutions) and a final exam. How can the student make sure she is prepared to succeed in the future? If the student studies using the practice problems, but then evaluates her performance using those same practice problems, she will always be optimistic about what she has actually learned. She may have simply memorized the answers to those problems or learned certain tricks that only work for those problems. However, her performance on the final exam, which has problems she has never seen before, is more likely to indicate how successful she will be in the future, since she will encounter new problems in her career, not textbook problems.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Generalization-Error-Revisited">Generalization Error Revisited<a class="anchor-link" href="#Generalization-Error-Revisited"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We originally presented the generalization error as an average over all future data. That's probably the easiest way to think of it, but it isn't actually the way that we most often work with it mathematically. Mathematically, the generalization error is actually</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\mathcal {E}(f) 
+=
+E_{X, Y}[ M(Y, f(X)) ]
+\label{real-gen-error}
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>where the expectation is taken over the joint distribution of the random variables $X$ and $Y$. Notice that our fit model $f$ is a fixed function, although $X$ and $Y$ are random.</p>
+<p>Now we can see a little more clearly why our training set estimator (equation \ref{training-error}) doesn't work: it's approximating something like $\mathcal {E}_{\mathcal S}(f) = E_{X, Y}[ M(Y, f_{X,Y}(X)) ]
+$. We're trying to average over the variation in model performance on the "future" data $X$ and $Y$, but we're using that "future" data to fit the model $f_{X,Y}$ at the same time. In fact, the notation $\mathcal {E}_{\mathcal S}(f)$ doesn't even make sense because $f$ isn't even a fixed function that we're evaluating inside the estimator - it changes along with the data. So what we're evaluating with the theoretical quantity $\mathcal {E}_{\mathcal S}$ isn't even clear.</p>
+<p>On the other hand, the test set estimator (equation \ref{test-error}) just replaces the expectation in \ref{real-gen-error} with a finite average, but keeps $f$ fixed when computing that average. If you take the expected value of the test-set estimator, you get back the generalization error.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To demonstrate the point, we can simulate both training and test errors. Each simulation is like a single draw from the joint distribution of $X$ and $Y$. First we set up the functions that we will call to compute a singe training error and a single test error:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">training_error</span><span class="p">():</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>           <span class="c1"># randomness across different simulation runs comes from here</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>                    <span class="c1"># model depends on the random data</span>
+    <span class="n">ŷ_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">ŷ_train</span><span class="p">)</span>                <span class="c1"># evaluating a moving (random) target against random data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>    
+<span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>                     <span class="c1"># model fixed in advance</span>
+
+<span class="k">def</span> <span class="nf">test_error</span><span class="p">():</span>
+    <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>          <span class="c1"># randomness across different simulation runs comes from here</span>
+    <span class="n">ŷ_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">ŷ_test</span><span class="p">)</span>               <span class="c1"># evaluating a fixed target against random data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And now we repeat over 500 simulations:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ê_S</span><span class="p">,</span> <span class="n">ê_T</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[(</span><span class="n">training_error</span><span class="p">(),</span> <span class="n">test_error</span><span class="p">())</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice that the code to fit the model is inside of the <code>training_error</code> function, but outside of the <code>test_error</code> function. Thus the model $f$ will be <em>refit</em> each time we compute a training error, but is treated as <em>fixed</em> when computing each test error. This difference only becomes clear when you do a simulation you can repeat many times, since using a single dataset the model only gets fit once and you don't get to see where the "randomness" enters. When doing simulations, you can see that the randomness enters before the model is even fit when using the training error estimate of generalization error. The randomness only enters after the model has been fit when using the test error estimate of generalization error.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When we plot the training and test errors, we can see that the training error (which is not an accurate estimate of generalization error) is usually smaller than the test error (which is). In other words, if we use the training error, we will usually overestimate the performance of our model.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_remove_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_65_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Geometry-of-Generalization,-Training,-and-Test-Errors">The Geometry of Generalization, Training, and Test Errors<a class="anchor-link" href="#The-Geometry-of-Generalization,-Training,-and-Test-Errors"> </a></h2>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've demonstrated that training error is a poor estimate of generalization error and specifically that it tends to underestimate the generalization error. But</p>
 
 </div>
 </div>
