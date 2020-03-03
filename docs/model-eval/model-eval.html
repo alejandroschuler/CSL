@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-03-02T19:18:15-08:00",
-  "dateModified": "2020-03-02T19:18:15-08:00",
+  "datePublished": "2020-03-03T06:35:28-08:00",
+  "dateModified": "2020-03-03T06:35:28-08:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -993,9 +993,47 @@ $$
 
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[-0.38818222],
+       [-0.21944769],
+       [ 0.3932334 ],
+       [-1.23882112],
+       [ 0.02965701]])</pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">data_factory</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span> <span class="c1"># 5 predictors</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="n">X</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">y</span>
 </pre></div>
 
@@ -1057,10 +1095,10 @@ $$
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(array([[0.91586927, 0.34109255, 0.18769485, 0.25513254, 0.99946363],
-        [0.96560603, 0.91925419, 0.99269982, 0.36219822, 0.95019696],
-        [0.7137451 , 0.79316455, 0.84880701, 0.28760566, 0.67715313]]),
- array([-0.23678489,  0.8482024 ,  0.27770748]))</pre>
+<pre>(array([[0.29251083, 0.74331957, 0.67306868, 0.55863981, 0.3459654 ],
+        [0.31490585, 0.47810585, 0.70549962, 0.43528607, 0.5406348 ],
+        [0.28249397, 0.73846136, 0.88400606, 0.77495967, 0.33905335]]),
+ array([-0.40433668, -0.87408824, -0.48613633]))</pre>
 </div>
 
 </div>
@@ -1278,37 +1316,9 @@ e: 0.038541343476292525
 </div>
 </div>
 
-<div class="jb_cell tag_hide_input">
+<div class="jb_cell tag_remove_input">
 
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
-
-<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
-    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
-<span class="p">})</span>
-
-<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
-    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
-    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1319,7 +1329,7 @@ e: 0.038541343476292525
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_32_0.png"
+<img src="../images/model-eval/model-eval_33_0.png"
 >
 </div>
 
@@ -1386,9 +1396,34 @@ e: 0.038541343476292525
 </div>
 </div>
 
-<div class="jb_cell tag_remove_input">
+<div class="jb_cell tag_hide_input">
 
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
+    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1399,7 +1434,7 @@ e: 0.038541343476292525
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_36_0.png"
+<img src="../images/model-eval/model-eval_37_0.png"
 >
 </div>
 
@@ -1467,7 +1502,7 @@ e: 0.038541343476292525
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_39_0.png"
+<img src="../images/model-eval/model-eval_40_0.png"
 >
 </div>
 
@@ -1496,17 +1531,6 @@ e: 0.038541343476292525
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Putting all of this together, we have to conclude that we cannot use the estimator defined in \ref{empirical-err}: we would always be underestimating the generalization error. Moreover, the reason this happens is <em>not</em> that the past data is not representative of the future data because we are using the exact same <code>data_factory</code> function to generate both datasets. Furthermore, the amount we're off by depends on what kind of model we use (and perhaps other factors we didn't investigate), so we can't even know ahead of time how much correction might be necessary.</p>
 <p>This is really bad news for us. If we can't estimate ahead of time how our model will perform, how can we tell which model will be better than another? How can we tell if our model is better than random guessing?</p>
-
-</div>
-</div>
-</div>
-</div>
-
-<div class="jb_cell tag_popout">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>The data factory we're using produces predictors and outcomes, but they are actually random numbers that have no relationship to each other. What if we use a data factory that uses the predictors to determine what the outcome is? Change the data factory code above to generate outcomes according to $y_i = x_1^2 + \log(x_2) - x_4x_5$ and rerun our experiments. Is the result any different?</p>
 
 </div>
 </div>
@@ -1603,9 +1627,37 @@ $$<p>We'll demonstrate the use of the test set in code first and then explain wh
 </div>
 </div>
 
-<div class="jb_cell tag_remove_input">
+<div class="jb_cell tag_hide_input">
 
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+
+<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
+    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1685,9 +1737,34 @@ $$<p>We'll demonstrate the use of the test set in code first and then explain wh
 </div>
 </div>
 
-<div class="jb_cell tag_remove_input">
+<div class="jb_cell tag_hide_input">
 
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;estimated generalization error&#39;</span><span class="p">:</span><span class="n">ês</span><span class="p">,</span>
+    <span class="s1">&#39;generalization error&#39;</span><span class="p">:</span><span class="n">es</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;estimated generalization error&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -1904,9 +1981,34 @@ $$</p>
 </div>
 </div>
 
-<div class="jb_cell tag_remove_input">
+<div class="jb_cell tag_hide_input">
 
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;training error&#39;</span><span class="p">:</span><span class="n">ê_S</span><span class="p">,</span>
+    <span class="s1">&#39;test error&#39;</span><span class="p">:</span><span class="n">ê_T</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;training error&#39;</span><span class="p">,</span> <span class="s1">&#39;test error&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;estimated metric&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;estimated metric:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Quantity:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -2055,7 +2157,7 @@ $$
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we can also define a distance between $f_\mathcal{S}$, the model that theoretically optimizes the training error, and any model $f$ as $\hat{\mathcal E}_{\mathcal S} (f) - \hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$. And, as before, we can assume $\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)=0$ so that the training error $\hat{\mathcal E}_{\mathcal S} (f)$ represents the distance between the estimated model $f$ and the model with the best possible training error $f_\mathcal{S}$.</p>
 <p>When we solve our optimization problem to find $f$, we're looking for the model in $\mathcal F$ that minimizes the training error. But since the training error is just the distance between $f$ and $f_{\mathcal S}$, another way of putting this is that is that we're finding the point in $\mathcal F$ that is closest to $f_{\mathcal S}$ (in the hopes that $f_{\mathcal S}$ is close to $f^\dagger$).</p>
-<p><img src='tr-gen-error.png' width=400></p>
+<p><img src='tr-gen-error.png' width=300></p>
 
 </div>
 </div>
@@ -2066,8 +2168,18 @@ $$
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this figure we see the relationship between $f^\dagger$ (the best possible model), $f_{\mathcal S}$ (the model with the best possible training error on the observed data) and $f$ (the model we fit). The only one of these that we actually know is $f$, after we fit it. We can also observe the training error $\hat{\mathcal E}_{\mathcal S}$, which is the distance from $f$ to $f_\mathcal{S}$. What we really want to know is $\mathcal E$, the distance between $f$ and $f^\dagger$.</p>
+<p>In this figure we see the relationship between $f^\dagger$ (the best possible model), $f_{\mathcal S}$ (the model with the best possible training error on the observed data) and $f$ (the model we fit). The only one of these that we actually know is $f$, after we fit it. The rest we have to imagine. We can also observe the training error $\hat{\mathcal E}_{\mathcal S}$, which is the distance from $f$ to $f_\mathcal{S}$. But what we really want to know is $\mathcal E$, the distance between $f$ and $f^\dagger$.</p>
 
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Training-Set-Variability">Training Set Variability<a class="anchor-link" href="#Training-Set-Variability"> </a></h3>
 </div>
 </div>
 </div>
@@ -2089,11 +2201,12 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <table><tr>
-    <td><img src=tr-gen-error.png width=300></td>
-    <td><img src=tr-gen-error-1.png width=300></td>
-    </tr><tr>
-    <td><img src=tr-gen-error-2.png width=300></td>
-    <td><img src=tr-gen-error-3.png width=300></td>
+    <td><img src=tr-gen-error.png width=200></td>
+    <td><img src=tr-gen-error-1.png width=200></td>
+</tr></table>
+<table><tr>
+    <td><img src=tr-gen-error-2.png width=200></td>
+    <td><img src=tr-gen-error-3.png width=200></td>
 </tr></table>
 </div>
 </div>
@@ -2104,7 +2217,188 @@ $$
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Notice that almost no matter where $f_\mathcal{S}$ ends up, the training error ends up being less than the generalization error. Sometimes by a lot, sometimes by a little. The This is why</p>
+<p>Notice that almost no matter where $f_\mathcal{S}$ ends up, the training error ends up being less than the generalization error. Sometimes by a lot, sometimes by a little. The reason this happens is that $f$ follows $f_\mathcal{S}$ around as much as possible, which explains why the training error typically underestimates the generalization error. In fact, if there is <em>any</em> point in the model space that is closer to $f_\mathcal{S}$ than to $f^\dagger$, the training error must be smaller than the generalization error because that point (or one with even less training error) will be chosen as $f$. Conversely, the generalization error will only be smaller than the training error if there is no point at all in $\mathcal F$ that is closer to $f_\mathcal{S}$ than it is to $f^\dagger$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>However, $f_\mathcal{S}$ isn't equally likely to fall anywhere in $\mathbb F$. In fact, it has a probability distribution that is determined by the joint distribution of $X$ and $Y$. That comes from the definition of $f_\mathcal{S}$. Since some data are more likely than others, some models out of all possible models are more likely to fit those data the best.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src='tr-dist.png' width=300></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this picture, the grey shaded areas represent regions that $f_\mathcal{S}$ is more likely to be in. Additionally, as we increase the size of the test set, $f_\mathcal{S}$ should become more and more concentrated around $f^\dagger$ since the training data are becoming a better and better approximation of the entire population that the expectation is being taken over.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><table><tr>
+    <td><img src=tr-dist.png width=200></td>
+    <td><img src=tr-dist-1.png width=200></td>
+    <td><img src=tr-dist-2.png width=200></td>    
+    </tr><tr>
+</tr></table>
+<img src=tr-dist-underset.png width=600></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And, in fact, this is reflected by the average size of the training errors we get in simulations when we vary the size of the training set:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">training_error</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>           <span class="c1"># randomness across different simulation runs comes from here</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>                    <span class="c1"># model depends on the random data</span>
+    <span class="n">ŷ_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">metric</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">ŷ_train</span><span class="p">)</span>                <span class="c1"># evaluating a moving (random) target against random data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ê_S_10</span><span class="p">,</span> <span class="n">ê_S_100</span><span class="p">,</span> <span class="n">ê_S_1000</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[(</span><span class="n">training_error</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> 
+                                   <span class="n">training_error</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> 
+                                   <span class="n">training_error</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span> 
+                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;n=10&#39;</span><span class="p">:</span><span class="n">ê_S_10</span><span class="p">,</span>
+    <span class="s1">&#39;n=100&#39;</span><span class="p">:</span><span class="n">ê_S_100</span><span class="p">,</span>
+    <span class="s1">&#39;n=1000&#39;</span><span class="p">:</span><span class="n">ê_S_1000</span>
+<span class="p">})</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">transform_fold</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;n=10&#39;</span><span class="p">,</span><span class="s1">&#39;n=100&#39;</span><span class="p">,</span><span class="s1">&#39;n=1000&#39;</span><span class="p">],</span>
+    <span class="n">as_</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Size of Training Set&#39;</span><span class="p">,</span> <span class="s1">&#39;Training Error&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;Training Error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Size of Training Set:N&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_89_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice how the training errors vary much more wildly using small training sets. That happens because $f_\mathcal{S}$ is bouncing around a much larger area, as illustrated in the figure above.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>test error in this picture</li>
+<li>more/less test data</li>
+<li>smaller/bigger model spaces</li>
+<li>bias/variance</li>
+</ul>
 
 </div>
 </div>
