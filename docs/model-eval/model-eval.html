@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-03-02T15:05:28-08:00",
-  "dateModified": "2020-03-02T15:05:28-08:00",
+  "datePublished": "2020-03-02T17:46:35-08:00",
+  "dateModified": "2020-03-02T17:46:35-08:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -1965,17 +1965,6 @@ $$</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="model-space.png" alt=""></p>
-
-</div>
-</div>
-</div>
-</div>
-
-<div class="jb_cell">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>The the absolute best possible model we could ever have would be</p>
 $$
 f^\dagger = \underset{f \in \mathbb F}{\text{argmin}} \ \  \mathcal E (f)
@@ -2037,7 +2026,7 @@ $$
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Unfortunately, we also can't find $f_{\mathcal S}$ because it's not possible (for reasons discussed in previous chapters) to search over the entire space $\mathbb F$. Thus we restrict our search for a model to some smaller space. We call this the model space $\mathcal F$, which is the space of all functions that we are willing to consider for our model $f$. For instance, if we are fitting a cubic model $\hat y_i = a x_i^3 + b x_i^2 + c x_i + d$, we are only considering elements of $\mathbb F$ that have that particular form. So a function like $\log(x) + \frac{1}{x}$ would be in $\mathbb F$, but not in $\mathcal F$. Using a smaller model space is a workaround for the second problem because we are substituting $\mathcal F$ for $\mathbb F$.</p>
+<p>Unfortunately, we also can't find $f_{\mathcal S}$ because it's not possible (for reasons discussed in previous chapters) to search over the entire space $\mathbb F$. Thus we restrict our search for a model to some smaller space. We call this the model space $\mathcal F$, which is the space of all functions that we are willing to consider for our model $f$. For instance, if we are fitting a cubic model $\hat y_i = a x_i^3 + b x_i^2 + c x_i + d$, we are only considering elements of $\mathbb F$ that have that particular form. So a function like $\log(x) + \frac{1}{x}$ would be in $\mathbb F$, but not in $\mathcal F$. Using a smaller model space is a workaround for the second problem because we are substituting $\mathcal F$ for $\mathbb F$:</p>
 
 </div>
 </div>
@@ -2048,7 +2037,63 @@ $$
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we have a supervised learning problem</p>
+$$
+f = \underset{f \in \mathcal F}{\text{argmin}} \ \  \hat{\mathcal E}_{\mathcal S} (f)
+$$
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And this expression neatly represents the three components of the supervised learning problem: 1) the model space $\mathcal F$, 2) the loss function $\hat{\mathcal E}_{\mathcal S}(f)$, and the optimization algorithm that ends up implementing the $\text{argmin}$ operation. The result is the fit model $f$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We're used to seeing the loss expressed as $L(y, \hat y)$, so how is the training error $\hat{\mathcal E}_{\mathcal S}(f)$ the same as that? Well, if the loss function and the evaluation metric are the same, you'll be able to see how $L(y, \hat y)$ is the same as $\hat{\mathcal E}_{\mathcal S}(f)$ once you write them both out. If the loss and the evaluation metric are <em>not</em> the same, then you can think of the loss as an approximation to the evaluation metric. By finding the model that minimizes the loss, we're hoping to find one that does well in terms of the evaluation metric too.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can also define a distance between $f_\mathcal{S}$, the model that theoretically optimizes the training error, and any model $f$ as $\hat{\mathcal E}_{\mathcal S} (f) - \hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$, similar to what we did before with the true generalization error and $f^\dagger$. And, as before, we can drop the $\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$ so that the training error $\hat{\mathcal E}_{\mathcal S} (f)$ represents the distance between the estimated model $f$ and the model with the best possible training error $f_\mathcal{S}$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_popout">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$ will actually always be 0 assuming $x_i \ne x_j$ since there is always a function that can perfectly interpolate any finite set of points. Furthermore, there are always an infinite number of interpolating functions, so $f_\mathcal S$ will actually be a set in its own right. As before, we'll draw it as a point to simplify the presentation.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When we solve our optimization problem to find $f$, we're looking for the model $\mathcal F$ that minimizes the training error. Another way of looking at that is that we're finding the point in $\mathcal F$ that is closest to $f_{\mathcal S}$ (in the hopes that $f_{\mathcal S}$ is close to $f^\dagger$).</p>
 
 </div>
 </div>
