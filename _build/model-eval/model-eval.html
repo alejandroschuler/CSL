@@ -1214,6 +1214,7 @@ $$<p>In other words, we'll find the function out of all the possible functions i
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In general, there could be multiple functions that simultaneously minimize the generalization error, so $f^\dagger$ might be a set instead of a single point. We'll illustrate it as a point in these figures because it's easier to understand, but the arguments work the same if you draw it as a space instead. In this case, the "distances" are the distance from each point to a boundary of the space.</p>
+<p>In general, $\mathcal E(f^\dagger) \ne 0$ but there's no point in carrying around the extra $\mathcal E(f^\dagger)$ everywhere because when we compare distances (say $f_a \leftrightarrow f^\dagger = \mathcal E(f_a) - \mathcal E(f^\dagger)$ vs $f_b \leftrightarrow f^\dagger =  \mathcal E(f_b) - \mathcal E(f^\dagger)$), the $\mathcal E(f^\dagger)$ term drops out (i.e. we get $\mathcal E(f_a) - \mathcal E(f_b))$.</p>
 
 </div>
 </div>
@@ -1225,17 +1226,6 @@ $$<p>In other words, we'll find the function out of all the possible functions i
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we can define the "distance" between $f^\dagger$ and any point $f$ as $\mathcal E(f) - \mathcal E(f^\dagger)$. To simplify things, let's assume that $\mathcal E(f^\dagger)$ is 0 so that the generalization error $\mathcal E(f)$ represents the distance between our estimated model $f$ and the best possible model we could have estimated $f^\dagger$.</p>
-
-</div>
-</div>
-</div>
-</div>
-
-<div class="jb_cell tag_popout">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In general, $\mathcal E(f^\dagger) \ne 0$ but there's no point in carrying around the extra $\mathcal E(f^\dagger)$ everywhere because when we compare distances (say $f_a \leftrightarrow f^\dagger = \mathcal E(f_a) - \mathcal E(f^\dagger)$ vs $f_b \leftrightarrow f^\dagger =  \mathcal E(f_b) - \mathcal E(f^\dagger)$), the $\mathcal E(f^\dagger)$ term drops out (i.e. we get $\mathcal E(f_a) - \mathcal E(f_b))$.</p>
 
 </div>
 </div>
@@ -1295,6 +1285,7 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We're used to seeing the loss expressed as $L(y, \hat y)$, so how is the training error $\hat{\mathcal E}_{\mathcal S}(f)$ the same as that? Well, if the loss function and the evaluation metric are the same, you'll be able to see how $L(y, \hat y)$ is the same as $\hat{\mathcal E}_{\mathcal S}(f)$ once you write them both out. If the loss and the evaluation metric are <em>not</em> the same, then you can think of the loss as an approximation to the evaluation metric. By finding the model that minimizes the loss, we're hoping to find one that does well in terms of the evaluation metric too.</p>
+<p>$\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$ will actually always be 0 assuming $x_i \ne x_j$ since there is always a function that can perfectly interpolate any finite set of points. Furthermore, there are always an infinite number of interpolating functions, so $f_\mathcal S$ will actually be a set in its own right. As before, we'll draw it as a point to simplify the presentation.</p>
 
 </div>
 </div>
@@ -1306,17 +1297,6 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we can also define a distance between $f_\mathcal{S}$, the model that theoretically optimizes the training error, and any model $f$ as $\hat{\mathcal E}_{\mathcal S} (f) - \hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$, similar to what we did before with the true generalization error and $f^\dagger$. And, as before, we can drop the $\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$ so that the training error $\hat{\mathcal E}_{\mathcal S} (f)$ represents the distance between the estimated model $f$ and the model with the best possible training error $f_\mathcal{S}$.</p>
-
-</div>
-</div>
-</div>
-</div>
-
-<div class="jb_cell tag_popout">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$ will actually always be 0 assuming $x_i \ne x_j$ since there is always a function that can perfectly interpolate any finite set of points. Furthermore, there are always an infinite number of interpolating functions, so $f_\mathcal S$ will actually be a set in its own right. As before, we'll draw it as a point to simplify the presentation.</p>
 
 </div>
 </div>
