@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: f mathcal model error e data y generalization x s our training hat dagger test evaluation future metric using fit not function n set well t estimate m random possible same loss because its lets mathbb sum space between problem frac even average actually problems think good used xi point estimator before code instead since also much distribution get dont any why observed yi cant only functions end evaluate predictions need case want might imagine better just times gen performance approximation generate ref smaller distance us best compare isnt regression classification real bad exercise where another both label calculate factory
+search: f mathcal error model e data y s generalization x training our dagger hat test fit evaluation future metric using set not function n well t possible estimate random m its same loss because between lets mathbb since sum space actually problem frac gen even point average problems think good used also xi estimator before code instead why observed only much distribution distance best get want dont any yi cant functions end evaluate predictions need case where might imagine better just times performance approximation generate ref smaller fixed src png width tr us compare isnt regression classification real bad exercise
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -1290,6 +1290,55 @@ $$
 <p>Now we can also define a distance between $f_\mathcal{S}$, the model that theoretically optimizes the training error, and any model $f$ as $\hat{\mathcal E}_{\mathcal S} (f) - \hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$. And, as before, we can assume $\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)=0$ so that the training error $\hat{\mathcal E}_{\mathcal S} (f)$ represents the distance between the estimated model $f$ and the model with the best possible training error $f_\mathcal{S}$.</p>
 <p>When we solve our optimization problem to find $f$, we're looking for the model in $\mathcal F$ that minimizes the training error. But since the training error is just the distance between $f$ and $f_{\mathcal S}$, another way of putting this is that is that we're finding the point in $\mathcal F$ that is closest to $f_{\mathcal S}$ (in the hopes that $f_{\mathcal S}$ is close to $f^\dagger$).</p>
 <p><img src='tr-gen-error.png' width=400></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this figure we see the relationship between $f^\dagger$ (the best possible model), $f_{\mathcal S}$ (the model with the best possible training error on the observed data) and $f$ (the model we fit). The only one of these that we actually know is $f$, after we fit it. We can also observe the training error $\hat{\mathcal E}_{\mathcal S}$, which is the distance from $f$ to $f_\mathcal{S}$. What we really want to know is $\mathcal E$, the distance between $f$ and $f^\dagger$.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This figure is drawn assuming a particular training set $\mathcal S$ has been fixed. But the data are random - if we repeated our experiment we would gather slightly different data. $f^\dagger$ stays fixed since it doesn't depend on the training set, but $f_\mathcal{S}$ will move around since it does. That, in turn, means $f$ moves around since it's the point in $\mathcal F$ closest to whatever $f_\mathcal{S}$ happens to be. Consider these possibilities:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<table><tr>
+    <td><img src=tr-gen-error.png width=300></td>
+    <td><img src=tr-gen-error-1.png width=300></td>
+    </tr><tr>
+    <td><img src=tr-gen-error-2.png width=300></td>
+    <td><img src=tr-gen-error-3.png width=300></td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice that almost no matter where $f_\mathcal{S}$ ends up, the training error ends up being less than the generalization error. Sometimes by a lot, sometimes by a little. The This is why</p>
 
 </div>
 </div>
