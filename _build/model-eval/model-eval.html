@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: f mathcal error model data training s e y generalization dagger x test hat our set fit evaluation future metric well using function not n possible because its since t same m loss point estimate much mathbb tr between also space even src png width problems problem lets sum gen average random size actually get think instead better why used frac only smaller best around good observed xi distribution distance predictions isnt case want dont any where imagine cant likely performance approximation estimator functions tdimg td end evaluate before regression less might another times ref always expectation fixed errors dist
+search: f mathcal error model data training test s generalization e y dagger x our set hat fit t well using not because evaluation future function metric possible estimate its since n tr also size same point errors mathbb src png width between better gen much distance m loss likely get good lets average smaller random space around problem even performance best problems any why observed sum only tdimg td actually think want instead used frac cant thats approximation distribution end isnt case less where however cross xi happens sets points closer models predictions need after dont imagine another estimator those
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -1584,9 +1584,605 @@ $$
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Test-Set-Variability">Test Set Variability<a class="anchor-link" href="#Test-Set-Variability"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Although the test error seems to approximate the generalization error fairly well, the approximation isn't perfect. That's because the test set itself is also a random subset of the the data. Like we did for the training set, we can define the model $f_{\mathcal T}$ out of all possible models $\mathbb F$ that would best fit the test set:</p>
+$$
+f_{\mathcal T} = \underset{f \in \mathbb F}{\text{argmin}} \ \  \hat{\mathcal E}_{\mathcal T} (f)
+$$<p>and again we can define the distance between any other function $f$ and $f_\mathcal{T}$ as $\hat{\mathcal E}_{\mathcal T} (f)$. So the distance from a function $f$ to the best possible model on the test data $f_\mathcal{T}$ is precisely the test error of that function.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src='te-tr-gen-error.png' width=300></p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$f_\mathcal{T}$ will also move around depending on what the test data are:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<table><tr>
+    <td><img src=te-tr-gen-error.png width=200></td>
+    <td><img src=te-tr-gen-error-1.png width=200></td>
+    <td><img src=te-tr-gen-error-2.png width=200></td>
+    </tr><tr>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And, like $f_\mathcal{S}$, it will be more likely to fall in regions around $f^\dagger$. In fact, since the test set is a random sample from the same data-generating distribution as the training sample, the likely locations of $f_\mathcal{S}$ will be the exact same as that of $f_\mathcal{T}$, although "shrunk" or "expanded" depending on the relative sizes of the training and test sets.</p>
+<p>Both $f_\mathcal{S}$ and $f_\mathcal{T}$ are likely to be near $f^\dagger$. Either one is just as likely to be closer to or further from $\mathcal F$ than the other. The difference is that $f_\mathcal{S}$ will determine exactly where in $\mathcal F$ the fit model $f$ will end up, whereas $f_\mathcal{T}$ has no impact on $f$. Again, that's why the test error is a fair estimate of the generalization error.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_remove_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That geometrical intiution is once again borne out by simulations. Let's see what happens when we hold the size of the training data constant, but increase the size of the test data.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">alt</span><span class="o">.</span><span class="n">data_transformers</span><span class="o">.</span><span class="n">disable_max_rows</span><span class="p">()</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span>
+    <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;Size of Training Set&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">100</span><span class="p">],</span> 
+    <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">400</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;Error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Error Type:N&#39;</span><span class="p">),</span>
+    <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Size of Test Set:N&#39;</span>
+<span class="c1">#     column=&#39;Size of Test Set:N&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">resolve_scale</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;independent&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_96_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In every case, the test error is a fair estimate of the generalization error, in that it's not higher or lower on average. However, as we increase the size of the test set, the test error becomes a better and better estimate of the generalization error. That's because $f_\mathcal{T}$ is getting pulled closer and closer to $f^\dagger$, so the distance $\hat{\mathcal E}_\mathcal{S}$ becomes a better approximation of the distance $\mathcal E$.</p>
+<p>However, the overall quality of these models (as captured by the generalization errors) is not changing. That also makes sense: the size of the test data doesn't impact the model we get because the model is trained using only the training data.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Training-and-Test-Trade-offs">Training and Test Trade-offs<a class="anchor-link" href="#Training-and-Test-Trade-offs"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've been looking at the effects of the size of the training and test sets on training, test, and generalization error. But, in practice, we can't vary those two sizes independently of one another. We collect a single dataset and must split it into training and test sets.</p>
+<p>That induces a tradeoff: if we want a model that's likely to have low generalization error, we need more training data. But having more training data means less test data, so our estimate of model performance will be much more variable! On the other hand, if we want to have a very accurate estimate of how well our model performs, we need more test data. But having more test data means less training data, so our model will be worse than it otherwise could have been!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_test</span><span class="p">,</span> <span class="o">*</span><span class="n">simulate_model_eval</span><span class="p">(</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_test</span><span class="p">))</span>
+           <span class="k">for</span> <span class="p">(</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_test</span><span class="p">)</span> <span class="ow">in</span> 
+           <span class="p">[(</span><span class="mi">10</span><span class="p">,</span><span class="mi">990</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">900</span><span class="p">),</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">500</span><span class="p">),</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">990</span><span class="p">,</span><span class="mi">10</span><span class="p">)]</span>
+               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">results</span><span class="p">,</span> 
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Size of Training Set&#39;</span><span class="p">,</span> <span class="s1">&#39;Size of Test Set&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+    <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Size of Training Set&#39;</span><span class="p">,</span> <span class="s1">&#39;Size of Test Set&#39;</span><span class="p">],</span>
+    <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;Error Type&#39;</span><span class="p">,</span>
+    <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;Error&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">Split</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s1">&#39;Train:</span><span class="si">{s}</span><span class="s1">, Test:</span><span class="si">{t}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> 
+                        <span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Size of Training Set&quot;</span><span class="p">],</span> 
+                            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Size of Test Set&quot;</span><span class="p">])]</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">alt</span><span class="o">.</span><span class="n">data_transformers</span><span class="o">.</span><span class="n">disable_max_rows</span><span class="p">()</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span>
+    <span class="n">results</span><span class="p">,</span>
+<span class="c1">#     results[results[&#39;Size of Test Set&#39;]==100], </span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">400</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;Error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Error Type:N&#39;</span><span class="p">),</span>
+    <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Split:N&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">resolve_scale</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;independent&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_102_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The tradeoff is clearly visible here. At the top, we get a poorly performing model (high and variable generalization error) but the observed test error lines up with the unobserved generalization error almost perfectly. At the bottom we have a model that performs well (lower generalization error with almost no variability), but the observed test error is all over the place and thus is not a good indicator of the unobserved generalization error.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In practice, the choice of how to split your data is up to you. Would you rather have a better model, or a better estimate of how good that model is?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>However, things aren't quite as bleak as they seem because after a certain point more training data stops increasing the performance by any substantial amount. That's visible in the plots above: the generalization errors of the models trained on 500 data points look about as good as the generalization errors of the models trained using 1000 data points.</p>
+<p>In other words, model performance "asymptotes" after a certain amount of training data. This happens because $f_\mathcal{S}$ converges to $f^\dagger$ at some finite rate as the size of the training data increase. After a certain point, $f_\mathcal{S}$ will already be very close to $f^\dagger$ and the additional distance between the two will be small. Closing that distance by further increasing the size of the training set therefore yields smaller and smaller improvements in performance.</p>
+<p>Unfortunately, it's also not possible to know exactly the point at which this happens because we can't directly measure the generalization error. But in the world of "big data" with millions of datapoints you can usually safely assume that your model would be equally good if trained on a fraction of the data. So, while there are no hard and fast rules, you can use a smaller proportion of training data if your dataset is large, but it's safer to use a larger proportion of training data if your dataset is small.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Cross-Testing">Cross-Testing<a class="anchor-link" href="#Cross-Testing"> </a></h4><p>One solution to the problem presented by this tradeoff is <em>cross-testing</em> (also called <em>cross-validation</em>, but we'll reserve that term for later use when we discuss model selection). In cross-testing, the data are evenly split up into $k$ (say, 5) folds. We take one of the folds (#1) and use it as test data, training our model on the other $k-1$ folds. We then repeat the process, holding out each of the other $k-1$ folds in turn. At the end we will have fit $k$ models and calculated $k$ test errors, one for each fold.</p>
+<p>Each of those test errors is likely to be somewhat variable, since each individual test set may be relatively small. The clever thing about cross-testing, however, is that we can now <em>average</em> all of these errors together to get a final estimate of the generalization error (call this the <em>cross-test error</em>) that will be less variable than each of the $k$ test errors. Let's demonstrate:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_output">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">KFold</span>
+
+<span class="k">def</span> <span class="nf">model_error</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">metric</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ŷ</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">cross_test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">test_errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">S</span><span class="p">,</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">S</span><span class="p">,:],</span> <span class="n">y</span><span class="p">[</span><span class="n">S</span><span class="p">])</span>
+        <span class="n">test_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_error</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">T</span><span class="p">,:],</span> <span class="n">y</span><span class="p">[</span><span class="n">T</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">test_errors</span>
+
+<span class="k">def</span> <span class="nf">simulate_model_eval</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    
+    <span class="n">test_errors</span> <span class="o">=</span> <span class="n">cross_test</span><span class="p">(</span><span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">cross_test_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">test_errors</span><span class="p">)</span>
+    <span class="n">gen_error</span> <span class="o">=</span> <span class="n">model_error</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span><span class="p">)</span> <span class="c1"># not possible in practice</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">test_errors</span><span class="p">,</span> <span class="n">cross_test_error</span><span class="p">,</span> <span class="n">gen_error</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">simulate_model_eval</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">results</span><span class="p">,</span> 
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">,</span><span class="s1">&#39;cross-test&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+    <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cross-test&#39;</span><span class="p">,</span> <span class="s1">&#39;generalization&#39;</span><span class="p">],</span>
+    <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;Fold&#39;</span><span class="p">,</span>
+    <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;test (fold)&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+    <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Fold&#39;</span><span class="p">],</span>
+    <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;Error Type&#39;</span><span class="p">,</span>
+    <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;Error&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Fold</th>
+      <th>Error Type</th>
+      <th>Error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>cross-test</td>
+      <td>1.830303</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>cross-test</td>
+      <td>1.875291</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>cross-test</td>
+      <td>2.037401</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>cross-test</td>
+      <td>1.879138</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>cross-test</td>
+      <td>1.919016</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2395</th>
+      <td>4</td>
+      <td>test (fold)</td>
+      <td>1.790877</td>
+    </tr>
+    <tr>
+      <th>2396</th>
+      <td>4</td>
+      <td>test (fold)</td>
+      <td>1.704797</td>
+    </tr>
+    <tr>
+      <th>2397</th>
+      <td>4</td>
+      <td>test (fold)</td>
+      <td>1.885131</td>
+    </tr>
+    <tr>
+      <th>2398</th>
+      <td>4</td>
+      <td>test (fold)</td>
+      <td>1.925469</td>
+    </tr>
+    <tr>
+      <th>2399</th>
+      <td>4</td>
+      <td>test (fold)</td>
+      <td>1.803559</td>
+    </tr>
+  </tbody>
+</table>
+<p>2400 rows × 3 columns</p>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span>
+    <span class="n">results</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">200</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mark_area</span><span class="p">(</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;Error:Q&#39;</span><span class="p">,</span> <span class="nb">bin</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Bin</span><span class="p">(</span><span class="n">maxbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;count()&#39;</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Error Type:N&#39;</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span>
+    <span class="n">facet</span><span class="o">=</span><span class="s1">&#39;Fold:N&#39;</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span><span class="o">.</span><span class="n">resolve_scale</span><span class="p">(</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;independent&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_111_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see, the cross-test errors are more concentrated around the true generalization error than the test errors using any of the folds.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>test error in this picture</li>
-<li>more/less test data</li>
 <li>smaller/bigger model spaces: The size and shape of $\mathcal F$ is what determines how much the model can memorize</li>
 <li>bias/variance</li>
 </ul>
