@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: f mathcal error model data training test s generalization e y dagger x set our hat fit t using not evaluation well possible metric n because future function its estimate since also point size mathbb tr random space same lets better errors src png width best get between gen only much distance models m loss likely performance average good where why smaller around any problem observed even evaluate problems case instead sum happens linear points tdimg td k actually think want used cross frac cant thats approximation sets distribution generating end isnt regression dont less might however just say xi
+search: f mathcal error model data training test s generalization e y dagger x set our hat fit t using not evaluation well possible metric n because future function its estimate since also point size mathbb tr random space same lets png better errors src width best get between gen only much distance models m loss likely performance average good where why smaller around any problem observed even evaluate problems case instead sum happens linear points tdimg td k actually think want code used cross frac cant thats approximation sets distribution generating end isnt regression dont less might however just say
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -706,18 +706,15 @@ e: 1.9637616259629058
 <div class="text_cell_render border-box-sizing rendered_html">
 <div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
 
-##### EXERCISE
-
-Repeat these experiments with a *classifier* of your choosing (e.g. `sklearn.ensemble.RandomForestClassifier`). You can use this code to generate data with binary outcomes:
-
-```
+Repeat these experiments with a <b>classifier</b> of your choosing (e.g. <code>sklearn.ensemble.RandomForestClassifier</code>). You can use this code to generate data with binary outcomes:
+<br/>
+<pre><code>
 def class_data_factory(n):
     X = np.random.random((n,5)) # 5 predictors
     y = np.random.randint(2, size=n)
     return X,y
-```
-
-
+</code></pre>
+<br/>
 Use classification accuracy as your evaluation metric. Are your estimates of generalization error still biased downward?
 </div>
 </div>
@@ -1948,6 +1945,7 @@ $$<p>and again we can define the distance between any other function $f$ and $f_
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Cross-Testing">Cross-Testing<a class="anchor-link" href="#Cross-Testing"> </a></h4><p>One solution to the problem presented by this tradeoff is <em>cross-testing</em> (also called <em>cross-validation</em>, but we'll reserve that term for later use when we discuss model selection). In cross-testing, the data are evenly split up into $k$ (say, 5) folds. We take one of the folds (#1) and use it as test data, training our model on the other $k-1$ folds. We then repeat the process, holding out each of the other $k-1$ folds in turn. At the end we will have fit $k$ models and calculated $k$ test errors, one for each fold.</p>
+<p><img src="https://datasciencechalktalk.files.wordpress.com/2019/09/image-192.png?w=1024" alt=""></p>
 <p>Each of those test errors is likely to be somewhat variable, since each individual test set may be relatively small. The clever thing about cross-testing, however, is that we can now <em>average</em> all of these errors together to get a final estimate of the generalization error (call this the <em>cross-test error</em>) that will be less variable than each of the $k$ test errors. Let's demonstrate:</p>
 
 </div>
