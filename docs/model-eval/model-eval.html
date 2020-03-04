@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-03-04T12:56:40-08:00",
-  "dateModified": "2020-03-04T12:56:40-08:00",
+  "datePublished": "2020-03-04T13:14:44-08:00",
+  "dateModified": "2020-03-04T13:14:44-08:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -2945,6 +2945,48 @@ Let's say we generate a training and test set from this data-generating process,
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The exact shapes of these different model spaces as I've drawn them are not reflective of any particular properties of the space. They're just squiggles.</p>
 
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The point of this is to demonstrate that model spaces can be bigger, or smaller, or occupy totally different regions of the overall function space $\mathbb F$. Sometimes they have no functions in common, sometimes they share some, and sometimes they are strict subsets of other model spaces.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
+Consider these two model spaces (where $x$ is a single predictor of $y$):
+<ul>
+    <li>$\mathcal F_{\text{lin}}$: the set of all linear models $bx+a$</li>
+    <li>$\mathcal F_{\text{step}}$: the set of all piecewise-constant functions with at most one jump</li>
+</ul>
+$\mathcal F_{\text{step}}$ is the set of all functions that can be written as
+<br/><br/>
+$$
+f(x) = 
+\begin{cases}
+c_0 & \text{if} & x<t \\
+c_1 & \text{if} & x \ge t
+\end{cases}
+$$
+where $c_0$, $c_1$, and $t$ are parameters of the model. 
+<br/><br/>
+On an $x$:$y$ plane, sketch an example of a function from $\mathcal F_{\text{lin}}$ and a function from $\mathcal F_{\text{step}}$.
+<br/><br/>
+Do these two model spaces have any functions in common? Which ones? Is one model space a subset of the other? If not, is there any meaningful way to say which model space is "bigger"?
+
+</div>
 </div>
 </div>
 </div>
