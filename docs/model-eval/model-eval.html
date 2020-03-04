@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-03-03T18:26:28-08:00",
-  "dateModified": "2020-03-03T18:26:28-08:00",
+  "datePublished": "2020-03-04T11:36:05-08:00",
+  "dateModified": "2020-03-04T11:36:05-08:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -2919,6 +2919,19 @@ Let's say we generate a training and test set from this data-generating process,
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Besides the relative sizes of the training and test sets, we also have control over one very important thing: the model space we choose to use!</p>
+<p>The model space, as you may recall, is the space of functions that we consider "elligible" to be our model. For instance, we may decide that we only want to consider <em>linear</em> models, which is the choice we're making when we opt to do linear regression. Why would we ever hobble ourselves in this way? Well, because we have to search that space of models if we want to find the model within it that best fits the data, and searching through the space of all possible functions $\mathbb F$ just isn't possible.</p>
+<p>So we're stuck working with <em>some</em> model space, but clearly there are different kinds of model spaces we can choose. For instance, instead of linear models like $\hat y_i = bx_i + a$, we could consider quadratic models of the form $\hat y_i = cx_i^2 + bx_i + a$, or perhaps sinusoidal models like $a\sin(bx)$. Let's call these spaces $\mathcal F_{lin}$, $\mathcal F_{quad}$, and $\mathcal F_{sin}$, respectively. How do these spaces relate to each other?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src='mod-spaces.png' width=300></p>
 
 </div>
 </div>

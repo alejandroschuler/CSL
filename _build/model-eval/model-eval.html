@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: f mathcal error model data training test s generalization e y dagger x set our hat fit t br using not evaluation well possible metric n because future function its estimate since also point size mathbb tr random space same lets png better errors src width best get between gen only much distance models m loss likely performance average good where why smaller around any code problem observed even evaluate problems case instead sum happens linear points tdimg td k actually think want used cross frac cant thats approximation px sets distribution generating end isnt regression dont less might however
+search: f mathcal error model data training test s generalization e y dagger x set our hat fit t br possible using not well evaluation because metric n future function space its estimate mathbb models since also point size tr lets random png same src width best better only errors get between gen much distance m why loss likely performance average linear good where smaller around want any code instead problem observed even evaluate problems case sum happens points tdimg td k actually isnt regression think used cross just frac cant thats approximation px sets distribution functions generating end dont less
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -2153,6 +2153,19 @@ Let's say we generate a training and test set from this data-generating process,
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Besides the relative sizes of the training and test sets, we also have control over one very important thing: the model space we choose to use!</p>
+<p>The model space, as you may recall, is the space of functions that we consider "elligible" to be our model. For instance, we may decide that we only want to consider <em>linear</em> models, which is the choice we're making when we opt to do linear regression. Why would we ever hobble ourselves in this way? Well, because we have to search that space of models if we want to find the model within it that best fits the data, and searching through the space of all possible functions $\mathbb F$ just isn't possible.</p>
+<p>So we're stuck working with <em>some</em> model space, but clearly there are different kinds of model spaces we can choose. For instance, instead of linear models like $\hat y_i = bx_i + a$, we could consider quadratic models of the form $\hat y_i = cx_i^2 + bx_i + a$, or perhaps sinusoidal models like $a\sin(bx)$. Let's call these spaces $\mathcal F_{lin}$, $\mathcal F_{quad}$, and $\mathcal F_{sin}$, respectively. How do these spaces relate to each other?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src='mod-spaces.png' width=300></p>
 
 </div>
 </div>
