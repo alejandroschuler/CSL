@@ -24,18 +24,6 @@ comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /con
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:10px">
-test
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<div class="jb_cell">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate a model would be to travel forward in time from the time of model deployment until the end of time, gather up all of the model predictions, and compare them to what actually ended up happening. Obviously this isn't feasible, but we need to clearly identify what it is we're trying to optimize before we can figure out a way to get around the practical problems in estimating it.</p>
 
 </div>
@@ -307,7 +295,7 @@ $$
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_20_0.png"
+<img src="../images/model-eval/model-eval_19_0.png"
 >
 </div>
 
@@ -443,7 +431,7 @@ $$
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_26_0.png"
+<img src="../images/model-eval/model-eval_25_0.png"
 >
 </div>
 
@@ -573,7 +561,7 @@ e: 1.9637616259629058
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_33_0.png"
+<img src="../images/model-eval/model-eval_32_0.png"
 >
 </div>
 
@@ -677,7 +665,7 @@ e: 1.9637616259629058
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_37_0.png"
+<img src="../images/model-eval/model-eval_36_0.png"
 >
 </div>
 
@@ -716,14 +704,22 @@ e: 1.9637616259629058
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="EXERCISE">EXERCISE<a class="anchor-link" href="#EXERCISE"> </a></h5><p>Repeat these experiments with a <em>classifier</em> of your choosing (e.g. <code>sklearn.ensemble.RandomForestClassifier</code>). You can use this code to generate data with binary outcomes:</p>
+<div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
 
-<pre><code>def class_data_factory(n):
+##### EXERCISE
+
+Repeat these experiments with a *classifier* of your choosing (e.g. `sklearn.ensemble.RandomForestClassifier`). You can use this code to generate data with binary outcomes:
+
+```
+def class_data_factory(n):
     X = np.random.random((n,5)) # 5 predictors
     y = np.random.randint(2, size=n)
-    return X,y</code></pre>
-<p>Use classification accuracy as your evaluation metric. Are your estimates of generalization error still biased downward?</p>
+    return X,y
+```
 
+
+Use classification accuracy as your evaluation metric. Are your estimates of generalization error still biased downward?
+</div>
 </div>
 </div>
 </div>
@@ -842,7 +838,7 @@ $$<p>We'll demonstrate the use of the test set in code first and then explain wh
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_44_0.png"
+<img src="../images/model-eval/model-eval_43_0.png"
 >
 </div>
 
@@ -1091,7 +1087,7 @@ $$</p>
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_59_0.png"
+<img src="../images/model-eval/model-eval_58_0.png"
 >
 </div>
 
@@ -1476,7 +1472,7 @@ $$
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_84_0.png"
+<img src="../images/model-eval/model-eval_83_0.png"
 >
 </div>
 
@@ -1569,7 +1565,7 @@ $$
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_87_0.png"
+<img src="../images/model-eval/model-eval_86_0.png"
 >
 </div>
 
@@ -1723,7 +1719,7 @@ $$<p>and again we can define the distance between any other function $f$ and $f_
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_97_0.png"
+<img src="../images/model-eval/model-eval_96_0.png"
 >
 </div>
 
@@ -1900,7 +1896,7 @@ $$<p>and again we can define the distance between any other function $f$ and $f_
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_105_0.png"
+<img src="../images/model-eval/model-eval_104_0.png"
 >
 </div>
 
@@ -2084,7 +2080,7 @@ $$<p>and again we can define the distance between any other function $f$ and $f_
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_113_0.png"
+<img src="../images/model-eval/model-eval_112_0.png"
 >
 </div>
 
