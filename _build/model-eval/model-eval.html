@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: f mathcal model error data training x test s e generalization y dagger set our fit hat br space t not text models well using function possible because evaluation px metric n future also point functions its mathbb same since estimate size lets linear any code only random png tr src width div where between c k spaces best better why errors get gen much distance m good loss likely performance average tree smaller even around want instead problem observed say happens end evaluate problems case regression just sum points tdimg td actually isnt think might used cross frac yi
+search: f mathcal model error data training x test generalization s e y dagger set our fit hat br space t not text models well using function possible because evaluation px metric n future also point functions its mathbb same since estimate linear size lets png tr any code only random src width gen div where between why c k spaces best better errors get tree much smaller distance m good loss likely performance average even around want instead problem observed say happens end evaluate problems case regression just sum points tdimg td actually isnt think might used cross frac yi
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -1158,7 +1158,7 @@ $$<p>In other words, we'll find the function out of all the possible functions i
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src='gen-err-dist.png' width=400></p>
+<p><img src='gen-err-dist.png' width=200></p>
 
 </div>
 </div>
@@ -1181,11 +1181,13 @@ $$<p>In other words, we'll find the function out of all the possible functions i
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now let's consider fitting a model. We don't know what the best possible model $f^\dagger$ is - for multiple reasons: 1) We can't calculate the expectation over the data-generating distribution because we don't know what that distribution is, and, 2) even if we did, there would be no way to optimize the generalization error over the space of all possible functions.</p>
+<p>Now let's consider fitting a model. We don't know what the best possible model $f^\dagger$ is - for multiple reasons: 1) We can't calculate the expectation over the data-generating distribution (equation \ref{real-gen-error}) because we don't know what that distribution is, and, 2) even if we did, there would be no way to optimize the generalization error over the space of all possible functions.</p>
 <p>What we do get to observe are the data $X,y$ in the training set $\mathcal S$. That "solves" the problem of not knowing the data-generating distribution in the sense that we can approximate the expectation over the distribution with an average over the observed data points. That's $\hat {\mathcal E}_{\mathcal S}(f)$. Now imagine we could find the function in $\mathbb F$ that would optimize this training error:</p>
 $$
 f_{\mathcal S} = \underset{f \in \mathbb F}{\text{argmin}} \ \  \hat{\mathcal E}_{\mathcal S} (f)
-$$<p>Unfortunately, we also can't find $f_{\mathcal S}$ because it's not possible (for reasons discussed in previous chapters) to search over the entire space $\mathbb F$. Thus we restrict our search for a model to some smaller space. We call this the model space $\mathcal F$, which is the space of all functions that we are willing to consider for our model $f$. For instance, if we are fitting a cubic model $\hat y_i = a x_i^3 + b x_i^2 + c x_i + d$, we are only considering elements of $\mathbb F$ that have that particular form. So a function like $\log(x) + \frac{1}{x}$ would be in $\mathbb F$, but not in $\mathcal F$. Using a smaller model space is a workaround for the second problem because we are substituting $\mathcal F$ for $\mathbb F$:</p>
+$$<p>Now we can also define a distance between $f_\mathcal{S}$, the model that theoretically optimizes the training error, and any model $f$ as $\hat{\mathcal E}_{\mathcal S} (f) - \hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$. And, as before, we can assume $\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)=0$ so that the training error $\hat{\mathcal E}_{\mathcal S} (f)$ represents the distance between the estimated model $f$ and the model with the best possible training error $f_\mathcal{S}$.</p>
+<p><img src='gen-tr-err-dist.png' width=200></p>
+<p>Unfortunately, we also can't find $f_{\mathcal S}$ because it's not possible (for reasons discussed in previous chapters) to search over the entire space $\mathbb F$. Thus we restrict our search for a model to some smaller space. We call this the model space $\mathcal F$, which is the space of all functions that we are willing to consider for our model $f$. For instance, if we are fitting a cubic model $\hat y_i = a x_i^3 + b x_i^2 + c x_i + d$, we are only considering elements of $\mathbb F$ that have that particular form. So a function like $\log(x) + \frac{1}{x}$ would be in $\mathbb F$, but not in $\mathcal F$. Using a smaller model space is a workaround for the second problem because we are substituting $\mathcal F$ for $\mathbb F$:</p>
 $$
 f = \underset{f \in \mathcal F}{\text{argmin}} \ \  \hat{\mathcal E}_{\mathcal S} (f)
 $$
@@ -1221,7 +1223,6 @@ $$
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we can also define a distance between $f_\mathcal{S}$, the model that theoretically optimizes the training error, and any model $f$ as $\hat{\mathcal E}_{\mathcal S} (f) - \hat{\mathcal E}_{\mathcal S} (f_\mathcal S)$. And, as before, we can assume $\hat{\mathcal E}_{\mathcal S} (f_\mathcal S)=0$ so that the training error $\hat{\mathcal E}_{\mathcal S} (f)$ represents the distance between the estimated model $f$ and the model with the best possible training error $f_\mathcal{S}$.</p>
 <p>When we solve our optimization problem to find $f$, we're looking for the model in $\mathcal F$ that minimizes the training error. But since the training error is just the distance between $f$ and $f_{\mathcal S}$, another way of putting this is that is that we're finding the point in $\mathcal F$ that is closest to $f_{\mathcal S}$ (in the hopes that $f_{\mathcal S}$ is close to $f^\dagger$).</p>
 <p><img src='tr-gen-error.png' width=300></p>
 
@@ -1783,6 +1784,26 @@ Let's say we generate a training and test set from this data-generating process,
 
 <div class="jb_cell">
 
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">data_factory</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span><span class="n">y</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
@@ -1928,7 +1949,7 @@ Let's say we generate a training and test set from this data-generating process,
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_103_0.png"
+<img src="../images/model-eval/model-eval_104_0.png"
 >
 </div>
 
@@ -2113,7 +2134,7 @@ Let's say we generate a training and test set from this data-generating process,
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_111_0.png"
+<img src="../images/model-eval/model-eval_112_0.png"
 >
 </div>
 
@@ -2330,7 +2351,7 @@ What does this tell you about how model spaces generally change as you add varia
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_123_0.png"
+<img src="../images/model-eval/model-eval_124_0.png"
 >
 </div>
 
@@ -2386,7 +2407,7 @@ What does this tell you about how model spaces generally change as you add varia
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_125_0.png"
+<img src="../images/model-eval/model-eval_126_0.png"
 >
 </div>
 
@@ -2470,9 +2491,33 @@ The model $f(x) = 5$ is clearly in $\mathcal F_{\text{tree-1}}$ (set $c=5$). Sho
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Bias-and-Variance">Bias and Variance<a class="anchor-link" href="#Bias-and-Variance"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can make the model space larger or smaller by choosing models that are more complex or more simple, but what effect does this have on the generalization error?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>smaller/bigger model spaces: The size and shape of $\mathcal F$ is what determines how much the model can memorize</li>
-<li>bias/variance</li>
+<li>bias/variance (memorization) <ul>
+<li>explain why the linear model has closer training error to gen error than the tree model did in the beginning of the chapter</li>
+</ul>
+</li>
 </ul>
 
 </div>
