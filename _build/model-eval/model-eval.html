@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: f mathcal model error data training test e s generalization x y dagger set our hat fit space br t not models well using possible function evaluation because metric n future point its also mathbb since estimate random text linear size px code lets tr same only functions png between src width best any better errors get where gen much distance m good why loss likely performance average smaller div even around want instead problem observed evaluate problems case just say sum happens points tdimg td k spaces end actually isnt regression think might used cross frac yi cant thats
+search: f mathcal model error data training x test s e generalization y dagger set our fit hat br space t not text models well using function possible because evaluation px metric n future also point functions its mathbb same since estimate size lets linear any code only random png tr src width div where between c k spaces best better why errors get gen much distance m good loss likely performance average tree smaller even around want instead problem observed say happens end evaluate problems case regression just sum points tdimg td actually isnt think might used cross frac yi
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -2198,7 +2198,71 @@ Let's say we generate a training and test set from this data-generating process,
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's explore this a little more with some data. We'll fit the same data using models of increasing complexity to see the kinds of functions that we can fit as we increase the size of our model space. We'll use decision trees of fixed depth, increasing the depth of the trees as we go along to see examples of the kinds of functions we can fit with each model space.</p>
+<div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
+Consider these two model spaces (where $x$ is a single predictor of $y$):
+<ul>
+    <li>$\mathcal F_{\text{lin}}$: the set of all linear models $bx+a$</li>
+    <li>$\mathcal F_{\text{step}}$: the set of all piecewise-constant functions with at most one jump</li>
+</ul>
+$\mathcal F_{\text{step}}$ is the set of all functions that can be written as
+$$
+f(x) = 
+\begin{cases}
+c_0 & \text{if} & x\lt t \\
+c_1 & \text{if} & x \ge t
+\end{cases}
+\notag
+$$
+where $c_0$, $c_1$, and $t$ are parameters of the model (this is the same thing as a single-variable regression tree with one split). 
+<br/><br/>
+On an $x$:$y$ plane, sketch an example of a function from $\mathcal F_{\text{lin}}$ and a function from $\mathcal F_{\text{step}}$.
+<br/><br/>
+Do these two model spaces have any functions in common? Which ones? Is one model space a subset of the other? If not, is there any meaningful way to say which model space is "bigger"?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
+Consider these two model spaces (where $x_1$ and $x_2$ are two predictor of $y$):
+<ul>
+    <li>$\mathcal F_{1}$: $b_1 x_1+a$</li>
+    <li>$\mathcal F_{2}$: $b_2 x_2 + b_1 x_1+a$</li>
+</ul>
+<br/><br/>
+
+Do these two model spaces have any functions in common? Which ones? Is one model space a subset of the other? If not, is there any meaningful way to say which model space is "bigger"? 
+<br/><br/>
+
+What does this tell you about how model spaces generally change as you add variables to a model?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Model-Complexity-and-Model-Space-Size">Model Complexity and Model Space Size<a class="anchor-link" href="#Model-Complexity-and-Model-Space-Size"> </a></h3>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's explore this a little more with some data. We'll fit the same data using models of increasing complexity to see the kinds of functions that we can fit as we increase the size of our model space. We'll use decision trees, increasing the number of allowed leaves of the trees as we go along. The more leaves we allow the trees to have, the more "jumps" we allow in the piecewise constant fit, so the larger the model space gets. Let's see examples of the kinds of functions we can fit with each model space.</p>
 
 </div>
 </div>
@@ -2214,7 +2278,7 @@ Let's say we generate a training and test set from this data-generating process,
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sim_train</span><span class="p">(</span><span class="n">depths</span><span class="p">):</span>
     <span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_train</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span> 
+    <span class="n">df</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_train</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_leaf_nodes</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span> 
                                       <span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="n">depths</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="n">df</span><span class="p">,</span> 
@@ -2233,486 +2297,6 @@ Let's say we generate a training and test set from this data-generating process,
 </div>
 </div>
 
-<div class="jb_cell">
-
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sim_train</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="jb_output_wrapper }}">
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>x</th>
-      <th>y</th>
-      <th>Depth</th>
-      <th>ŷ</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.974326</td>
-      <td>-6.021691</td>
-      <td>1</td>
-      <td>-6.078223</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.865915</td>
-      <td>4.373737</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.075383</td>
-      <td>4.734730</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.862315</td>
-      <td>6.690577</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.995086</td>
-      <td>-6.134755</td>
-      <td>1</td>
-      <td>-6.078223</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>0.679525</td>
-      <td>2.750795</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>0.678921</td>
-      <td>3.079952</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>0.927532</td>
-      <td>1.545626</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>0.158855</td>
-      <td>6.986622</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>0.091491</td>
-      <td>4.409465</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>0.725442</td>
-      <td>2.186984</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>0.371171</td>
-      <td>-2.042277</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>0.065796</td>
-      <td>3.695974</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>0.683230</td>
-      <td>1.128085</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>0.069439</td>
-      <td>-1.234793</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>0.696571</td>
-      <td>6.154415</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>0.483351</td>
-      <td>-3.967287</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>0.807605</td>
-      <td>1.442612</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>0.650017</td>
-      <td>4.624569</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>0.765428</td>
-      <td>2.439919</td>
-      <td>1</td>
-      <td>2.722206</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>0.974326</td>
-      <td>-6.021691</td>
-      <td>2</td>
-      <td>-6.021691</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>0.865915</td>
-      <td>4.373737</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>0.075383</td>
-      <td>4.734730</td>
-      <td>2</td>
-      <td>1.797491</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>0.862315</td>
-      <td>6.690577</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>0.995086</td>
-      <td>-6.134755</td>
-      <td>2</td>
-      <td>-6.134755</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>0.679525</td>
-      <td>2.750795</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>0.678921</td>
-      <td>3.079952</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>0.927532</td>
-      <td>1.545626</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>0.158855</td>
-      <td>6.986622</td>
-      <td>2</td>
-      <td>1.797491</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>0.091491</td>
-      <td>4.409465</td>
-      <td>2</td>
-      <td>1.797491</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>0.725442</td>
-      <td>2.186984</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>31</th>
-      <td>0.371171</td>
-      <td>-2.042277</td>
-      <td>2</td>
-      <td>1.797491</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>0.065796</td>
-      <td>3.695974</td>
-      <td>2</td>
-      <td>1.797491</td>
-    </tr>
-    <tr>
-      <th>33</th>
-      <td>0.683230</td>
-      <td>1.128085</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>34</th>
-      <td>0.069439</td>
-      <td>-1.234793</td>
-      <td>2</td>
-      <td>1.797491</td>
-    </tr>
-    <tr>
-      <th>35</th>
-      <td>0.696571</td>
-      <td>6.154415</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>36</th>
-      <td>0.483351</td>
-      <td>-3.967287</td>
-      <td>2</td>
-      <td>1.797491</td>
-    </tr>
-    <tr>
-      <th>37</th>
-      <td>0.807605</td>
-      <td>1.442612</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>38</th>
-      <td>0.650017</td>
-      <td>4.624569</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>39</th>
-      <td>0.765428</td>
-      <td>2.439919</td>
-      <td>2</td>
-      <td>3.310661</td>
-    </tr>
-    <tr>
-      <th>40</th>
-      <td>0.974326</td>
-      <td>-6.021691</td>
-      <td>3</td>
-      <td>-6.021691</td>
-    </tr>
-    <tr>
-      <th>41</th>
-      <td>0.865915</td>
-      <td>4.373737</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>42</th>
-      <td>0.075383</td>
-      <td>4.734730</td>
-      <td>3</td>
-      <td>3.718400</td>
-    </tr>
-    <tr>
-      <th>43</th>
-      <td>0.862315</td>
-      <td>6.690577</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>44</th>
-      <td>0.995086</td>
-      <td>-6.134755</td>
-      <td>3</td>
-      <td>-6.134755</td>
-    </tr>
-    <tr>
-      <th>45</th>
-      <td>0.679525</td>
-      <td>2.750795</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>46</th>
-      <td>0.678921</td>
-      <td>3.079952</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>47</th>
-      <td>0.927532</td>
-      <td>1.545626</td>
-      <td>3</td>
-      <td>1.545626</td>
-    </tr>
-    <tr>
-      <th>48</th>
-      <td>0.158855</td>
-      <td>6.986622</td>
-      <td>3</td>
-      <td>3.718400</td>
-    </tr>
-    <tr>
-      <th>49</th>
-      <td>0.091491</td>
-      <td>4.409465</td>
-      <td>3</td>
-      <td>3.718400</td>
-    </tr>
-    <tr>
-      <th>50</th>
-      <td>0.725442</td>
-      <td>2.186984</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>51</th>
-      <td>0.371171</td>
-      <td>-2.042277</td>
-      <td>3</td>
-      <td>-3.004782</td>
-    </tr>
-    <tr>
-      <th>52</th>
-      <td>0.065796</td>
-      <td>3.695974</td>
-      <td>3</td>
-      <td>3.718400</td>
-    </tr>
-    <tr>
-      <th>53</th>
-      <td>0.683230</td>
-      <td>1.128085</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>54</th>
-      <td>0.069439</td>
-      <td>-1.234793</td>
-      <td>3</td>
-      <td>3.718400</td>
-    </tr>
-    <tr>
-      <th>55</th>
-      <td>0.696571</td>
-      <td>6.154415</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>56</th>
-      <td>0.483351</td>
-      <td>-3.967287</td>
-      <td>3</td>
-      <td>-3.004782</td>
-    </tr>
-    <tr>
-      <th>57</th>
-      <td>0.807605</td>
-      <td>1.442612</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>58</th>
-      <td>0.650017</td>
-      <td>4.624569</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-    <tr>
-      <th>59</th>
-      <td>0.765428</td>
-      <td>2.439919</td>
-      <td>3</td>
-      <td>3.487165</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-</div>
-</div>
-</div>
-
-</div>
-</div>
-
 <div class="jb_cell tag_hide_input">
 
 <div class="cell border-box-sizing code_cell rendered">
@@ -2720,26 +2304,17 @@ Let's say we generate a training and test set from this data-generating process,
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">sim_train</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">sim_train</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
 
-<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span>
-    <span class="n">source</span><span class="p">,</span> 
+<span class="n">points</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span><span class="o">.</span><span class="n">mark_point</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> 
+<span class="n">lines</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span><span class="o">.</span><span class="n">mark_line</span><span class="p">(</span><span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;ŷ&#39;</span><span class="p">))</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span>
+    <span class="n">points</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> 
     <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
-<span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">(</span>
-<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-<span class="p">)</span> <span class="o">+</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span>
-    <span class="n">source</span><span class="p">,</span> 
-    <span class="n">height</span><span class="o">=</span><span class="mi">100</span>
-<span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">(</span>
-    <span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step-after&#39;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span>
-    <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;ŷ&#39;</span><span class="p">),</span>
-    <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;Depth:N&#39;</span>
-<span class="p">)</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">200</span>
+<span class="p">)</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span><span class="s1">&#39;Depth:O&#39;</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2755,7 +2330,7 @@ Let's say we generate a training and test set from this data-generating process,
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="../images/model-eval/model-eval_121_0.png"
+<img src="../images/model-eval/model-eval_123_0.png"
 >
 </div>
 
@@ -2767,11 +2342,78 @@ Let's say we generate a training and test set from this data-generating process,
 </div>
 </div>
 
-<div class="jb_cell tag_popout">
+<div class="jb_cell">
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Later we will also see how changing the hyperparameters of these models (e.g. a random forest with 10 trees vs. a random forest with 1000 trees) effectively shrinks or enlargens the model space.</p>
+<p>And repeating the same experiment with new data:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">sim_train</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="n">points</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span><span class="o">.</span><span class="n">mark_point</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> 
+<span class="n">lines</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span><span class="o">.</span><span class="n">mark_line</span><span class="p">(</span><span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;ŷ&#39;</span><span class="p">))</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span>
+    <span class="n">points</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> 
+    <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">200</span>
+<span class="p">)</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span><span class="s1">&#39;Depth:O&#39;</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_125_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The corresponding model spaces look something like:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src='mod-spaces-trees.png' width=300></p>
 
 </div>
 </div>
@@ -2783,25 +2425,29 @@ Let's say we generate a training and test set from this data-generating process,
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
-Consider these two model spaces (where $x$ is a single predictor of $y$):
-<ul>
-    <li>$\mathcal F_{\text{lin}}$: the set of all linear models $bx+a$</li>
-    <li>$\mathcal F_{\text{step}}$: the set of all piecewise-constant functions with at most one jump</li>
-</ul>
-$\mathcal F_{\text{step}}$ is the set of all functions that can be written as
+Why is $\mathcal F_{\text{tree-k}} \subset \mathcal F_{\text{tree-(k+1)}}$? For example, why can a tree model with two leaves also be captured by a tree model with three leaves? We'll illustrate the argument using $k=1$
+<br/><br/>
+
+$\mathcal F_{\text{tree-1}}$ is the set of all functions that can be written as
 $$
-f(x) = 
+f(x) = c
+\notag
+$$
+
+on the other hand, $\mathcal F_{\text{tree-1}}$ is the set of all functions that can be written as
+$$
+g(x) = 
 \begin{cases}
 c_0 & \text{if} & x\lt t \\
 c_1 & \text{if} & x \ge t
 \end{cases}
 \notag
 $$
-where $c_0$, $c_1$, and $t$ are parameters of the model. 
+
+where $c$, and $c_0$, $c_1$, and $t$ are parameters of the two models.
 <br/><br/>
-On an $x$:$y$ plane, sketch an example of a function from $\mathcal F_{\text{lin}}$ and a function from $\mathcal F_{\text{step}}$.
-<br/><br/>
-Do these two model spaces have any functions in common? Which ones? Is one model space a subset of the other? If not, is there any meaningful way to say which model space is "bigger"?
+
+The model $f(x) = 5$ is clearly in $\mathcal F_{\text{tree-1}}$ (set $c=5$). Show $f(x) = 5$ is also in $\mathcal F_{\text{tree-2}}$. In other words, find values of $c_0$, $c_1$, and $t$ so that $g(x) = 5$. Do the same for a generic model $f(x) = c$. How does this result extend to show that $\mathcal F_{\text{tree-k}} \subset \mathcal F_{\text{tree-(k+1)}}$ for any $k$?
 
 </div>
 </div>
@@ -2811,33 +2457,12 @@ Do these two model spaces have any functions in common? Which ones? Is one model
 
 <div class="jb_cell">
 
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To conclude: bigger model spaces give us access to a more diverse, flexible, or complex range of functions that we could use as our model. In the tree example, trees with two leaves only allow us to fit functions with a single step, whereas trees with more leaves allow for more steps in the fit function. This happens because the space of allowable models is larger.</p>
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="n">chart</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span>
-        <span class="n">source</span><span class="p">,</span> 
-        <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="n">width</span><span class="o">=</span><span class="mi">300</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">(</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span>
-        <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-    <span class="p">)</span> <span class="o">+</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span>
-        <span class="n">source</span><span class="p">,</span> 
-        <span class="n">height</span><span class="o">=</span><span class="mi">100</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">(</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-        <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span>
-        <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;ŷ&#39;</span><span class="p">)</span>
-    <span class="p">)</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
-
 </div>
 </div>
 
