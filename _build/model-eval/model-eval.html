@@ -11,7 +11,7 @@ prev_page:
 next_page:
   url: 
 suffix: .ipynb
-search: f mathcal model error data training x generalization test s e y dagger space br our fit set hat models t not well using possible px text also because function n linear tr its g png evaluation src width metric gen functions future regression point random mathbb same any since div code where lets estimate small spaces size only errors between get better likely tree smaller generating c k best around why average much distance m good instead loss even performance process happens sets tdimg td bias think observed thats distribution want different just problem say picture img variance end
+search: f mathcal model error data training x generalization test s e y dagger space our br fit set hat models t not well using possible px text also because function n linear tr its png evaluation src width regression metric g functions future gen point random mathbb any since same div code lets estimate small spaces where size only errors between tree get better likely smaller generating c k best why around average distance m good instead loss even performance process much happens sets tdimg td bias think observed thats distribution variance want different just problem say picture img end
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
@@ -2600,7 +2600,7 @@ The model $f(x) = 5$ is clearly in $\mathcal F_{\text{tree-1}}$ (set $c=5$). Sho
 </div>
 </div>
 
-<div class="jb_cell tag_hide_input">
+<div class="jb_cell tag_hide_input tag_full_width">
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -2661,7 +2661,7 @@ The model $f(x) = 5$ is clearly in $\mathcal F_{\text{tree-1}}$ (set $c=5$). Sho
 </div>
 </div>
 
-<div class="jb_cell tag_hide_input">
+<div class="jb_cell tag_hide_input tag_full_width">
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -2775,10 +2775,7 @@ def data_factory(n):
 
 <br/><br/>
 
-What do you observe?
-<br/><br/>
-
-Is the variance of the linear model 
+What do you observe? Is the variance of the regression tree still larger than the variance of the linear model?
 
 </div>
 </div>
@@ -2802,16 +2799,9 @@ Is the variance of the linear model
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>g is generally further from f dagger, f generally closer =&gt; higher gen. error, reflected in test error (bias)<ul>
-<li>but depends on where fdagger is... might be ok</li>
+<li>bias/variance decomposition of \hat E_T(f_S) - E averaged over all possible S<ul>
+<li>picture? F, G, fdagger, fS cloud with distances for bias and variance and overall estimation error?</li>
 </ul>
-</li>
-<li><p>g stays in pretty much same place, f bounces around (variance)</p>
-<ul>
-<li>picture with densities over F and G based on density of fS</li>
-</ul>
-</li>
-<li><p>bias/variance decomposition of \hat E_T(f_S) - E averaged over all possible S</p>
 </li>
 </ul>
 <p>Thus:</p>
