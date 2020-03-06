@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-03-06T10:45:35-08:00",
-  "dateModified": "2020-03-06T10:45:35-08:00",
+  "datePublished": "2020-03-06T11:12:30-08:00",
+  "dateModified": "2020-03-06T11:12:30-08:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -3503,6 +3503,48 @@ What do you observe?
 <br/><br/>
 
 Draw a picture of $\mathbb F$ containing $\mathcal F$ (the space of regression trees) and $\mathcal G$ (the space of linear models). Given the data-generating process we're using, where should $f^\dagger$ be in this picture? What is the implication for the generalization and training errors you would expect to see for the two kinds of models? Do your expectations line up with what you observed in simulation?
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Variance">Variance<a class="anchor-link" href="#Variance"> </a></h4><p>Our second observation is that the position of $g$ is fairly consistent, while $f$ moves around a lot. Another way to think about this that $\mathcal F$ is more sensitive to what the training data are (the position of $f_\mathcal S$) than $\mathcal G$ is. This happens because $\mathcal G$ is small: there just isn't a lot of room for $g$ to move around. $\mathcal F$, on the other hand, is big, so $f$ ends up bouncing around in order to chase the location of $f_\mathcal{S}$. This is substantiated by our experiments: the regression line passing through the data looks very similar no matter what the training data are, but the regression tree fit varies wildly in the three different runs.</p>
+<p>The sensitivity of a model space to the training data is called the <em>variance</em> of the model.</p>
+<p>Like bias, variance is also relative to the actual position of $f^\dagger$. but also to the distribution of locations of $f_\mathcal{S}$. If the training data are very consistent in a way that doesn't affect the model fit, the different models we expect to get will be similar, even if the model space is large and flexible.</p>
+<p>Desipte this, it's common to think of big, flexible model spaces (like regression trees) as being "high variance" and small, inflexible model spaces (like linear regression) as being "low variance". Again, that's because the real world is complicated, so it's unlikely that the training data will not vary in a way that affects the model fit. Having a big model space leaves you more exposed to that possibility in general. As with bias, though, it's not actually possible to know what the variance of any model space is without knowing the (unknown) data-generating process.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background-color:lightblue; padding:10px; outline: 1px solid darkblue; margin:20px">
+Re-generate the two sets of plots above ($x$:$y$ fits and generalization/training errors), but use this data-generating process instead:
+<br/><br/>
+
+<pre><code>
+def data_factory(n):
+    X = np.random.random((n,1)) 
+    y = 0*X[:,0]
+    return X,y
+</code></pre>
+
+<br/><br/>
+
+What do you observe?
+<br/><br/>
+
+Is the variance of the linear model 
 
 </div>
 </div>
