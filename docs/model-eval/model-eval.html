@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-03-05T14:11:11-08:00",
-  "dateModified": "2020-03-05T14:11:11-08:00",
+  "datePublished": "2020-03-06T10:35:06-08:00",
+  "dateModified": "2020-03-06T10:35:06-08:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -3267,7 +3267,229 @@ The model $f(x) = 5$ is clearly in $\mathcal F_{\text{tree-1}}$ (set $c=5$). Sho
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can make the model space larger or smaller by choosing models that are more complex or more simple, but what effect does this have on the generalization error?</p>
+<p>We can make the model space larger or smaller by choosing models that are more complex or more simple, but what effect does this have on the generalization error? What about training and test error?</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The upshot is that a larger model space does two things: it gives you a higher chance of getting near $f^\dagger$, but it also makes it possible for your guesses to vary more wildly. Consider the scenario with a fixed data-generating distribution (thus fixed $f^\dagger$) where we fit two models: one ($f$) using a large and flexible model space $\mathcal F$ (e.g. regression trees with 10 leaves) and another ($g$) using a small and inflexible model space $\mathcal G$ (e.g. linear regression). These pictures show the different positions of the fit models $f$ and $g$ we'd get under different possible training sets (positions of $f_\mathcal S$):</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<!-- <img src=tr-gen-error-small-1.png width=200>
+<img src=tr-gen-error-small-2.png width=200>
+<img src=tr-gen-error-small-3.png width=200> -->
+
+<table><tr>
+    <td><img src=tr-gen-error-small-1.png width=300></td>
+    <td><img src=tr-gen-error-small-2.png width=300></td>
+    <td><img src=tr-gen-error-small-3.png width=300></td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's also simulate this kind of scenario. We'll draw three different training sets from our data-generating process (fixed $f^\dagger$). For each training set, we'll fit one regression tree with 10 leaves ($f$) and one linear regression ($g$) and we'll plot the resulting model fits:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_future</span><span class="p">,</span><span class="n">y_future</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">model_error</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">ŷ</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">metric</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ŷ</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sim_train</span><span class="p">():</span>
+    <span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+    
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_leaf_nodes</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_train</span><span class="p">,</span> 
+             <span class="n">tree</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span>
+             <span class="n">line</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">,</span> 
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;Decision Tree&#39;</span><span class="p">,</span> <span class="s1">&#39;Linear Regression&#39;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+        <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">],</span>
+        <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;Model&#39;</span><span class="p">,</span>
+        <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;ŷ&#39;</span>
+    <span class="p">)</span>
+    
+    <span class="n">errors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">&#39;Error Type&#39;</span><span class="p">:[</span><span class="s1">&#39;Generalization&#39;</span><span class="p">,</span> <span class="s1">&#39;Training&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;Decision Tree&#39;</span><span class="p">:[</span><span class="n">model_error</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span><span class="p">),</span> <span class="n">model_error</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)],</span>
+        <span class="s1">&#39;Linear Regression&#39;</span><span class="p">:[</span><span class="n">model_error</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">X_future</span><span class="p">,</span> <span class="n">y_future</span><span class="p">),</span> <span class="n">model_error</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)]</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+        <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Error Type&#39;</span><span class="p">],</span>
+        <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;Model&#39;</span><span class="p">,</span>
+        <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;Error&#39;</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">errors</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">sim_train</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">)])</span>
+
+<span class="n">color_scale</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Decision Tree&#39;</span><span class="p">,</span> <span class="s1">&#39;Linear Regression&#39;</span><span class="p">],</span> 
+                        <span class="nb">range</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;green&#39;</span><span class="p">,</span><span class="s1">&#39;purple&#39;</span><span class="p">])</span>
+
+<span class="n">points</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span><span class="o">.</span><span class="n">mark_point</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> 
+<span class="n">lines</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">()</span><span class="o">.</span><span class="n">mark_line</span><span class="p">(</span><span class="n">interpolate</span><span class="o">=</span><span class="s1">&#39;step&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;ŷ&#39;</span><span class="p">),</span> 
+                                                         <span class="n">color</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Model&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">color_scale</span><span class="p">))</span>
+
+<span class="n">alt</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span>
+    <span class="n">points</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> 
+    <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">270</span>
+<span class="p">)</span><span class="o">.</span><span class="n">facet</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">&#39;run:O&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_137_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And also calculate the generalization and training error of each model (i.e. the distances in the figure above).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">errors</span><span class="p">)])</span>
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">270</span><span class="p">)</span><span class="o">.</span><span class="n">mark_point</span><span class="p">(</span><span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;Error Type&#39;</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s1">&#39;Model&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">color_scale</span><span class="p">),</span>
+    <span class="n">column</span> <span class="o">=</span> <span class="s1">&#39;run&#39;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_139_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Bias">Bias<a class="anchor-link" href="#Bias"> </a></h4><p>The first thing to notice is that in our picture $g$ tends to be fairly far away from both $f_S$ and $f^\dagger$, whereas $f$ is usually closer. This happens because $\mathcal G$ is small, so any given $f^\dagger$ is more likely to be far away from it. That means that should expect $g$ to have a higher generalization error than $f$ on average, which is exactly what we see when we run our experiment: the generalization error of the decision tree is smaller than the generalization error of the linear regression.</p>
+<p>How close a model space is to the "truth" $f^\dagger$ is called the <em>bias</em> of the model.</p>
+<p>Bias is relative, though! It depends on exactly where $f^\dagger$ is (i.e. what the data-generating distribution is) relative to the model space. If $f^dagger$ is close to $\mathcal G$ and far from $\mathcal F$, it doesn't matter if $\mathcal F$is bigger: the generalization error of models from $\mathcal G$ will usually be smaller.</p>
+<ul>
+<li>exercise with linear model</li>
+</ul>
+<p>Despite this, it's common to think of big, flexible model spaces (like regression trees) as being "low bias" and small, inflexible model spaces (like linear regression) as being "high bias". That's because the data we see in the world is usually generated by complex nonlinear interactions. In other words, most $f^\dagger$s that we encounter are far from the little model spaces that we can encode with simple functions like $ax + b$. That's a heuristic statement, though, so take it with a grain of salt. Ultimately, we can't know what the bias of any given model space is without knowing what $f^\dagger$ is (which we never know).</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since $f_\mathcal S$ is likely to be close to $f^dagger$, our fit model $g$ will also usually be far from $f_\mathcal{S}$, and thus the training error will also typically be larger when the model space is smaller.</p>
 
 </div>
 </div>
@@ -3279,11 +3501,47 @@ The model $f(x) = 5$ is clearly in $\mathcal F_{\text{tree-1}}$ (set $c=5$). Sho
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>smaller/bigger model spaces: The size and shape of $\mathcal F$ is what determines how much the model can memorize</li>
-<li>bias/variance (memorization) <ul>
-<li>explain why the linear model has closer training error to gen error than the tree model did in the beginning of the chapter</li>
+<li>g is generally further from f dagger, f generally closer =&gt; higher gen. error, reflected in test error (bias)<ul>
+<li>but depends on where fdagger is... might be ok</li>
 </ul>
 </li>
+<li><p>g stays in pretty much same place, f bounces around (variance)</p>
+<ul>
+<li>picture with densities over F and G based on density of fS</li>
+</ul>
+</li>
+<li><p>bias/variance decomposition of \hat E_T(f_S) - E averaged over all possible S</p>
+</li>
+</ul>
+<p>Thus:</p>
+<ul>
+<li>training error tracks with generalization error better in the small model space (bias dominated)<ul>
+<li>explains the result at the beginning of the chapter</li>
+</ul>
+</li>
+<li><p>flipside: training error becomes a bad predictor of generalization error in the big model space</p>
+<ul>
+<li>training error will always be small when the space is big: big space == can memorize more training data</li>
+<li>makes these models likely to be bad without enough training data (ensuring fS is close to fdagger). </li>
+</ul>
+</li>
+<li><p>enlarging the model space: bias-variance tradeoff, error curves</p>
+</li>
+<li><p>How to decide between two models? Model selection</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>make colors consistent in plots</li>
 </ul>
 
 </div>
