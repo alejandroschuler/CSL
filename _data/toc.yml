@@ -17,6 +17,7 @@
 # - header: My Header  # Will insert a header with no link in the sidebar
 
 - url: /introduction
+  not_numbered: true
 
 - url: /using-sl
   sections:

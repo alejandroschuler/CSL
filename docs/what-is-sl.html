@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1">
 
   <title>What is Supervised Learning?</title>
-  <meta name="description" content="        What is Supervised Learning?    Supervised learning is the task of figuring out how to guess the output from a given input based on previously seen p...">
+  <meta name="description" content="        What is Supervised Learning?    Now we know what kinds of questions we might be trying to answer, but since this book is about supervised learning, w...">
 
   <link rel="canonical" href="https://alejandroschuler.github.io/CSL/what-is-sl.html">
   <link rel="alternate" type="application/rss+xml" title="Concepts in Supervised Learning" href="https://alejandroschuler.github.io/CSL/feed.xml">
@@ -14,7 +14,7 @@
   <meta property="og:url"         content="https://alejandroschuler.github.io/CSL/what-is-sl.html" />
 <meta property="og:type"        content="article" />
 <meta property="og:title"       content="What is Supervised Learning?" />
-<meta property="og:description" content="        What is Supervised Learning?    Supervised learning is the task of figuring out how to guess the output from a given input based on previously seen p..." />
+<meta property="og:description" content="        What is Supervised Learning?    Now we know what kinds of questions we might be trying to answer, but since this book is about supervised learning, w..." />
 <meta property="og:image"       content="" />
 
 <meta name="twitter:card" content="summary">
@@ -26,9 +26,9 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/what-is-sl.html",
   "headline": "What is Supervised Learning?",
-  "datePublished": "2020-03-06T11:15:26-08:00",
-  "dateModified": "2020-03-06T11:15:26-08:00",
-  "description": "        What is Supervised Learning?    Supervised learning is the task of figuring out how to guess the output from a given input based on previously seen p...",
+  "datePublished": "2020-04-01T13:10:07-07:00",
+  "dateModified": "2020-04-01T13:10:07-07:00",
+  "description": "        What is Supervised Learning?    Now we know what kinds of questions we might be trying to answer, but since this book is about supervised learning, w...",
   "author": {
     "@type": "Person",
     "name": "Alejandro Schuler"
@@ -438,8 +438,6 @@ initFunction(initPrint)
           href="/CSL/introduction.html"
         >
           
-            1.
-          
           Introduction
         </a>
       </li>
@@ -471,7 +469,7 @@ initFunction(initPrint)
           href="/CSL/using-sl.html"
         >
           
-            2.
+            1.
           
           Using Supervised Learning
         </a>
@@ -505,9 +503,9 @@ initFunction(initPrint)
                 href="/CSL/questions.html"
               >
                 
-                  2.1
+                  1.1
                 
-                Types of Scientific Questions
+                Scientific Questions
               </a>
             </li>
             
@@ -526,7 +524,7 @@ initFunction(initPrint)
                 href="/CSL/what-is-sl.html"
               >
                 
-                  2.2
+                  1.2
                 
                 What is Supervised Learning?
               </a>
@@ -554,7 +552,7 @@ initFunction(initPrint)
           href="/CSL/grad-descent/grad-descent.html"
         >
           
-            3.
+            2.
           
           Fitting Models with Gradient Descent
         </a>
@@ -587,7 +585,7 @@ initFunction(initPrint)
           href="/CSL/linreg-dl-torch/intro.html"
         >
           
-            4.
+            3.
           
           From Linear Regression to Deep Learning in Pytorch
         </a>
@@ -621,7 +619,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/linear-reg.html"
               >
                 
-                  4.1
+                  3.1
                 
                 Linear Regression
               </a>
@@ -642,7 +640,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/logistic-reg.html"
               >
                 
-                  4.2
+                  3.2
                 
                 Logistic Regression
               </a>
@@ -663,7 +661,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/linear-reg-complex.html"
               >
                 
-                  4.3
+                  3.3
                 
                 Adding Complexity
               </a>
@@ -684,7 +682,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/abstracting-layers.html"
               >
                 
-                  4.4
+                  3.4
                 
                 Abstracting our Code
               </a>
@@ -712,7 +710,7 @@ initFunction(initPrint)
           href="/CSL/model-eval/model-eval.html"
         >
           
-            5.
+            4.
           
           Model Evaluation
         </a>
@@ -790,12 +788,7 @@ initFunction(initPrint)
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Supervised learning is the task of figuring out how to guess the output from a given input based on previously seen pairings of output and input. For example, given 1000 photographs labeled as either pictures of cats or dogs, can we build an algorithm to assign the label "cat" or "dog" to new photographs of unknown subject matter? Here are some other examples of supervised learning problems:</p>
-<ul>
-<li>predicting tomorrow's temperature given today's weather, based on prior weather data</li>
-<li>predicting which future patients will develop diabetes, based on data on past diabetic and non-diabetic patients</li>
-<li>labeling emails as either spam or not spam based on a database of spam and non-spam emails</li>
-</ul>
+<p>Now we know what kinds of questions we might be trying to answer, but since this book is about <em>supervised learning</em>, we should now define what that is and how it can be used to answer the questions we have.</p>
 
 </div>
 </div>
@@ -806,8 +799,30 @@ initFunction(initPrint)
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's say we observe 1000 patients in a hospital, each of whom has measurements of their pre-treatment blood pressure, heart rate, etc. and also their corresponding blood pressure after taking a drug. We'll call this our <em>training data</em>. For a new patient who walks in the door, given their current vital signs, can we predict their post-treatment blood pressure?</p>
-<h2 id="Data">Data<a class="anchor-link" href="#Data"> </a></h2><p>We'll use a subscript $i$ to refer to data about the $i$th patient. So, for example, if $z$ were some measurement we made on all patients, $z_i$ would be the value of that measurement for the $i$th patient. The patient in our example is what we call the <strong>unit of observation</strong>. But if we were talking about classifying photographs as having cats or not having cats in them, the unit of observation would be the photographs. So, in general, the subscript $i$ refers to the $i$th observation in the dataset, which could be a patient, a photograph, a credit card transaction, etc.</p>
+<p>Supervised learning is the task of figuring out how to guess the output from a given input based on previously seen pairings of output and input. For example, given 1000 photographs labeled as either pictures of cats or dogs, can we build an algorithm to assign the label "cat" or "dog" to new photographs of unknown subject matter?</p>
+<p>Here are some more examples of problems we could use supervised learning for:</p>
+<ul>
+<li>predicting tomorrow's temperature given today's weather, based on prior weather data</li>
+<li>predicting which future patients will develop diabetes, based on data on past diabetic and non-diabetic patients</li>
+<li>labeling emails as either spam or not spam based on a database of spam and non-spam emails</li>
+</ul>
+<p>Supervised learning, therefore, is the perfect tool to use for <em>predictive</em> questions. However, as we saw in our regression example, the same tool can sometimes be used for multiple purposes. All supervised learning algorithms can, with some additional statistical assumptions and machinery, be useful in answering causal questions or doing inference. Supervised learning is also a starting point for learning about <em>reinforcement and policy learning</em>, which are also causal in nature. That's because some part of all of these tasks involves estimating how an input (e.g. today's weather) produces an output (e.g. tomorrow's temperature).</p>
+<p>Supervised learning is one kind of method out of the grab-bag of techniques that are collectively called <em>machine learning</em>. Machine learning also includes <em>unsupervised learning</em>, which are methods that discover the most obvious groupings or patterns in the data. Unsupervised learning is most often useful in exploratory analyses. Machine learning also includes reinforcement learning, which we have already touched upon, and which often uses tools from supervised learning. This book won't further discuss either of these topics, but I think you will be in a better position to understand them once you've understood supervised learning as a point of reference.</p>
+<p>Machine learning does not include fundamental statistical concepts like p-values and confidence intervals. These ideas help us understand when an association is unlikely to have arisen from random chance, given some assumptions. They do not concern themselves with predicting an outcome from an input. However, these ideas can certainly be used in conjunction with machine learning to answer inferential questions, as previously alluded to. We won't discuss these ideas in this book, but, again, I think you'll be in a better position to understand them if you clearly distinguish them from supervised learning.</p>
+<p>All that said, we are finally in a position to formalize what we mean by "supervised learning".</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Data-for-Supervised-Learning">Data for Supervised Learning<a class="anchor-link" href="#Data-for-Supervised-Learning"> </a></h2><p>The first step is to formalize the kind of data we expect to use for supervised learning.</p>
+<p>Pretend we observe 1000 patients in a hospital, each of whom has measurements of their pre-treatment blood pressure, heart rate, etc. and also their corresponding blood pressure after taking a drug. We'll call this our <em>training data</em>. For a new patient who walks in the door, given their current vital signs, can we predict their post-treatment blood pressure?</p>
+<p>We'll use a subscript $i$ to refer to data about the $i$th patient. So, for example, if $z$ were some measurement we made on all patients, $z_i$ would be the value of that measurement for the $i$th patient. The patient in our example is what we call the <strong>unit of observation</strong>. But if we were talking about classifying photographs as having cats or not having cats in them, the unit of observation would be the photographs. So, in general, the subscript $i$ refers to the $i$th observation in the dataset, which could be a patient, a photograph, a credit card transaction, etc.</p>
 <p>The total number of observations in our data is usually called $n$, so $i$ could stand for any number between 1 and $n$. A shorter way to write that is $i \in \{1, 2, \dots n\}$. You can read $\in$ as "in", so this says "$i$ is a number in the set of numbers that includes 1, 2, ... all the way up to $n$". We'll use that notation for other things as well.</p>
 <p>We usually use the variable $y$ to refer to the measurement we are trying to predict, which is in this case the patient's post-treatment blood pressure. You'll most often see $y$ called the <strong>target</strong>, <strong>label</strong>, or <strong>outcome</strong>. Using our observation subscripts, $y_1$ would be the first patient's post-treatment blood pressure, $y_2$ would be the second patient's blood pressure, etc.</p>
 <p>We can do the same thing for the other measurements, which are called <strong>predictors</strong>, <strong>features</strong>, or <strong>covariates</strong>. We could use different letters for each predictor, e.g. pre-treatment blood pressure would be $z$, pre-treatment heart rate would be $x$, but the standard practice is to call them all "$x$", but subscript them with an index $j$ (different than the index $i$ that refers to the unit of observation). So, in our example, we'll say $x_{i1}$ is patient $i$'s pre-treatment blood pressure, $x_{i2}$ is their pre-treatment heart rate, etc. We will use $p$ to refer to the number of predictors we have for each observation, so $j \in \{1 \dots p\}$. We'll use $x_i$ to refer to a list of all of the features for observation $i$:</p>
@@ -911,7 +926,7 @@ $$<p>You may recall that ordered lists of numbers are also called vectors, and a
     ...
 
     return y</code></pre>
-<p>The problem with this is that it assumes we already know how to predict future blood pressure given what we know. But what if we have no idea how the features can be used to predict future blood pressure? Or what if we have a vague idea, but don't know if our prediction is really the best that we could hope for? What would be ideal is if a computer could analyze the data we already have and then write the <code>predict()</code> code for us.</p>
+<p>The problem with this is that it assumes we already know how to predict future blood pressure given what we know. But what if we have no idea how the features can be used to predict future blood pressure? Or what if we have a vague idea, but don't know if our prediction is really the best that we could hope for? What would be ideal is if a computer could analyze the data we already have and then write the <code>predict()</code> code for us. That is precisely what we are going to learn about in this book.</p>
 <p>The process of building a <em>model</em> that can produce estimates of $y$ given $x$ based on the measurements in the training data $X$ and $Y$ is often called <em>fitting</em> or <em>learning</em> the model. What you get out of that process is a rule, or an algorithm, that associates a value $y$ for each possible $x$ you feed to it (basically, the <code>predict()</code> function). That rule is sometimes called the <em>fit model</em> or the <em>prediction rule</em>.</p>
 
 </div>
@@ -973,19 +988,25 @@ y_predicted = model.predict(x_new)</code></pre>
 
 <div class="jb_cell">
 
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">120</span>
-</pre></div>
+<pre><code>def predict(x):
+    return 120</code></pre>
 
-    </div>
+</div>
+</div>
 </div>
 </div>
 
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>But how do we know that this model is better or worse than another model? How do we know our fancy deep neural network can outperform a trained monkey? And what exactly do we mean by "better" anyways? That is the problem of <em>evaluating</em> our model, and it is actually more subtle than you'd expect. We will discuss model evaluation and its cousin, <em>model selection</em> after we've learned how to fit models.</p>
+
+</div>
+</div>
 </div>
 </div>
 
@@ -1003,7 +1024,7 @@ y_predicted = model.predict(x_new)</code></pre>
     
 
     <a id="js-page__nav__prev" class="c-page__nav__prev" href="/CSL/questions.html">
-      〈 <span class="u-margin-right-tiny"></span> Types of Scientific Questions
+      〈 <span class="u-margin-right-tiny"></span> Scientific Questions
     </a>
   
 

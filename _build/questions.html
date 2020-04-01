@@ -4,27 +4,27 @@ kernel_name: python3
 kernel_path: content
 has_widgets: false
 title: |-
-  Types of Scientific Questions
+  Scientific Questions
 pagenum: 2
 prev_page:
   url: /using-sl.html
 next_page:
   url: /what-is-sl.html
 suffix: .ipynb
-search: math phobia causal analysis data questions analyses different our its between effect just model children not inferential variables prediction claim lets instead regression association does relationship variable classroom cool kids curriculum question answer called say descriptive exploratory instance hard less inference gender dont also causality curricula book risk before really think ask report reported kind p value likely assumptions result gathered possible boring taught e neighborhood common outcome interest mean often predictive new accurate scientific any should seem obvious sometimes implicitly cite science bad numbers interested world addition interpreted those being difference made based reporting rigorous mechanistic performed expresses strength
+search: math phobia causal analysis data questions different our its analyses between effect not just model children inferential variables prediction called lets instead regression association does relationship variable classroom cool kids curriculum kind often ask say descriptive exploratory instance claim hard less inference gender dont also causality curricula book risk scientific question before bad think report reported p value likely assumptions result gathered possible boring taught e neighborhood common outcome interest mean predictive new accurate sometimes seem obvious goal since right important going cite science numbers interested world addition interpreted those being difference made based reporting rigorous mechanistic performed expresses strength
 
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
 
     <main class="jupyter-page">
-    <div id="page-info"><div id="page-title">Types of Scientific Questions</div>
+    <div id="page-info"><div id="page-title">Scientific Questions</div>
 </div>
     
 <div class="jb_cell">
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Before embarking on  any data analysis, you should know what the question you're trying to answer is. It may seem obvious, but the biggest mistake I see in my career as a data scientist is analyses that claim (sometimes implicitly) to answer one question, but that really answer a different question altogether.</p>
+<p>Deciding on what kind of insight you are seeking is sometimes called determining the <em>scientific question</em>.</p>
 
 </div>
 </div>
@@ -35,7 +35,7 @@ comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /con
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>There are different ways to classify data analyses and scientific questions, but I like the way {% cite peng2015 %} do it the best, which is summed up by this diagram:</p>
+<p>It may seem obvious, but one of the mistakes I've often seen in my career as a data scientist is not clearly defining the goal of the data analysis before proceeding. This, more than buggy code, shoddy math, or bad data, is the easiest way to ruin a project. Since figuring out what the right question to ask is so important, we're going to spend some time discussing what the different kinds of questions are. There are different ways to classify data analyses and scientific questions, but I like the way {% cite peng2015 %} do it the best:</p>
 <p><img src="https://science.sciencemag.org/content/sci/347/6228/1314/F1.large.jpg" alt=""></p>
 
 </div>
@@ -135,7 +135,7 @@ comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /con
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's say instead that we performed a regression analysis to tease out the association between gender and math phobia. We report the coefficient of gender in the regression model, which expresses the strength of the association, along with a p-value, which expresses how likely it is that we would have observed our assoication if there really were none (given some assumptions). However, we don't claim that the association is a causal effect- that is, that somehow changing a child's gender would cause a change in their math phobia. In fact, it's hard to interpret precisely what that would entail. All we're saying is that there does seem to be some relationship between gender and math phobia, and that we would be likely to find a similar result if we gathered more data. Since we have quantified our claim and shown that it is statistically robust, this is no longer an exploratory analysis, but an <em>inferential</em> analysis. We have produced rigorous evidence of some relationship.</p>
+<p>Let's say instead that we performed a regression analysis to tease out the association between gender and math phobia. We report the coefficient of gender in the regression model, which expresses the strength of the association, along with a p-value, which expresses how likely it is that we would have observed our assoication if there really were none (given some assumptions). However, we don't claim that the association is a causal effect- that is, that somehow changing a child's gender would cause a change in their math phobia. In fact, it's hard to interpret precisely what that would entail. All we're saying is that there does seem to be some quantitative relationship between gender and math phobia, and that we would be likely to find a similar result if we gathered more data. Since we have quantified our claim and shown that it is statistically robust, this is no longer an exploratory analysis, but an <em>inferential</em> analysis. We have produced rigorous evidence of some relationship.</p>
 
 </div>
 </div>

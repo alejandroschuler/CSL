@@ -26,8 +26,8 @@
   "@type": "NewsArticle",
   "mainEntityOfPage": "https://alejandroschuler.github.io/CSL/model-eval/model-eval.html",
   "headline": "Model Evaluation",
-  "datePublished": "2020-03-06T11:15:26-08:00",
-  "dateModified": "2020-03-06T11:15:26-08:00",
+  "datePublished": "2020-04-01T13:10:07-07:00",
+  "dateModified": "2020-04-01T13:10:07-07:00",
   "description": "        Model Evaluation    At the end of the day, we're looking for a model that will help us predict accurately in the future. So the best way to evaluate ...",
   "author": {
     "@type": "Person",
@@ -438,8 +438,6 @@ initFunction(initPrint)
           href="/CSL/introduction.html"
         >
           
-            1.
-          
           Introduction
         </a>
       </li>
@@ -471,7 +469,7 @@ initFunction(initPrint)
           href="/CSL/using-sl.html"
         >
           
-            2.
+            1.
           
           Using Supervised Learning
         </a>
@@ -505,9 +503,9 @@ initFunction(initPrint)
                 href="/CSL/questions.html"
               >
                 
-                  2.1
+                  1.1
                 
-                Types of Scientific Questions
+                Scientific Questions
               </a>
             </li>
             
@@ -526,7 +524,7 @@ initFunction(initPrint)
                 href="/CSL/what-is-sl.html"
               >
                 
-                  2.2
+                  1.2
                 
                 What is Supervised Learning?
               </a>
@@ -554,7 +552,7 @@ initFunction(initPrint)
           href="/CSL/grad-descent/grad-descent.html"
         >
           
-            3.
+            2.
           
           Fitting Models with Gradient Descent
         </a>
@@ -587,7 +585,7 @@ initFunction(initPrint)
           href="/CSL/linreg-dl-torch/intro.html"
         >
           
-            4.
+            3.
           
           From Linear Regression to Deep Learning in Pytorch
         </a>
@@ -621,7 +619,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/linear-reg.html"
               >
                 
-                  4.1
+                  3.1
                 
                 Linear Regression
               </a>
@@ -642,7 +640,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/logistic-reg.html"
               >
                 
-                  4.2
+                  3.2
                 
                 Logistic Regression
               </a>
@@ -663,7 +661,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/linear-reg-complex.html"
               >
                 
-                  4.3
+                  3.3
                 
                 Adding Complexity
               </a>
@@ -684,7 +682,7 @@ initFunction(initPrint)
                 href="/CSL/linreg-dl-torch/abstracting-layers.html"
               >
                 
-                  4.4
+                  3.4
                 
                 Abstracting our Code
               </a>
@@ -712,7 +710,7 @@ initFunction(initPrint)
           href="/CSL/model-eval/model-eval.html"
         >
           
-            5.
+            4.
           
           Model Evaluation
         </a>
@@ -3474,7 +3472,7 @@ The model $f(x) = 5$ is clearly in $\mathcal F_{\text{tree-1}}$ (set $c=5$). Sho
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Bias">Bias<a class="anchor-link" href="#Bias"> </a></h4><p>The first thing to notice is that in our picture $g$ tends to be fairly far away from both $f_S$ and $f^\dagger$, whereas $f$ is usually closer. This happens because $\mathcal G$ is small, so any given $f^\dagger$ is more likely to be far away from it. That means that should expect $g$ to have a higher generalization error than $f$ on average, which is exactly what we see when we run our experiment: the generalization error of the decision tree is smaller than the generalization error of the linear regression.</p>
 <p>How close a model space is to the "truth" $f^\dagger$ is called the <em>bias</em> of the model.</p>
-<p>Bias is relative, though! It depends on exactly where $f^\dagger$ is (i.e. what the data-generating distribution is) relative to the model space. If $f^dagger$ is close to $\mathcal G$ and far from $\mathcal F$, it doesn't matter if $\mathcal F$is bigger: the generalization error of models from $\mathcal G$ will usually be smaller.</p>
+<p>Bias is relative, though! It depends on exactly where $f^\dagger$ is (i.e. what the data-generating distribution is) relative to the model space. If $f^{\dagger}$ is close to $\mathcal G$ and far from $\mathcal F$, it doesn't matter if $\mathcal F$is bigger: the generalization error of models from $\mathcal G$ will usually be smaller.</p>
 <p>Despite this, it's common to think of big, flexible model spaces (like regression trees) as being "low bias" and small, inflexible model spaces (like linear regression) as being "high bias". That's because the data we see in the world is usually generated by complex nonlinear interactions. In other words, most $f^\dagger$s that we encounter are far from the little model spaces that we can encode with simple functions like $ax + b$. That's a heuristic statement, though, so take it with a grain of salt. Ultimately, we can't know what the bias of any given model space is without knowing what $f^\dagger$ is (which we never know).</p>
 
 </div>
@@ -3505,6 +3503,17 @@ What do you observe?
 Draw a picture of $\mathbb F$ containing $\mathcal F$ (the space of regression trees) and $\mathcal G$ (the space of linear models). Given the data-generating process we're using, where should $f^\dagger$ be in this picture? What is the implication for the generalization and training errors you would expect to see for the two kinds of models? Do your expectations line up with what you observed in simulation?
 
 </div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Although we can't observe bias directly, we can observe the relationship between test error (an estimate of generalization error) and training error. If we're using a small model space that's far away from $f^\dagger$, since $f_\mathcal{S}$ is close to $f^\dagger$, the distance from $g$ to either of those functions will be relatively larger than the distance between them. In other words, it's likely that the training error and the test error will be pretty similar. If you fit a model and you see training errors that are close to your test errors, your model space is probably relatively far from the truth and relatively small. That's exactly why training error is usually not as bad of an estimator of generalization error for linear models as it is for, say, regression trees (which we observed at the beginning of this chapter).</p>
+
 </div>
 </div>
 </div>
@@ -3553,6 +3562,127 @@ What do you observe? Is the variance of the regression tree still larger than th
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Variance can't be directly observed or calculated without knowing the data-generating distribution, but if the test error of your model is substantially higher than the training error, it's likely that your model space $\mathcal F$ is giving your fit model $f$ a lot of room to be dragged around in by $f_\mathcal{S}$. As we will formalize shortly, that can be just as bad as having a model space that's too far away from the truth $f^\dagger$.</p>
+<p>One way to think of this is that a high-variance model space has a lot of capacity to "memorize" the training data. The consequence is that you are likely to get model fits that are too "wiggly" and don't capture the general trends in the data. This is evident by looking at the fits from the regression trees above. However, a great way to counteract the downsides of large model spaces is to add more training data. If you can ensure that $f_\mathcal{S}$ is very close to $f^\dagger$, then a large model space isn't going to hurt you.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Decomposition-of-Generalization-Error">Decomposition of Generalization Error<a class="anchor-link" href="#Decomposition-of-Generalization-Error"> </a></h4>
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Having a small model space that's too far from the truth (high bias, low variance) is bad, but so is having a model space that's close to the truth, but so big that the model has too much room chase the training data (low bias, high variance). Concretely speaking, both bias and variance contribute to a higher average generalization error.</p>
+<p>We can demonstrate that by training models ranging from small model spaces to large model spaces on the same data and examining their training and test errors as we expand the model space:</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell tag_hide_input">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">X_test</span><span class="p">,</span><span class="n">y_test</span> <span class="o">=</span> <span class="n">data_factory</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="n">n_leaves</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">trees</span> <span class="o">=</span> <span class="p">[</span><span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_leaf_nodes</span><span class="o">=</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_leaves</span><span class="p">]</span>
+<span class="n">train_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">model_error</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trees</span><span class="p">]</span>
+<span class="n">test_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">model_error</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trees</span><span class="p">]</span>
+
+<span class="n">source</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Number of Leaves&#39;</span><span class="p">:</span><span class="n">n_leaves</span><span class="p">,</span>
+    <span class="s1">&#39;training&#39;</span><span class="p">:</span><span class="n">train_errors</span><span class="p">,</span>
+    <span class="s1">&#39;test&#39;</span><span class="p">:</span><span class="n">test_errors</span>
+<span class="p">})</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+    <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Number of Leaves&#39;</span><span class="p">],</span>
+    <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;Error Type&#39;</span><span class="p">,</span>
+    <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;Error&#39;</span>
+<span class="p">)</span>
+    
+<span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Number of Leaves&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;Error&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;Error Type&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="jb_output_wrapper }}">
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="../images/model-eval/model-eval_148_0.png"
+>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is an extremely typical result when training supervised learning models. As we increase the number of leaves, what we're doing is increasing the size of the model space. We start with a relatively small and inflexible space (thus high bias and low variance) and we see that the test error is relatively high. As we move to the right, we get larger and larger model spaces until we have a very flexible model (low bias, high variance), but we see that the test error on the right hand side of the plot is also relatively high. We're paying a price in being too flexible, since the model is starting to memorize the training data instead of pick up on general trends.</p>
+<p>The generalization error we expect to see when using a given model space thus depends on both the bias and variance of that model space relative to the data-generating distribution. When we're talking about what we "expect to see" what we mean is that we are averaging over all of the different possible training sets we could have gotten.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Both bias and variance are bad: we want models that can capture the truth, but we don't want them to be too sensitive to the training data. Although we can never know exactly what the bias or variance of our model space is, these are useful concepts to understand because they give us an idea of what to do if our model is not performing as well as we need it to.If the model has really small training error, but a large test error, then we're suffering from high variance, meaning our model space is probably too big and we should try something smaller. If the model has a training error that's almost the same as the test error, then we're probably incurring more bias than we need to and we can afford to make the model space bigger.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can make our ideas concrete by doing a little bit of math.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="jb_cell">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>Since $f_\mathcal S$ is likely to be close to $f^dagger$, our fit model $g$ will also usually be far from $f_\mathcal{S}$, and thus the training error will also typically be larger when the model space is smaller.</p>
 
 </div>
@@ -3565,21 +3695,9 @@ What do you observe? Is the variance of the regression tree still larger than th
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>bias/variance decomposition of \hat E_T(f_S) - E averaged over all possible S<ul>
+<li><p>bias/variance decomposition of \hat E_T(f_S) - E averaged over all possible S</p>
+<ul>
 <li>picture? F, G, fdagger, fS cloud with distances for bias and variance and overall estimation error?</li>
-</ul>
-</li>
-</ul>
-<p>Thus:</p>
-<ul>
-<li>training error tracks with generalization error better in the small model space (bias dominated)<ul>
-<li>explains the result at the beginning of the chapter</li>
-</ul>
-</li>
-<li><p>flipside: training error becomes a bad predictor of generalization error in the big model space</p>
-<ul>
-<li>training error will always be small when the space is big: big space == can memorize more training data</li>
-<li>makes these models likely to be bad without enough training data (ensuring fS is close to fdagger). </li>
 </ul>
 </li>
 <li><p>enlarging the model space: bias-variance tradeoff, error curves</p>
