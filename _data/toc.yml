@@ -19,10 +19,11 @@
 - url: /introduction
   not_numbered: true
 
-- url: /using-sl
+- url: intro-to-sl/using-sl
   sections:
-  - url: /questions
-  - url: /what-is-sl
+  - url: intro-to-sl/questions
+  - url: intro-to-sl/what-is-sl
+  - url: intro-to-sl/summary
 
 # - url: /probability/0_motivation
 #   sections:
